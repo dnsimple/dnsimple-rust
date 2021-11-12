@@ -77,7 +77,7 @@ impl Identity<'_> {
     ///         Some(whoami) =>  match whoami.data.account {
     ///             None => panic!("We should have the account data here"),
     ///             Some(account) => {
-    ///             // so something with the account, like retrieving the id
+    ///             // do something with the account, like retrieving the id
     ///             // with account.id
     ///             }
     ///         }

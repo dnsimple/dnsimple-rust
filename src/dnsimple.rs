@@ -1,8 +1,10 @@
 use std::iter::Map;
 use ureq::{Request, Response};
+use crate::dnsimple::accounts::Accounts;
 use crate::dnsimple::identity::Identity;
 
 pub mod identity;
+pub mod accounts;
 
 const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
@@ -97,6 +99,13 @@ impl Client {
     /// Returns the `identity` service attached to this client
     pub fn identity(&self) -> Identity {
         Identity {
+            client: self
+        }
+    }
+
+    /// Returns the `accounts` service attached to this client
+    pub fn accounts(&self) -> Accounts {
+        Accounts {
             client: self
         }
     }
