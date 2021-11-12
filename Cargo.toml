@@ -1,0 +1,27 @@
+[package]
+name = "dnsimple-rust"
+version = "0.1.0"
+authors = ["Enrique Comba Riepenhausen <enrique.comba@dnsimple.com>"]
+edition = "2018"
+description = "Rust DNSimple API client"
+readme = "README.md"
+license = "MIT"
+license-file = "LICENSE.txt"
+repository = "https://github.com/dnsimple/dnsimple-rust"
+keywords = ["DNS", "domain", "domain managent", "domain automation"]
+categories = ["api-bindings"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+#httpmock = "0.6.2"
+#httptest = "0.15.3"
+#reqwest = {version = "0.11.6", features= ["blocking", "json"]}
+#serde = "1.0.130"
+#serde_derive = "1.0.130"
+ureq = { version = "2.3.0", features = ["json"] }
+serde = { version = "1.0.130", features = ["derive"] }
+serde_json = "1.0.69"
+
+[dev-dependencies]
+mockito = "0.30.0"

@@ -1,0 +1,38 @@
+## :warning: Development Warning
+
+This project targets the development of the API client for the [DNSimple API v2](https://developer.dnsimple.com/v2/).
+
+This version is currently under development, therefore the methods and the implementation should he considered a 
+work-in-progress. Changes in the method naming, method signatures, public or internal APIs may happen at any time.
+
+The code is tested with an automated test suite connected to a continuous integration tool, therefore you should not 
+expect :bomb: bugs to be merged into main. Regardless, use this library at your own risk. :boom:
+
+
+# DNSimple Rust Client
+
+A Rust client for the [DNSimple API v2](https://developer.dnsimple.com/v2/).
+
+## Usage
+
+```
+use dnsimple_rust::dnsimple::{Client, new_client};
+
+let client = new_client(true, String::from("AUTH_TOKEN"));
+let identity_response = client.identity().whoami().data;
+
+match identity_response {
+        None => panic!("We should have a payload here."),
+        Some(whoami) =>  match whoami.data.account {
+            None => panic!("We should have the account data here"),
+            Some(account) => {
+            // so something with the account, like retrieving the id
+            // with account.id
+            }
+        }
+}
+```
+
+## License
+
+Copyright (c) 2015-2021 DNSimple Corporation. This is Free Software distributed under the MIT license.
