@@ -5,7 +5,6 @@ authors = ["Enrique Comba Riepenhausen <enrique.comba@dnsimple.com>"]
 edition = "2018"
 description = "Rust DNSimple API client"
 readme = "README.md"
-license = "MIT"
 license-file = "LICENSE.txt"
 repository = "https://github.com/dnsimple/dnsimple-rust"
 keywords = ["DNS", "domain", "domain managent", "domain automation"]
