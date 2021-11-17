@@ -4,7 +4,7 @@ mod common;
 
 #[test]
 fn list_accounts_account_success() {
-    let setup = setup_mock_for("/accounts", "accounts/success-account");
+    let setup = setup_mock_for("/accounts", "accounts/success-account", "GET");
     let client = setup.0;
 
     let accounts_response = client.accounts().list_accounts().data;
@@ -28,7 +28,7 @@ fn list_accounts_account_success() {
 #[test]
 fn list_accounts_user_success() {
 
-    let setup = setup_mock_for("/accounts", "accounts/success-user");
+    let setup = setup_mock_for("/accounts", "accounts/success-user", "GET");
     let client = setup.0;
 
     let accounts_response = client.accounts().list_accounts().data;

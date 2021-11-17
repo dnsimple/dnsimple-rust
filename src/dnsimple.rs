@@ -1,10 +1,15 @@
-use std::iter::Map;
+use serde;
+use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use ureq::{Request, Response};
+use ureq::OrAnyStatus;
 use crate::dnsimple::accounts::Accounts;
 use crate::dnsimple::identity::Identity;
+use crate::dnsimple::oauth::Oauth;
 
 pub mod identity;
 pub mod accounts;
+pub mod oauth;
 
 const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
@@ -45,9 +50,10 @@ pub struct Client {
 }
 
 /// Represents the Error message payload returned by the DNSimple API
+#[derive(Debug, Deserialize, Serialize)]
 pub struct APIErrorMessage {
-    pub message: String,
-    pub errors: Map<String, Vec<String>>
+    pub error: String,
+    pub error_description: String,
 }
 
 /// Represents a response from the DNSimple API
@@ -95,7 +101,35 @@ pub fn new_client(sandbox: bool, token: String) -> Client {
     }
 }
 
+/// Helper function that will extract the `APIErrorMessage` from the raw http response.
+///
+/// # Examples
+///
+/// ```no_run
+/// use dnsimple_rust::dnsimple::dnsimple_error_from;
+/// let error_message = dnsimple_error_from(some_response);
+/// ```
+///
+/// # Arguments
+///
+/// `raw_response`: the raw http response to be parsed
+pub fn dnsimple_error_from(raw_response: Response) -> Option<APIErrorMessage> {
+    let raw_content = raw_response.into_string().unwrap();
+    let tokens = raw_content.split("\n\n");
+    let vec = tokens.collect::<Vec<&str>>();
+    let body = vec.last().unwrap();
+    let error_message: APIErrorMessage = serde_json::from_str(body).unwrap();
+    Option::from(error_message)
+}
+
 impl Client {
+    /// Returns the `accounts` service attached to this client
+    pub fn accounts(&self) -> Accounts {
+        Accounts {
+            client: self
+        }
+    }
+
     /// Returns the `identity` service attached to this client
     pub fn identity(&self) -> Identity {
         Identity {
@@ -103,9 +137,9 @@ impl Client {
         }
     }
 
-    /// Returns the `accounts` service attached to this client
-    pub fn accounts(&self) -> Accounts {
-        Accounts {
+    // Returns the `oauth` service attached to this client
+    pub fn oauth(&self) -> Oauth {
+        Oauth {
             client: self
         }
     }
@@ -143,33 +177,58 @@ impl Client {
     /// `path`: the path to the endpoint
     pub fn get<T>(&self, path: &str) -> APIResponse<T> {
         let request = self.build_get_request(&path);
+        let response = request.call();
+        let dnsimple_response = Self::build_dnsimple_response(response.as_ref().unwrap());
 
-        let response = request.call().unwrap();
-        let dnsimple_response = DNSimpleResponse {
+        APIResponse {
+            response: dnsimple_response,
+            raw_http_response: response.unwrap()
+        }
+    }
+
+    /// Sends a POST request to the DNSimple API
+    ///
+    /// # Arguments
+    ///
+    /// `path`: the path to the endpoint
+    /// `data`: the json payload to be sent to the server
+    pub fn post<T>(&self, path: &str, data: Value) -> APIResponse<T> {
+        let request = self.build_post_request(&path);
+        let response = request.send_json(data).or_any_status();
+        let dnsimple_response = Self::build_dnsimple_response(&response.as_ref().unwrap());
+        return APIResponse {
+            response: dnsimple_response,
+            raw_http_response: response.unwrap()
+        }
+    }
+
+    fn build_dnsimple_response<T>(response: &Response) -> DNSimpleResponse<T> {
+        DNSimpleResponse {
             rate_limit: String::from(response.header("X-RateLimit-Limit").unwrap()),
             rate_limit_remaining: String::from(response.header("X-RateLimit-Remaining").unwrap()),
             rate_limit_reset: String::from(response.header("X-RateLimit-Reset").unwrap()),
             status: response.status(),
             data: None,
             message: None
-        };
-
-        APIResponse {
-            response: dnsimple_response,
-            raw_http_response: response,
         }
     }
 
     fn build_get_request(&self, path: &&str) -> Request {
-        let request = self.agent.get(&self.url(path)).set("User-Agent", &self.user_agent);
+        let request = self.agent.get(&self.url(path))
+            .set("User-Agent", &self.user_agent)
+            .set("Accept", "application/json");
         self.add_headers_to_request(request)
+    }
+
+    fn build_post_request(&self, path: &&str) -> Request {
+        self.agent.post(&self.url(path))
+            .set("User-Agent", &self.user_agent)
+            .set("Accept", "application/json")
     }
 
     fn add_headers_to_request(&self, request: Request) -> Request {
         let auth_token = &format!("Bearer {}", self.auth_token);
         request
-            .set("User-Agent", &self.user_agent)
-            .set("Accept", "application/json")
             .set("Authorization", auth_token.as_str())
     }
 

@@ -4,7 +4,7 @@ mod common;
 
 #[test]
 fn whoami_success_with_account() {
-    let setup = setup_mock_for("/whoami","whoami/success-account");
+    let setup = setup_mock_for("/whoami","whoami/success-account", "GET");
     let client = setup.0;
     let identity_response = client.identity().whoami().data;
 
@@ -23,7 +23,7 @@ fn whoami_success_with_account() {
 
 #[test]
 fn whoami_success_with_user() {
-    let setup = setup_mock_for("/whoami", "whoami/success-user");
+    let setup = setup_mock_for("/whoami", "whoami/success-user", "GET");
     let client = setup.0;
     let identity_response = client.identity().whoami().data;
 
