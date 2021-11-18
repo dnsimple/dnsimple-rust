@@ -15,7 +15,7 @@ use dnsimple_rust::dnsimple::{Client, new_client};
 pub fn setup_mock_for(path: &str, fixture: &str, method: &str) -> (Client, Mock) {
     let path = format!("/v2{}", path);
     let fixture = format!("./tests/fixtures/v2/api/{}.http", fixture);
-    println!("We are trying to read this file: {}", fixture);
+    // println!("We are trying to read this file: {}", fixture);
 
     let content = fs::read_to_string(fixture.as_str())
         .expect("Something went wrong: Couldn't read the file");
@@ -24,6 +24,7 @@ pub fn setup_mock_for(path: &str, fixture: &str, method: &str) -> (Client, Mock)
     let headers = vec.first().unwrap();
     let status = &headers[9..12];
     let body = vec.last();
+    // println!("Body returned: {}", body.as_ref().unwrap());
 
     let mock = mock(method, path.as_str())
         .with_header("X-RateLimit-Limit", "2")

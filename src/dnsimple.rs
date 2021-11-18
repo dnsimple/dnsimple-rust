@@ -4,12 +4,14 @@ use serde_json::Value;
 use ureq::{Request, Response};
 use ureq::OrAnyStatus;
 use crate::dnsimple::accounts::Accounts;
+use crate::dnsimple::domains::Domains;
 use crate::dnsimple::identity::Identity;
 use crate::dnsimple::oauth::Oauth;
 
 pub mod identity;
 pub mod accounts;
 pub mod oauth;
+pub mod domains;
 
 const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
@@ -66,6 +68,15 @@ pub struct DNSimpleResponse<T> {
     pub message: Option<APIErrorMessage>
 }
 
+/// Represents an empty response from the DNSimple API
+/// (_these type of responses happen when issuing DELETE commands for example_)
+pub struct DNSimpleEmptyResponse {
+    pub rate_limit: String,
+    pub rate_limit_remaining: String,
+    pub rate_limit_reset: String,
+    pub status: u16,
+}
+
 /// Wrapper around a DNSimpleResponse and the raw http response of the DNSimple API
 pub struct APIResponse<T> {
     pub response: DNSimpleResponse <T>,
@@ -103,13 +114,6 @@ pub fn new_client(sandbox: bool, token: String) -> Client {
 
 /// Helper function that will extract the `APIErrorMessage` from the raw http response.
 ///
-/// # Examples
-///
-/// ```no_run
-/// use dnsimple_rust::dnsimple::dnsimple_error_from;
-/// let error_message = dnsimple_error_from(some_response);
-/// ```
-///
 /// # Arguments
 ///
 /// `raw_response`: the raw http response to be parsed
@@ -137,9 +141,16 @@ impl Client {
         }
     }
 
-    // Returns the `oauth` service attached to this client
+    /// Returns the `oauth` service attached to this client
     pub fn oauth(&self) -> Oauth {
         Oauth {
+            client: self
+        }
+    }
+
+    /// Returns the `domains` service attached to this client
+    pub fn domains(&self) -> Domains {
+        Domains {
             client: self
         }
     }
@@ -177,6 +188,7 @@ impl Client {
     /// `path`: the path to the endpoint
     pub fn get<T>(&self, path: &str) -> APIResponse<T> {
         let request = self.build_get_request(&path);
+
         let response = request.call();
         let dnsimple_response = Self::build_dnsimple_response(response.as_ref().unwrap());
 
@@ -194,12 +206,26 @@ impl Client {
     /// `data`: the json payload to be sent to the server
     pub fn post<T>(&self, path: &str, data: Value) -> APIResponse<T> {
         let request = self.build_post_request(&path);
+
         let response = request.send_json(data).or_any_status();
         let dnsimple_response = Self::build_dnsimple_response(&response.as_ref().unwrap());
-        return APIResponse {
+
+        APIResponse {
             response: dnsimple_response,
             raw_http_response: response.unwrap()
         }
+    }
+
+    /// Sends a DELETE request to the DNSimple API
+    ///
+    /// # Arguments
+    ///
+    /// `path`: the path to the endpoint
+    pub fn delete(&self, path: &str) -> DNSimpleEmptyResponse {
+        let request = self.build_delete_request(&path);
+        let response = request.call();
+
+        Self::build_empty_dnsimple_response(response.as_ref().unwrap())
     }
 
     fn build_dnsimple_response<T>(response: &Response) -> DNSimpleResponse<T> {
@@ -210,6 +236,15 @@ impl Client {
             status: response.status(),
             data: None,
             message: None
+        }
+    }
+
+    fn build_empty_dnsimple_response(response: &Response) -> DNSimpleEmptyResponse {
+        DNSimpleEmptyResponse {
+            rate_limit: String::from(response.header("X-RateLimit-Limit").unwrap()),
+            rate_limit_remaining: String::from(response.header("X-RateLimit-Remaining").unwrap()),
+            rate_limit_reset: String::from(response.header("X-RateLimit-Reset").unwrap()),
+            status: response.status(),
         }
     }
 
@@ -226,12 +261,18 @@ impl Client {
             .set("Accept", "application/json")
     }
 
+    fn build_delete_request(&self, path: &&str) -> Request {
+        let request = self.agent.delete(&self.url(path))
+            .set("User-Agent", &self.user_agent)
+            .set("Accept", "application/json");
+        self.add_headers_to_request(request)
+    }
+
     fn add_headers_to_request(&self, request: Request) -> Request {
         let auth_token = &format!("Bearer {}", self.auth_token);
         request
             .set("Authorization", auth_token.as_str())
     }
-
 
     fn url(&self, path: &str) -> String {
         let mut url = self.versioned_url();
