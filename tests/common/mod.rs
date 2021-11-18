@@ -11,19 +11,22 @@ use dnsimple_rust::dnsimple::{Client, new_client};
 ///
 /// `fixture`: the path to the fixture inside the `api` directory
 /// `path`: the path in the server (i.e. `/whoami`)
+/// `method`: the HTTP method we are going to use (GET, POST, DELETE, ...)
 ///
 pub fn setup_mock_for(path: &str, fixture: &str, method: &str) -> (Client, Mock) {
     let path = format!("/v2{}", path);
     let fixture = format!("./tests/fixtures/v2/api/{}.http", fixture);
+
     // println!("We are trying to read this file: {}", fixture);
 
     let content = fs::read_to_string(fixture.as_str())
         .expect("Something went wrong: Couldn't read the file");
-    let tokens = content.split("\r\n\r\n");
-    let vec = tokens.collect::<Vec<&str>>();
-    let headers = vec.first().unwrap();
-    let status = &headers[9..12];
-    let body = vec.last();
+
+    let lines = content.lines();
+    let status = &content[9..12];
+    let body = lines.last();
+
+    // println!("The status is: {:?}", status);
     // println!("Body returned: {}", body.as_ref().unwrap());
 
     let mock = mock(method, path.as_str())
