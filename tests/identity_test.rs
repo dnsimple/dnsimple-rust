@@ -6,35 +6,23 @@ mod common;
 fn whoami_success_with_account() {
     let setup = setup_mock_for("/whoami","whoami/success-account", "GET");
     let client = setup.0;
-    let identity_response = client.identity().whoami().data;
+    let identity = client.identity().whoami().unwrap();
 
-    match identity_response {
-        None => panic!("We should have a payload here."),
-        Some(whoami) =>  match whoami.data.account {
-            None => panic!("We should have the account data here"),
-            Some(account) => {
-                assert_eq!(account.id, 1);
-                assert_eq!(account.email, "example-account@example.com");
-                assert_eq!(account.plan_identifier, "dnsimple-professional");
-            }
-        }
-    }
+    let account = identity.data.unwrap().account.unwrap();
+
+    assert_eq!(1, account.id);
+    assert_eq!("example-account@example.com", account.email);
+    assert_eq!("dnsimple-professional", account.plan_identifier);
 }
 
 #[test]
 fn whoami_success_with_user() {
     let setup = setup_mock_for("/whoami", "whoami/success-user", "GET");
     let client = setup.0;
-    let identity_response = client.identity().whoami().data;
+    let identity_response = client.identity().whoami().unwrap().data.unwrap();
 
-    match identity_response {
-        None => panic!("We should have a payload here."),
-        Some(whoami) => match whoami.data.user {
-            None => panic!("We should have the user data here"),
-            Some(user) => {
-                assert_eq!(user.id, 1);
-                assert_eq!(user.email, "example-user@example.com");
-            }
-        }
-    }
+    let user = identity_response.user.unwrap();
+
+    assert_eq!(1, user.id);
+    assert_eq!("example-user@example.com", user.email);
 }

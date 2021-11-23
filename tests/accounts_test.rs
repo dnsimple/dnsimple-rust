@@ -7,22 +7,14 @@ fn list_accounts_account_success() {
     let setup = setup_mock_for("/accounts", "accounts/success-account", "GET");
     let client = setup.0;
 
-    let accounts_response = client.accounts().list_accounts().data;
+    let accounts_response = client.accounts().list_accounts();
+    let accounts = accounts_response.unwrap().data.unwrap();
 
-    match accounts_response {
-        None => panic!("We should have a payload here"),
-        Some(accounts_data) => match accounts_data.data {
-            None => panic!("There should be a list of accounts here"),
-            Some(accounts) => {
-                assert_eq!(accounts.len(), 1);
-
-                let account = accounts.first().unwrap();
-                assert_eq!(account.id, 123);
-                assert_eq!(account.email, "john@example.com");
-                assert_eq!(account.plan_identifier, "dnsimple-personal");
-            }
-        }
-    }
+    assert_eq!(1, accounts.len());
+    let account = accounts.first().unwrap();
+    assert_eq!(123, account.id);
+    assert_eq!("john@example.com", account.email);
+    assert_eq!("dnsimple-personal", account.plan_identifier);
 }
 
 #[test]
@@ -31,26 +23,18 @@ fn list_accounts_user_success() {
     let setup = setup_mock_for("/accounts", "accounts/success-user", "GET");
     let client = setup.0;
 
-    let accounts_response = client.accounts().list_accounts().data;
+    let accounts_response = client.accounts().list_accounts();
+    let accounts = accounts_response.unwrap().data.unwrap();
 
-    match accounts_response {
-        None => panic!("We should have a payload here"),
-        Some(accounts_data) => match accounts_data.data {
-            None => panic!("There should be a list of accounts here"),
-            Some(accounts) => {
-                assert_eq!(accounts.len(), 2);
+    assert_eq!(2, accounts.len());
 
-                let first_account = accounts.first().unwrap();
-                assert_eq!(first_account.id, 123);
-                assert_eq!(first_account.email, "john@example.com");
-                assert_eq!(first_account.plan_identifier, "dnsimple-personal");
+    let first_account = accounts.first().unwrap();
+    assert_eq!(123, first_account.id);
+    assert_eq!("john@example.com", first_account.email);
+    assert_eq!("dnsimple-personal", first_account.plan_identifier);
 
-                let second_account = accounts.last().unwrap();
-                assert_eq!(second_account.id, 456);
-                assert_eq!(second_account.email, "ops@company.com");
-                assert_eq!(second_account.plan_identifier, "dnsimple-professional");
-
-            }
-        }
-    }
+    let second_account = accounts.last().unwrap();
+    assert_eq!(456, second_account.id);
+    assert_eq!("ops@company.com", second_account.email);
+    assert_eq!("dnsimple-professional", second_account.plan_identifier);
 }

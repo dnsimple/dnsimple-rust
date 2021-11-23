@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::dnsimple::{APIResponse, Client, DNSimpleResponse};
+use crate::dnsimple::{Client, DNSimpleResponse, Endpoint};
 
 /// Represents a User
 ///
@@ -45,13 +45,10 @@ pub struct WhoamiData{
     pub user: Option<User>,
 }
 
-/// Represents the Response with the identity (whoami) data
-///
-/// See [API Documentation: identity](https://developer.dnsimple.com/v2/identity/)
-#[derive(Debug, Deserialize, Serialize)]
-pub struct IdentityResponseData {
-    /// The WhoamiData struct
-    pub data: WhoamiData,
+struct IdentityEndpoint;
+
+impl Endpoint for IdentityEndpoint {
+    type Output = WhoamiData;
 }
 
 /// The Identity Service handles the identity (whoami) endpoint of the DNSimple API.
@@ -70,27 +67,12 @@ impl Identity<'_> {
     /// use dnsimple_rust::dnsimple::{Client, new_client};
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let identity_response = client.identity().whoami().data;
+    /// let identity_response = client.identity().whoami().unwrap().data.unwrap();
+    /// let account = identity_response.account.unwrap();
     ///
-    /// match identity_response {
-    ///         None => panic!("We should have a payload here."),
-    ///         Some(whoami) =>  match whoami.data.account {
-    ///             None => panic!("We should have the account data here"),
-    ///             Some(account) => {
-    ///             // do something with the account, like retrieving the id
-    ///             // with account.id
-    ///             }
-    ///         }
-    /// }
     /// ```
-    pub fn whoami(&self) -> DNSimpleResponse<IdentityResponseData> {
-        let api_response: APIResponse<IdentityResponseData> = self.client.get("/whoami");
-        let raw_response = api_response.raw_http_response;
-        let mut dnsimple_response = api_response.response;
-
-        dnsimple_response.data = raw_response.into_json().unwrap();
-
-        dnsimple_response
+    pub fn whoami(&self) -> Result<DNSimpleResponse<WhoamiData>, String> {
+        self.client.get::<IdentityEndpoint>("/whoami")
     }
 }
 

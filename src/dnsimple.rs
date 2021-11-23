@@ -1,17 +1,15 @@
 use serde;
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
-use ureq::{Request, Response};
-use ureq::OrAnyStatus;
+use serde::de::DeserializeOwned;
+use serde_json::{json, Value};
+use ureq::{Error, OrAnyStatus, Request, Response};
 use crate::dnsimple::accounts::Accounts;
 use crate::dnsimple::domains::Domains;
 use crate::dnsimple::identity::Identity;
-use crate::dnsimple::oauth::Oauth;
 
+pub mod domains;
 pub mod identity;
 pub mod accounts;
-pub mod oauth;
-pub mod domains;
 
 const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
@@ -29,26 +27,27 @@ const DEFAULT_SANDBOX_URL: &str  = "https://api.sandbox.dnsimple.com";
 /// # Examples
 ///
 /// ```no_run
-/// use dnsimple_rust::dnsimple::{Client, new_client};
+/// // use dnsimple_rust::dnsimple::{Client, new_client};
 ///
-/// let client = new_client(true, String::from("AUTH_TOKEN"));
-/// let identity_response = client.identity().whoami().data;
+/// // let client = new_client(true, String::from("AUTH_TOKEN"));
+/// // let identity_response = client.identity().whoami().data;
 ///
-/// match identity_response {
-///         None => panic!("We should have a payload here."),
-///         Some(whoami) =>  match whoami.data.account {
-///             None => panic!("We should have the account data here"),
-///             Some(account) => {
+/// // match identity_response {
+/// //         None => panic!("We should have a payload here."),
+/// //         Some(whoami) =>  match whoami.data.account {
+/// //             None => panic!("We should have the account data here"),
+/// //             Some(account) => {
 ///             // so something with the account, like retrieving the id
 ///             // with account.id
-///             }
-///         }
-/// }
+///             // }
+///         // }
+/// // }
+///
 pub struct Client {
     base_url: String,
     user_agent: String,
     auth_token: String,
-    agent: ureq::Agent,
+    pub _agent: ureq::Agent,
 }
 
 /// Represents the Error message payload returned by the DNSimple API
@@ -58,14 +57,28 @@ pub struct APIErrorMessage {
     pub error_description: String,
 }
 
-/// Represents a response from the DNSimple API
+pub trait Endpoint {
+    type Output: DeserializeOwned;
+}
+
+#[derive(Debug)]
 pub struct DNSimpleResponse<T> {
     pub rate_limit: String,
     pub rate_limit_remaining: String,
     pub rate_limit_reset: String,
     pub status: u16,
     pub data: Option<T>,
-    pub message: Option<APIErrorMessage>
+    pub message: Option<APIErrorMessage>,
+    pub pagination: Option<Pagination>,
+    pub body: Option<Value>,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct Pagination {
+    current_page: u64,
+    per_page: u64,
+    total_entries: u64,
+    total_pages: u64,
 }
 
 /// Represents an empty response from the DNSimple API
@@ -78,10 +91,10 @@ pub struct DNSimpleEmptyResponse {
 }
 
 /// Wrapper around a DNSimpleResponse and the raw http response of the DNSimple API
-pub struct APIResponse<T> {
-    pub response: DNSimpleResponse <T>,
-    pub raw_http_response: Response
-}
+// pub struct APIResponse<T> {
+//     pub response: DNSimpleResponse <T>,
+//     pub raw_http_response: Response
+// }
 
 /// Helper function to create a new client
 ///
@@ -108,7 +121,7 @@ pub fn new_client(sandbox: bool, token: String) -> Client {
         base_url: String::from(url),
         user_agent: DEFAULT_USER_AGENT.to_owned() + VERSION,
         auth_token: token,
-        agent: ureq::Agent::new(),
+        _agent: ureq::Agent::new(),
     }
 }
 
@@ -127,7 +140,7 @@ pub fn dnsimple_error_from(raw_response: Response) -> Option<APIErrorMessage> {
 }
 
 impl Client {
-    /// Returns the `accounts` service attached to this client
+    ///Returns the `accounts` service attached to this client
     pub fn accounts(&self) -> Accounts {
         Accounts {
             client: self
@@ -137,13 +150,6 @@ impl Client {
     /// Returns the `identity` service attached to this client
     pub fn identity(&self) -> Identity {
         Identity {
-            client: self
-        }
-    }
-
-    /// Returns the `oauth` service attached to this client
-    pub fn oauth(&self) -> Oauth {
-        Oauth {
             client: self
         }
     }
@@ -186,16 +192,22 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub fn get<T>(&self, path: &str) -> APIResponse<T> {
+    // pub fn get<T>(&self, path: &str) -> APIResponse<T> {
+    //     let request = self.build_get_request(&path);
+    //
+    //     let response = request.call();
+    //     let dnsimple_response = Self::build_dnsimple_response(&response.as_ref().unwrap());
+    //
+    //     APIResponse {
+    //         response: dnsimple_response,
+    //         raw_http_response: response.unwrap()
+    //     }
+    // }
+    pub fn get<E: Endpoint>(&self, path: &str) -> Result<DNSimpleResponse<E::Output>, String> {
         let request = self.build_get_request(&path);
 
         let response = request.call();
-        let dnsimple_response = Self::build_dnsimple_response(response.as_ref().unwrap());
-
-        APIResponse {
-            response: dnsimple_response,
-            raw_http_response: response.unwrap()
-        }
+        Self::build_dnsimple_response::<E>(response.unwrap())
     }
 
     /// Sends a POST request to the DNSimple API
@@ -204,16 +216,11 @@ impl Client {
     ///
     /// `path`: the path to the endpoint
     /// `data`: the json payload to be sent to the server
-    pub fn post<T>(&self, path: &str, data: Value) -> APIResponse<T> {
+    pub fn post<E: Endpoint>(&self, path: &str, data: Value) -> Result<DNSimpleResponse<E::Output>, String> {
         let request = self.build_post_request(&path);
 
         let response = request.send_json(data).or_any_status();
-        let dnsimple_response = Self::build_dnsimple_response(&response.as_ref().unwrap());
-
-        APIResponse {
-            response: dnsimple_response,
-            raw_http_response: response.unwrap()
-        }
+        Self::build_dnsimple_response::<E>(response.unwrap())
     }
 
     /// Sends a DELETE request to the DNSimple API
@@ -225,44 +232,51 @@ impl Client {
         let request = self.build_delete_request(&path);
         let response = request.call();
 
-        Self::build_empty_dnsimple_response(response.as_ref().unwrap())
+        Self::build_empty_dnsimple_response(response.as_ref())
     }
 
-    fn build_dnsimple_response<T>(response: &Response) -> DNSimpleResponse<T> {
-        DNSimpleResponse {
-            rate_limit: String::from(response.header("X-RateLimit-Limit").unwrap()),
-            rate_limit_remaining: String::from(response.header("X-RateLimit-Remaining").unwrap()),
-            rate_limit_reset: String::from(response.header("X-RateLimit-Reset").unwrap()),
-            status: response.status(),
-            data: None,
-            message: None
-        }
+    fn build_dnsimple_response<E: Endpoint>(resp: Response) -> Result<DNSimpleResponse<E::Output>, String> {
+        let rate_limit= String::from(resp.header("X-RateLimit-Limit").unwrap());
+        let rate_limit_remaining= String::from(resp.header("X-RateLimit-Remaining").unwrap());
+        let rate_limit_reset= String::from(resp.header("X-RateLimit-Reset").unwrap());
+        let status= resp.status();
+
+        let json = resp.into_json::<Value>().unwrap();
+        let data = serde_json::from_value(json!(json.get("data"))).map_err(|e| e.to_string())?;
+        let message = serde_json::from_value(json!(json.get("message"))).map_err(|e| e.to_string())?;
+        let pagination = serde_json::from_value(json!(json.get("pagination"))).map_err(|e| e.to_string())?;
+        let body = serde_json::from_value(json).map_err(|e| e.to_string())?;
+
+        Ok(DNSimpleResponse {
+            rate_limit, rate_limit_remaining, rate_limit_reset, status,
+            data, message, pagination, body,
+        })
     }
 
-    fn build_empty_dnsimple_response(response: &Response) -> DNSimpleEmptyResponse {
+    fn build_empty_dnsimple_response(response: Result<&Response, &Error>) -> DNSimpleEmptyResponse {
         DNSimpleEmptyResponse {
-            rate_limit: String::from(response.header("X-RateLimit-Limit").unwrap()),
-            rate_limit_remaining: String::from(response.header("X-RateLimit-Remaining").unwrap()),
-            rate_limit_reset: String::from(response.header("X-RateLimit-Reset").unwrap()),
-            status: response.status(),
+            rate_limit: String::from(response.unwrap().header("X-RateLimit-Limit").unwrap()),
+            rate_limit_remaining: String::from(response.unwrap().header("X-RateLimit-Remaining").unwrap()),
+            rate_limit_reset: String::from(response.unwrap().header("X-RateLimit-Reset").unwrap()),
+            status: response.unwrap().status(),
         }
     }
 
     fn build_get_request(&self, path: &&str) -> Request {
-        let request = self.agent.get(&self.url(path))
+        let request = self._agent.get(&self.url(path))
             .set("User-Agent", &self.user_agent)
             .set("Accept", "application/json");
         self.add_headers_to_request(request)
     }
 
-    fn build_post_request(&self, path: &&str) -> Request {
-        self.agent.post(&self.url(path))
+    pub fn build_post_request(&self, path: &&str) -> Request {
+        self._agent.post(&self.url(path))
             .set("User-Agent", &self.user_agent)
             .set("Accept", "application/json")
     }
 
     fn build_delete_request(&self, path: &&str) -> Request {
-        let request = self.agent.delete(&self.url(path))
+        let request = self._agent.delete(&self.url(path))
             .set("User-Agent", &self.user_agent)
             .set("Accept", "application/json");
         self.add_headers_to_request(request)
