@@ -15,6 +15,7 @@ pub mod domains_collaborators;
 pub mod domains_dnssec;
 pub mod domains_signer_records;
 pub mod domains_email_forwards;
+pub mod domains_push;
 
 const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
@@ -237,6 +238,13 @@ impl Client {
     /// `path`: the path to the endpoint
     pub fn delete(&self, path: &str) -> DNSimpleEmptyResponse {
         let request = self.build_delete_request(&path);
+        let response = request.call();
+
+        Self::build_empty_dnsimple_response(response.as_ref())
+    }
+
+    pub fn empty_post(&self, path: &str) -> DNSimpleEmptyResponse {
+        let request = self.build_post_request(&path);
         let response = request.call();
 
         Self::build_empty_dnsimple_response(response.as_ref())
