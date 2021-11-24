@@ -8,9 +8,12 @@ use crate::dnsimple::accounts::Accounts;
 use crate::dnsimple::domains::Domains;
 use crate::dnsimple::identity::Identity;
 
-pub mod domains;
 pub mod identity;
 pub mod accounts;
+pub mod domains;
+pub mod domains_collaborators;
+pub mod domains_dnssec;
+pub mod domains_signer_records;
 
 const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
@@ -54,8 +57,8 @@ pub struct Client {
 /// Represents the Error message payload returned by the DNSimple API
 #[derive(Debug, Deserialize, Serialize)]
 pub struct APIErrorMessage {
-    pub error: String,
-    pub error_description: String,
+    pub message: Option<String>,
+    pub errors: Option<Value>,
 }
 
 pub trait Endpoint {
@@ -69,7 +72,7 @@ pub struct DNSimpleResponse<T> {
     pub rate_limit_reset: String,
     pub status: u16,
     pub data: Option<T>,
-    pub message: Option<APIErrorMessage>,
+    pub errors: Option<APIErrorMessage>,
     pub pagination: Option<Pagination>,
     pub body: Option<Value>,
 }
@@ -151,20 +154,6 @@ pub fn new_client(sandbox: bool, token: String) -> Client {
         auth_token: token,
         _agent: ureq::Agent::new(),
     }
-}
-
-/// Helper function that will extract the `APIErrorMessage` from the raw http response.
-///
-/// # Arguments
-///
-/// `raw_response`: the raw http response to be parsed
-pub fn dnsimple_error_from(raw_response: Response) -> Option<APIErrorMessage> {
-    let raw_content = raw_response.into_string().unwrap();
-    let tokens = raw_content.split("\n\n");
-    let vec = tokens.collect::<Vec<&str>>();
-    let body = vec.last().unwrap();
-    let error_message: APIErrorMessage = serde_json::from_str(body).unwrap();
-    Option::from(error_message)
 }
 
 impl Client {
@@ -260,13 +249,14 @@ impl Client {
 
         let json = resp.into_json::<Value>().unwrap();
         let data = serde_json::from_value(json!(json.get("data"))).map_err(|e| e.to_string())?;
-        let message = serde_json::from_value(json!(json.get("message"))).map_err(|e| e.to_string())?;
+        let errors = serde_json::from_value(json!(json)).map_err(|e| e.to_string())?;
         let pagination = serde_json::from_value(json!(json.get("pagination"))).map_err(|e| e.to_string())?;
         let body = serde_json::from_value(json).map_err(|e| e.to_string())?;
 
         Ok(DNSimpleResponse {
             rate_limit, rate_limit_remaining, rate_limit_reset, status,
-            data, message, pagination, body,
+            data,
+            errors, pagination, body,
         })
     }
 
