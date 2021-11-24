@@ -14,6 +14,7 @@ pub mod domains;
 pub mod domains_collaborators;
 pub mod domains_dnssec;
 pub mod domains_signer_records;
+pub mod domains_email_forwards;
 
 const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
