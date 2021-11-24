@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+use dnsimple_rust::dnsimple::{Filters, Sort};
 use crate::common::setup_mock_for;
 mod common;
 
@@ -7,7 +9,10 @@ fn list_domains_test() {
     let client = setup.0;
     let account_id = 1385;
 
-    let domains_data = client.domains().list_domains(account_id).unwrap();
+    let filters = Filters::new(HashMap::new());
+    let sort = Sort::new(String::from(""));
+
+    let domains_data = client.domains().list_domains(account_id, filters, sort).unwrap();
     let domains = domains_data.data.unwrap();
 
     assert_eq!(2, domains.len());
@@ -92,7 +97,9 @@ fn test_list_collaborators() {
     let account_id = 1385 as u64;
     let domain_id = 1 as u64;
 
-    let response = client.domains().list_collaborators(account_id, domain_id);
+    let filters = Filters::new(HashMap::new());
+    let sort = Sort::new(String::from(""));
+    let response = client.domains().list_collaborators(account_id, domain_id, filters, sort);
     let collaborators = response.unwrap().data.unwrap();
 
     assert_eq!(2, collaborators.len());

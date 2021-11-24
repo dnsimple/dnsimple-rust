@@ -1,6 +1,7 @@
+use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 
-use crate::dnsimple::{Client, DNSimpleResponse, Endpoint};
+use crate::dnsimple::{Client, DNSimpleResponse, Endpoint, Filters, Sort};
 
 /// Represents a User
 ///
@@ -72,7 +73,10 @@ impl Identity<'_> {
     ///
     /// ```
     pub fn whoami(&self) -> Result<DNSimpleResponse<WhoamiData>, String> {
-        self.client.get::<IdentityEndpoint>("/whoami")
+        let filters = Filters::new(HashMap::new());
+        let sort = Sort::new(String::from("expiration:asc"));
+
+        self.client.get::<IdentityEndpoint>("/whoami", filters, sort)
     }
 }
 

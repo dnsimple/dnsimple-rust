@@ -1,4 +1,5 @@
-use crate::dnsimple::{Client, DNSimpleResponse, Endpoint};
+use std::collections::HashMap;
+use crate::dnsimple::{Client, DNSimpleResponse, Endpoint, Filters, Sort};
 use crate::dnsimple::identity::Account;
 
 struct AccountsEndpoint;
@@ -28,6 +29,9 @@ impl Accounts<'_> {
     /// let first_account = accounts.first().unwrap();
     ///
     pub fn list_accounts(&self) -> Result<DNSimpleResponse<Vec<Account>>, String> {
-        self.client.get::<AccountsEndpoint>("/accounts")
+        let filters = Filters::new(HashMap::new());
+        let sort = Sort::new(String::from(""));
+
+        self.client.get::<AccountsEndpoint>("/accounts", filters, sort)
     }
 }

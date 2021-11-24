@@ -1,4 +1,5 @@
-use crate::dnsimple::{Client, DNSimpleEmptyResponse, DNSimpleResponse, Endpoint};
+use std::collections::HashMap;
+use crate::dnsimple::{Client, DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, Filters, Sort};
 use serde::{Deserialize, Serialize};
 
 /// Represents a domain
@@ -96,18 +97,21 @@ impl Domains<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::{Client, new_client};
+    /// use std::collections::HashMap;
+    /// use dnsimple_rust::dnsimple::{Client, new_client, Filters, Sort};
+    /// let filters = Filters::new(HashMap::new());
+    /// let sort = Sort::new(String::from(""));
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let domains_response = client.domains().list_domains(1234);
+    /// let domains_response = client.domains().list_domains(1234, filters, sort);
     /// ```
     ///
     /// # Arguments
     /// `account_id`: The account ID
     // pub fn list_domains(&self, account_id: u64) -> DNSimpleResponse<DomainsData> {
-    pub fn list_domains(&self, account_id: u64) -> Result<DNSimpleResponse<Vec<Domain>>, String> {
+    pub fn list_domains(&self, account_id: u64, filters: Filters, sort: Sort) -> Result<DNSimpleResponse<Vec<Domain>>, String> {
         let path = format!("/{}/domains", account_id);
-        self.client.get::<ListDomainsEndpoint>(&*path)
+        self.client.get::<ListDomainsEndpoint>(&*path, filters, sort)
     }
 
     /// Adds a domain to the account.
@@ -156,8 +160,11 @@ impl Domains<'_> {
     // pub fn get_domain(&self, account_id: u64, domain_id: u64) -> DNSimpleResponse<DomainData> {
     pub fn get_domain(&self, account_id: u64, domain_id: u64) -> Result<DNSimpleResponse<Domain>, String> {
         let path = format!("/{}/domains/{}", account_id, domain_id);
+        let filters = Filters::new(HashMap::new());
+        let sort = Sort::new(String::from(""));
 
-        self.client.get::<DomainEndpoint>(&*path)
+
+        self.client.get::<DomainEndpoint>(&*path, filters, sort)
     }
 
     /// Permanently deletes a domain from the account. It cannot be undone.
@@ -185,18 +192,22 @@ impl Domains<'_> {
     ///
     /// # Examples
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::new_client;
+    /// use dnsimple_rust::dnsimple::{Filters, new_client, Sort};
+    /// use std::collections::HashMap;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let collaborators = client.domains().list_collaborators(1234, 1);
+    /// let filters = Filters::new(HashMap::new());
+    /// let sort = Sort::new(String::from(""));
+    /// let collaborators = client.domains().list_collaborators(1234, 1, filters, sort);
     /// ```
     ///
     /// # Arguments
     /// `account_id`: The account ID
     /// `domain_id`: The ID of the domain we want to list the collaborators of
-    pub fn list_collaborators(&self, account_id: u64, domain_id: u64) -> Result<DNSimpleResponse<Vec<Collaborator>>, String> {
+    pub fn list_collaborators(&self, account_id: u64, domain_id: u64, filters: Filters, sort: Sort) -> Result<DNSimpleResponse<Vec<Collaborator>>, String> {
         let path = format!("/{}/domains/{}/collaborators", account_id, domain_id);
-        self.client.get::<ListCollaboratorsEndpoint>(&*path)
+
+        self.client.get::<ListCollaboratorsEndpoint>(&*path, filters, sort)
     }
 
     // At the time of the add, a collaborator may or may not have a DNSimple account.

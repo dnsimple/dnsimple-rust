@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use serde;
 use serde::{Deserialize, Serialize};
 use serde::de::DeserializeOwned;
@@ -88,6 +89,28 @@ pub struct DNSimpleEmptyResponse {
     pub rate_limit_remaining: String,
     pub rate_limit_reset: String,
     pub status: u16,
+}
+
+#[derive(Debug)]
+pub struct Filters {
+    pub filters: HashMap<String, String>
+}
+
+impl Filters {
+    pub fn new(filters: HashMap<String, String>) -> Filters {
+        Filters{ filters }
+    }
+}
+
+#[derive(Debug)]
+pub struct Sort {
+    sort_by: String
+}
+
+impl Sort {
+    pub fn new(sort_by: String) -> Sort {
+        Sort{ sort_by }
+    }
 }
 
 /// Wrapper around a DNSimpleResponse and the raw http response of the DNSimple API
@@ -203,8 +226,8 @@ impl Client {
     //         raw_http_response: response.unwrap()
     //     }
     // }
-    pub fn get<E: Endpoint>(&self, path: &str) -> Result<DNSimpleResponse<E::Output>, String> {
-        let request = self.build_get_request(&path);
+    pub fn get<E: Endpoint>(&self, path: &str, filters: Filters, sort: Sort) -> Result<DNSimpleResponse<E::Output>, String> {
+        let request = self.build_get_request(&path, filters, sort);
 
         let response = request.call();
         Self::build_dnsimple_response::<E>(response.unwrap())
@@ -262,11 +285,15 @@ impl Client {
         }
     }
 
-    fn build_get_request(&self, path: &&str) -> Request {
-        let request = self._agent.get(&self.url(path))
+    // TODO: remove the '_' from filters and sort once you've figured out how to do 295
+    fn build_get_request(&self, path: &&str, _filters: Filters, _sort: Sort) -> Request {
+
+        let request = self._agent.get(&*self.url(path))
             .set("User-Agent", &self.user_agent)
             .set("Accept", "application/json");
-        self.add_headers_to_request(request)
+
+        // TODO: figure out how to add the query (with filters and sort to the request)
+        self.add_headers_to_request(request.to_owned())
     }
 
     pub fn build_post_request(&self, path: &&str) -> Request {
@@ -281,6 +308,17 @@ impl Client {
             .set("Accept", "application/json");
         self.add_headers_to_request(request)
     }
+
+    // TODO: see build_get_request ...
+    // fn add_query_to_request(&self, request: &Request, filters: Filters, sort: Sort) -> Request {
+    //     for (key, value) in filters.filters.into_iter() {
+    //         request.query(&*key, &*value);
+    //     }
+    //     if !sort.sort_by.is_empty() {
+    //         request.query("sort", &*sort.sort_by);
+    //     }
+    //     request
+    // }
 
     fn add_headers_to_request(&self, request: Request) -> Request {
         let auth_token = &format!("Bearer {}", self.auth_token);
