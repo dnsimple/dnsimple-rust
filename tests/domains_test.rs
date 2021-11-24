@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use dnsimple_rust::dnsimple::{Filters, Sort};
+use dnsimple_rust::dnsimple::{Filters, Paginate, Sort};
 use crate::common::setup_mock_for;
 mod common;
 
@@ -11,8 +11,9 @@ fn list_domains_test() {
 
     let filters = Filters::new(HashMap::new());
     let sort = Sort::new(String::from(""));
+    let paginate = Paginate{ per_page: 0, page: 0 };
 
-    let domains_data = client.domains().list_domains(account_id, filters, sort).unwrap();
+    let domains_data = client.domains().list_domains(account_id, filters, sort, paginate).unwrap();
     let domains = domains_data.data.unwrap();
 
     assert_eq!(2, domains.len());
@@ -99,7 +100,9 @@ fn test_list_collaborators() {
 
     let filters = Filters::new(HashMap::new());
     let sort = Sort::new(String::from(""));
-    let response = client.domains().list_collaborators(account_id, domain_id, filters, sort);
+    let paginate = Paginate{ per_page: 0, page: 0 };
+
+    let response = client.domains().list_collaborators(account_id, domain_id, filters, sort, paginate);
     let collaborators = response.unwrap().data.unwrap();
 
     assert_eq!(2, collaborators.len());

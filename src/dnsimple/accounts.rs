@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use crate::dnsimple::{Client, DNSimpleResponse, Endpoint, Filters, Sort};
+use crate::dnsimple::{Client, DNSimpleResponse, Endpoint, Filters, Paginate, Sort};
 use crate::dnsimple::identity::Account;
 
 struct AccountsEndpoint;
@@ -32,6 +32,6 @@ impl Accounts<'_> {
         let filters = Filters::new(HashMap::new());
         let sort = Sort::new(String::from(""));
 
-        self.client.get::<AccountsEndpoint>("/accounts", filters, sort)
+        self.client.get::<AccountsEndpoint>("/accounts", filters, sort, Paginate{ per_page: 0, page: 0 })
     }
 }
