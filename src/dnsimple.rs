@@ -290,6 +290,24 @@ impl Client {
         }
     }
 
+    /// Sends a DELETE request to the DNSimple API
+    ///
+    /// # Arguments
+    ///
+    /// `path`: the path to the endpoint
+    pub fn delete_with_response<E: Endpoint>(&self, path: &str) -> Result<DNSimpleResponse<E::Output>, String> {
+        let request = self.build_delete_request(&path);
+        match request.call() {
+            Ok(response) => {
+                Self::build_dnsimple_response::<E>(response)
+            },
+            Err(Error::Status(_code, response)) => {
+                Self::build_dnsimple_response::<E>(response)
+            },
+            Err(_) => { panic!("Something went really wrong!")}
+        }
+    }
+
     pub fn empty_post(&self, path: &str) -> DNSimpleEmptyResponse {
         let request = self.build_post_request(&path);
         match request.call() {
