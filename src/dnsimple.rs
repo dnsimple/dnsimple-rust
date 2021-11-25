@@ -8,6 +8,7 @@ use crate::dnsimple::accounts::Accounts;
 use crate::dnsimple::domains::Domains;
 use crate::dnsimple::identity::Identity;
 use crate::dnsimple::certificates::Certificates;
+use crate::dnsimple::tlds::Tlds;
 
 pub mod identity;
 pub mod accounts;
@@ -18,6 +19,7 @@ pub mod domains_signer_records;
 pub mod domains_email_forwards;
 pub mod domains_push;
 pub mod certificates;
+pub mod tlds;
 
 const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
@@ -185,6 +187,13 @@ impl Client {
     /// Returns the `identity` service attached to this client
     pub fn identity(&self) -> Identity {
         Identity {
+            client: self
+        }
+    }
+
+    /// Returns the `tlds` service attached to this endpoint
+    pub fn tlds(&self) -> Tlds {
+        Tlds {
             client: self
         }
     }
