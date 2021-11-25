@@ -7,6 +7,7 @@ use ureq::{Error, OrAnyStatus, Request, Response};
 use crate::dnsimple::accounts::Accounts;
 use crate::dnsimple::domains::Domains;
 use crate::dnsimple::identity::Identity;
+use crate::dnsimple::certificates::Certificates;
 
 pub mod identity;
 pub mod accounts;
@@ -16,6 +17,7 @@ pub mod domains_dnssec;
 pub mod domains_signer_records;
 pub mod domains_email_forwards;
 pub mod domains_push;
+pub mod certificates;
 
 const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
@@ -166,9 +168,9 @@ impl Client {
         }
     }
 
-    /// Returns the `identity` service attached to this client
-    pub fn identity(&self) -> Identity {
-        Identity {
+    /// Returns the `certificates` service attached to this client
+    pub fn certificates(&self) -> Certificates {
+        Certificates {
             client: self
         }
     }
@@ -176,6 +178,13 @@ impl Client {
     /// Returns the `domains` service attached to this client
     pub fn domains(&self) -> Domains {
         Domains {
+            client: self
+        }
+    }
+
+    /// Returns the `identity` service attached to this client
+    pub fn identity(&self) -> Identity {
+        Identity {
             client: self
         }
     }
