@@ -3,12 +3,13 @@ use serde;
 use serde::{Deserialize, Serialize};
 use serde::de::DeserializeOwned;
 use serde_json::{json, Value};
-use ureq::{Error, OrAnyStatus, Request, Response};
+use ureq::{Error, Request, Response};
 use crate::dnsimple::accounts::Accounts;
 use crate::dnsimple::domains::Domains;
 use crate::dnsimple::identity::Identity;
 use crate::dnsimple::certificates::Certificates;
 use crate::dnsimple::tlds::Tlds;
+use crate::dnsimple::registrar::Registrar;
 
 pub mod identity;
 pub mod accounts;
@@ -20,6 +21,7 @@ pub mod domains_email_forwards;
 pub mod domains_push;
 pub mod certificates;
 pub mod tlds;
+pub mod registrar;
 
 const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
@@ -191,6 +193,13 @@ impl Client {
         }
     }
 
+    /// Returns the `registrar` service attached to this client
+    pub fn registrar(&self) -> Registrar {
+        Registrar {
+            client: self
+        }
+    }
+
     /// Returns the `tlds` service attached to this endpoint
     pub fn tlds(&self) -> Tlds {
         Tlds {
@@ -232,8 +241,15 @@ impl Client {
     pub fn get<E: Endpoint>(&self, path: &str, filters: Filters, sort: Sort, paginate: Paginate) -> Result<DNSimpleResponse<E::Output>, String> {
         let request = self.build_get_request(&path, filters, sort, paginate);
 
-        let response = request.call();
-        Self::build_dnsimple_response::<E>(response.unwrap())
+        match request.call() {
+            Ok(response) => {
+                Self::build_dnsimple_response::<E>(response)
+            },
+            Err(Error::Status(_code, response)) => {
+                Self::build_dnsimple_response::<E>(response)
+            },
+            Err(_) => { panic!("Something went really wrong!")}
+        }
     }
 
     /// Sends a POST request to the DNSimple API
@@ -245,8 +261,15 @@ impl Client {
     pub fn post<E: Endpoint>(&self, path: &str, data: Value) -> Result<DNSimpleResponse<E::Output>, String> {
         let request = self.build_post_request(&path);
 
-        let response = request.send_json(data).or_any_status();
-        Self::build_dnsimple_response::<E>(response.unwrap())
+        match request.send_json(data) {
+           Ok(response) => {
+               Self::build_dnsimple_response::<E>(response)
+           },
+           Err(Error::Status(_code, response)) => {
+               Self::build_dnsimple_response::<E>(response)
+           },
+            Err(_) => { panic!("Something went really wong!")}
+        }
     }
 
     /// Sends a DELETE request to the DNSimple API
@@ -256,16 +279,28 @@ impl Client {
     /// `path`: the path to the endpoint
     pub fn delete(&self, path: &str) -> DNSimpleEmptyResponse {
         let request = self.build_delete_request(&path);
-        let response = request.call();
-
-        Self::build_empty_dnsimple_response(response.as_ref())
+        match request.call() {
+            Ok(response) => {
+                Self::build_empty_dnsimple_response(response)
+            },
+            Err(Error::Status(_code, response)) => {
+                Self::build_empty_dnsimple_response(response)
+            },
+            Err(_) => { panic!("Something went really wrong!")}
+        }
     }
 
     pub fn empty_post(&self, path: &str) -> DNSimpleEmptyResponse {
         let request = self.build_post_request(&path);
-        let response = request.call();
-
-        Self::build_empty_dnsimple_response(response.as_ref())
+        match request.call() {
+            Ok(response) => {
+                Self::build_empty_dnsimple_response(response)
+            },
+            Err(Error::Status(_code, response)) => {
+                Self::build_empty_dnsimple_response(response)
+            },
+            Err(_) => { panic!("Something went really wrong!")}
+        }
     }
 
     fn build_dnsimple_response<E: Endpoint>(resp: Response) -> Result<DNSimpleResponse<E::Output>, String> {
@@ -287,12 +322,12 @@ impl Client {
         })
     }
 
-    fn build_empty_dnsimple_response(response: Result<&Response, &Error>) -> DNSimpleEmptyResponse {
+    fn build_empty_dnsimple_response(response: Response) -> DNSimpleEmptyResponse {
         DNSimpleEmptyResponse {
-            rate_limit: String::from(response.unwrap().header("X-RateLimit-Limit").unwrap()),
-            rate_limit_remaining: String::from(response.unwrap().header("X-RateLimit-Remaining").unwrap()),
-            rate_limit_reset: String::from(response.unwrap().header("X-RateLimit-Reset").unwrap()),
-            status: response.unwrap().status(),
+            rate_limit: String::from(response.header("X-RateLimit-Limit").unwrap()),
+            rate_limit_remaining: String::from(response.header("X-RateLimit-Remaining").unwrap()),
+            rate_limit_reset: String::from(response.header("X-RateLimit-Reset").unwrap()),
+            status: response.status(),
         }
     }
 
