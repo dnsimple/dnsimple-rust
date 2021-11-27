@@ -1,5 +1,5 @@
 use crate::dnsimple::domains::Domains;
-use crate::dnsimple::{DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, Filters, Paginate, Sort};
+use crate::dnsimple::{DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, Paginate, RequestOptions, Sort};
 use serde::{Deserialize, Serialize};
 
 struct EmailForwardsListEndpoint;
@@ -50,10 +50,10 @@ impl Domains<'_> {
     ///
     /// `account_id`: The account ID
     /// `domain`: The ID or name of the domain we want list the email forwards
-    pub fn list_email_forwards(&self, account_id: u64, domain: String, filters: Filters, sort: Sort, paginate: Paginate) -> Result<DNSimpleResponse<Vec<EmailForwardsInList>>, String> {
+    pub fn list_email_forwards(&self, account_id: u64, domain: String, sort: Sort, paginate: Paginate) -> Result<DNSimpleResponse<Vec<EmailForwardsInList>>, String> {
         let path = format!("/{}/domains/{}/email_forwards", account_id, domain);
 
-        self.client.get::<EmailForwardsListEndpoint>(&*path, filters, sort, paginate)
+        self.client.get::<EmailForwardsListEndpoint>(&*path, Option::from(RequestOptions{ filters: None, sort: Some(sort), paginate: Some(paginate)}))
     }
 
     /// Create an email forward
@@ -79,7 +79,7 @@ impl Domains<'_> {
     pub fn get_email_forward(&self, account_id: u64, domain: String, email_forward: u64) -> Result<DNSimpleResponse<EmailForward>, String> {
         let path = format!("/{}/domains/{}/email_forwards/{}", account_id, domain, email_forward);
 
-        self.client.get::<EmailForwardEndpoint>(&*path, Filters { filters: Default::default() }, Sort { sort_by: "".to_string() }, Paginate { per_page: 0, page: 0 })
+        self.client.get::<EmailForwardEndpoint>(&*path, None)
     }
 
     /// Delete the email forward from the domain.

@@ -1,6 +1,5 @@
-use crate::dnsimple::{Client, DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, Filters, Paginate, Sort};
+use crate::dnsimple::{Client, DNSimpleEmptyResponse, DNSimpleResponse, Endpoint};
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
 use crate::dnsimple::tlds::TldExtendedAttribute;
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -144,7 +143,7 @@ impl Registrar<'_> {
     pub fn check_domain(&self, account_id: u64, domain: String) -> Result<DNSimpleResponse<DomainCheck>, String> {
         let path = format!("/{}/registrar/domains/{}/check", account_id, domain);
 
-        self.client.get::<DomainCheckEndpoint>(&*path, Filters{ filters: Default::default() }, Sort{ sort_by: "".to_string() }, Paginate{ per_page: 0, page: 0 })
+        self.client.get::<DomainCheckEndpoint>(&*path, None)
     }
 
     /// Get the premium price for a domain.
@@ -157,7 +156,7 @@ impl Registrar<'_> {
     pub fn check_domain_premium_price(&self, account_id: u64, domain: String, action: Option<String>) -> Result<DNSimpleResponse<DomainPremiumPrice>, String> {
         let path = format!("/{}/registrar/domains/{}/premium_price?action={}", account_id, domain, action.unwrap_or(String::from("registration")));
 
-        self.client.get::<DomainPremiumPriceEndpoint>(&*path, Filters{ filters: Default::default() }, Sort{ sort_by: "".to_string() }, Paginate{ per_page: 0, page: 0 })
+        self.client.get::<DomainPremiumPriceEndpoint>(&*path, None)
     }
 
     /// Get a domain’s price for registration, renewal, and transfer.
@@ -169,7 +168,7 @@ impl Registrar<'_> {
     pub fn get_domain_prices(&self, account_id: u64, domain: String) -> Result<DNSimpleResponse<DomainPrices>, String> {
         let path = format!("/{}/registrar/domains/{}/prices", account_id, domain);
 
-        self.client.get::<DomainPricesEndpoint>(&*path,Filters{ filters: Default::default() }, Sort{ sort_by: "".to_string() }, Paginate{ per_page: 0, page: 0 })
+        self.client.get::<DomainPricesEndpoint>(&*path, None)
     }
 
     /// Get a domain’s price for registration, renewal, and transfer.
@@ -208,7 +207,7 @@ impl Registrar<'_> {
     pub fn get_domain_transfer(&self, account_id: u64, domain: String, domain_transfer: u64) -> Result<DNSimpleResponse<DomainTransfer>, String> {
         let path = format!("/{}/registrar/domains/{}/transfers/{}", account_id, domain, domain_transfer);
 
-        self.client.get::<DomainTransferEndpoint>(&*path, Filters{ filters: Default::default() }, Sort{ sort_by: "".to_string() }, Paginate{ per_page: 0, page: 0 })
+        self.client.get::<DomainTransferEndpoint>(&*path, None)
     }
 
     /// Cancels an in progress domain transfer.

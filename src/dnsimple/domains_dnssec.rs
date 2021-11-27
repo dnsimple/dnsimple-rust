@@ -1,6 +1,5 @@
-use std::collections::HashMap;
 use crate::dnsimple::domains::Domains;
-use crate::dnsimple::{DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, Filters, Paginate, Sort};
+use crate::dnsimple::{DNSimpleEmptyResponse, DNSimpleResponse, Endpoint};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
@@ -51,10 +50,7 @@ impl Domains<'_> {
     /// `domain`: The ID or name of the domain we want retrieve the DNSSEC status from
     pub fn get_dnssec(&self, account_id: u64, domain: &str) -> Result<DNSimpleResponse<DnssecStatus>, String> {
         let path = format!("/{}/domains/{}/dnssec", account_id, domain);
-        let filters = Filters::new(HashMap::new());
-        let sort = Sort::new(String::from(""));
-        let paginate = Paginate{ per_page: 0, page: 0 };
 
-        self.client.get::<DnssecStatusEndpoint>(&*path, filters, sort, paginate)
+        self.client.get::<DnssecStatusEndpoint>(&*path, None)
     }
 }

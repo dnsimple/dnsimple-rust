@@ -93,6 +93,12 @@ pub struct Pagination {
     total_pages: u64,
 }
 
+pub struct RequestOptions {
+    pub filters: Option<Filters>,
+    pub sort: Option<Sort>,
+    pub paginate: Option<Paginate>,
+}
+
 /// Represents an empty response from the DNSimple API
 /// (_these type of responses happen when issuing DELETE commands for example_)
 pub struct DNSimpleEmptyResponse {
@@ -238,18 +244,8 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub fn get<E: Endpoint>(&self, path: &str, filters: Filters, sort: Sort, paginate: Paginate) -> Result<DNSimpleResponse<E::Output>, String> {
-        let request = self.build_get_request(&path, filters, sort, paginate);
-
-        match request.call() {
-            Ok(response) => {
-                Self::build_dnsimple_response::<E>(response)
-            },
-            Err(Error::Status(_code, response)) => {
-                Self::build_dnsimple_response::<E>(response)
-            },
-            Err(_) => { panic!("Something went really wrong!")}
-        }
+    pub fn get<E: Endpoint>(&self, path: &str, options: Option<RequestOptions>) -> Result<DNSimpleResponse<E::Output>, String> {
+        self.call::<E>(self.build_get_request(&path, options))
     }
 
     /// Sends a POST request to the DNSimple API
@@ -260,15 +256,14 @@ impl Client {
     /// `data`: the json payload to be sent to the server
     pub fn post<E: Endpoint>(&self, path: &str, data: Value) -> Result<DNSimpleResponse<E::Output>, String> {
         let request = self.build_post_request(&path);
-
         match request.send_json(data) {
-           Ok(response) => {
-               Self::build_dnsimple_response::<E>(response)
-           },
-           Err(Error::Status(_code, response)) => {
-               Self::build_dnsimple_response::<E>(response)
-           },
-            Err(_) => { panic!("Something went really wong!")}
+            Ok(response) => {
+                Self::build_dnsimple_response::<E>(response)
+            },
+            Err(Error::Status(_code, response)) => {
+                Self::build_dnsimple_response::<E>(response)
+            },
+            Err(_) => { panic!("Something went really wrong!")}
         }
     }
 
@@ -278,16 +273,7 @@ impl Client {
     ///
     /// `path`: the path to the endpoint
     pub fn delete(&self, path: &str) -> DNSimpleEmptyResponse {
-        let request = self.build_delete_request(&path);
-        match request.call() {
-            Ok(response) => {
-                Self::build_empty_dnsimple_response(response)
-            },
-            Err(Error::Status(_code, response)) => {
-                Self::build_empty_dnsimple_response(response)
-            },
-            Err(_) => { panic!("Something went really wrong!")}
-        }
+        self.call_empty(self.build_delete_request(&path))
     }
 
     /// Sends a DELETE request to the DNSimple API
@@ -296,7 +282,14 @@ impl Client {
     ///
     /// `path`: the path to the endpoint
     pub fn delete_with_response<E: Endpoint>(&self, path: &str) -> Result<DNSimpleResponse<E::Output>, String> {
-        let request = self.build_delete_request(&path);
+        self.call::<E>(self.build_delete_request(&path))
+    }
+
+    pub fn empty_post(&self, path: &str) -> DNSimpleEmptyResponse {
+        self.call_empty(self.build_post_request(&path))
+    }
+
+    fn call<E: Endpoint>(&self, request: Request) -> Result<DNSimpleResponse<E::Output>, String> {
         match request.call() {
             Ok(response) => {
                 Self::build_dnsimple_response::<E>(response)
@@ -308,8 +301,7 @@ impl Client {
         }
     }
 
-    pub fn empty_post(&self, path: &str) -> DNSimpleEmptyResponse {
-        let request = self.build_post_request(&path);
+    fn call_empty(&self, request: Request) -> DNSimpleEmptyResponse {
         match request.call() {
             Ok(response) => {
                 Self::build_empty_dnsimple_response(response)
@@ -350,7 +342,7 @@ impl Client {
     }
 
     // TODO: remove the '_' from filters, sort and paginate once you've figured out how to do 295
-    fn build_get_request(&self, path: &&str, _filters: Filters, _sort: Sort, _paginate: Paginate) -> Request {
+    fn build_get_request(&self, path: &&str, _options: Option<RequestOptions>) -> Request {
 
         let request = self._agent.get(&*self.url(path))
             .set("User-Agent", &self.user_agent)

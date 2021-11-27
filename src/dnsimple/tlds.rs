@@ -1,4 +1,4 @@
-use crate::dnsimple::{Client, DNSimpleResponse, Endpoint, Filters, Paginate, Sort};
+use crate::dnsimple::{Client, DNSimpleResponse, Endpoint, Paginate, RequestOptions, Sort};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -58,8 +58,10 @@ impl Tlds<'_> {
     pub fn list_tlds(&self, sort: Sort, paginate: Paginate) -> Result<DNSimpleResponse<Vec<Tld>>, String> {
         let path = "/tlds";
 
-        self.client.get::<ListTldsEndpoint>(&*path, Filters{ filters: Default::default() }, sort, paginate)
-    }
+        self.client.get::<ListTldsEndpoint>(&*path,
+                                            Option::from(
+                                                RequestOptions{filters: None,
+                                                    sort: Some(sort), paginate: Some(paginate)})) }
 
     /// Retrieves the details of a supported TLD.
     ///
@@ -69,7 +71,7 @@ impl Tlds<'_> {
     pub fn get_tld(&self, tld: String) -> Result<DNSimpleResponse<Tld>, String> {
         let path = format!("/tlds/{}", tld);
 
-        self.client.get::<TldEndpoint>(&*path, Filters{ filters: Default::default() }, Sort{ sort_by: "".to_string() }, Paginate{ per_page: 1, page: 0 })
+        self.client.get::<TldEndpoint>(&*path, None)
     }
 
     /// Lists the TLD Extended Attributes
@@ -80,6 +82,6 @@ impl Tlds<'_> {
     pub fn get_tld_extended_attributes(&self, tld: String) -> Result<DNSimpleResponse<Vec<TldExtendedAttribute>>, String> {
         let path = format!("/tlds/{}/extended_attributes", tld);
 
-        self.client.get::<ListTldsExtendedAttributesEndpoint>(&*path, Filters{ filters: Default::default() }, Sort{ sort_by: "".to_string() }, Paginate{ per_page: 0, page: 0 })
+        self.client.get::<ListTldsExtendedAttributesEndpoint>(&*path, None)
     }
 }

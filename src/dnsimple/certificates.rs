@@ -1,4 +1,4 @@
-use crate::dnsimple::{Client, DNSimpleResponse, Endpoint, Filters, Paginate, Sort};
+use crate::dnsimple::{Client, DNSimpleResponse, Endpoint, Paginate, RequestOptions, Sort};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
@@ -118,7 +118,7 @@ impl Certificates<'_> {
     pub fn list_certificates(&self, account_id: u64, domain: String, sort: Sort, paginate: Paginate) -> Result<DNSimpleResponse<Vec<Certificate>>, String> {
         let path = format!("/{}/domains/{}/certificates", account_id, domain);
 
-        self.client.get::<ListCertificatesEndpoint>(&*path, Filters{ filters: Default::default() }, sort, paginate)
+        self.client.get::<ListCertificatesEndpoint>(&*path, Option::from(RequestOptions{filters: None, sort: Some(sort), paginate: Some(paginate)}) )
     }
 
     /// Get the details of a certificate
@@ -130,7 +130,7 @@ impl Certificates<'_> {
     pub fn get_certificate(&self, account_id: u64, domain: String, certificate_id: u64) -> Result<DNSimpleResponse<Certificate>, String> {
         let path = format!("/{}/domains/{}/certificates/{}", account_id, domain, certificate_id);
 
-        self.client.get::<CertificateEndpoint>(&*path, Filters{ filters: Default::default() }, Sort{ sort_by: "".to_string() }, Paginate{ per_page: 0, page: 0 })
+        self.client.get::<CertificateEndpoint>(&*path, None)
     }
 
     /// Download a certificate
@@ -142,7 +142,7 @@ impl Certificates<'_> {
     pub fn download_certificate(&self, account_id: u64, domain: String, certificate_id: u64) -> Result<DNSimpleResponse<CertificateDownload>, String> {
         let path = format!("/{}/domains/{}/certificates/{}/download", account_id, domain, certificate_id);
 
-        self.client.get::<CertificateDownloadEndpoint>(&*path, Filters{ filters: Default::default() }, Sort{ sort_by: "".to_string() }, Paginate{ per_page: 0, page: 0 })
+        self.client.get::<CertificateDownloadEndpoint>(&*path, None)
     }
 
     /// Get the PEM-encoded certificate private key
@@ -154,7 +154,7 @@ impl Certificates<'_> {
     pub fn get_certificate_private_key(&self, account_id: u64, domain: String, certificate_id: u64) -> Result<DNSimpleResponse<CertificatePrivateKey>, String> {
         let path = format!("/{}/domains/{}/certificates/{}/private_key", account_id, domain, certificate_id);
 
-        self.client.get::<CertificatePrivateKeyEndpoint>(&*path, Filters{ filters: Default::default() }, Sort{ sort_by: "".to_string() }, Paginate{ per_page: 0, page: 0 })
+        self.client.get::<CertificatePrivateKeyEndpoint>(&*path, None)
     }
 
     /// Purchase a Let’s Encrypt certificate with DNSimple.

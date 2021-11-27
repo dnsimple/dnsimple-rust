@@ -1,5 +1,5 @@
 use crate::dnsimple::domains::Domains;
-use crate::dnsimple::{DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, Filters, Paginate, Sort};
+use crate::dnsimple::{DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, Paginate, RequestOptions};
 use serde::{Deserialize, Serialize};
 
 struct DomainPushesListEndpoint;
@@ -29,7 +29,7 @@ impl Domains<'_> {
     pub fn list_pushes(&self, account_id: u64, paginate: Paginate) -> Result<DNSimpleResponse<Vec<DomainPush>>, String> {
         let path = format!("/{}/domains/pushes", account_id);
 
-        self.client.get::<DomainPushesListEndpoint>(&*path, Filters { filters: Default::default() }, Sort { sort_by: "".to_string() }, paginate)
+        self.client.get::<DomainPushesListEndpoint>(&*path, Option::from(RequestOptions{ filters: None, sort: None, paginate: Some(paginate)}))
     }
 
     /// Accept a push

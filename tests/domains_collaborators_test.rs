@@ -1,5 +1,4 @@
-use std::collections::HashMap;
-use dnsimple_rust::dnsimple::{Filters, Paginate, Sort};
+use dnsimple_rust::dnsimple::Paginate;
 use crate::common::setup_mock_for;
 mod common;
 
@@ -10,11 +9,9 @@ fn test_list_collaborators() {
     let account_id = 1385 as u64;
     let domain_id = 1 as u64;
 
-    let filters = Filters::new(HashMap::new());
-    let sort = Sort::new(String::from(""));
     let paginate = Paginate{ per_page: 0, page: 0 };
 
-    let response = client.domains().list_collaborators(account_id, domain_id, filters, sort, paginate);
+    let response = client.domains().list_collaborators(account_id, domain_id, paginate);
     let collaborators = response.unwrap().data.unwrap();
 
     assert_eq!(2, collaborators.len());

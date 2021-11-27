@@ -1,5 +1,4 @@
-use std::collections::HashMap;
-use crate::dnsimple::{Client, DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, Filters, Paginate, Sort};
+use crate::dnsimple::{Client, DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, Filters, Paginate, RequestOptions, Sort};
 use serde::{Deserialize, Serialize};
 
 /// Represents a domain
@@ -82,7 +81,7 @@ impl Domains<'_> {
     // pub fn list_domains(&self, account_id: u64) -> DNSimpleResponse<DomainsData> {
     pub fn list_domains(&self, account_id: u64, filters: Filters, sort: Sort, paginate: Paginate) -> Result<DNSimpleResponse<Vec<Domain>>, String> {
         let path = format!("/{}/domains", account_id);
-        self.client.get::<ListDomainsEndpoint>(&*path, filters, sort, paginate)
+        self.client.get::<ListDomainsEndpoint>(&*path, Option::from(RequestOptions { filters: Some(filters), sort: Some(sort), paginate: Some(paginate) }))
     }
 
     /// Adds a domain to the account.
@@ -131,12 +130,7 @@ impl Domains<'_> {
     // pub fn get_domain(&self, account_id: u64, domain_id: u64) -> DNSimpleResponse<DomainData> {
     pub fn get_domain(&self, account_id: u64, domain_id: u64) -> Result<DNSimpleResponse<Domain>, String> {
         let path = format!("/{}/domains/{}", account_id, domain_id);
-        let filters = Filters::new(HashMap::new());
-        let sort = Sort::new(String::from(""));
-        let paginate = Paginate{ per_page: 0, page: 0 };
-
-
-        self.client.get::<DomainEndpoint>(&*path, filters, sort, paginate)
+        self.client.get::<DomainEndpoint>(&*path, None)
     }
 
     /// Permanently deletes a domain from the account. It cannot be undone.

@@ -1,5 +1,5 @@
 use crate::dnsimple::domains::Domains;
-use crate::dnsimple::{DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, Filters, Paginate, Sort};
+use crate::dnsimple::{DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, Paginate, RequestOptions};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -42,19 +42,17 @@ impl Domains<'_> {
     /// use std::collections::HashMap;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let filters = Filters::new(HashMap::new());
-    /// let sort = Sort::new(String::from(""));
     /// let paginate = Paginate{per_page: 0,page: 0};
-    /// let collaborators = client.domains().list_collaborators(1234, 1, filters, sort, paginate);
+    /// let collaborators = client.domains().list_collaborators(1234, 1, paginate);
     /// ```
     ///
     /// # Arguments
     /// `account_id`: The account ID
     /// `domain_id`: The ID of the domain we want to list the collaborators of
-    pub fn list_collaborators(&self, account_id: u64, domain_id: u64, filters: Filters, sort: Sort, paginate: Paginate) -> Result<DNSimpleResponse<Vec<Collaborator>>, String> {
+    pub fn list_collaborators(&self, account_id: u64, domain_id: u64, paginate: Paginate) -> Result<DNSimpleResponse<Vec<Collaborator>>, String> {
         let path = format!("/{}/domains/{}/collaborators", account_id, domain_id);
 
-        self.client.get::<ListCollaboratorsEndpoint>(&*path, filters, sort, paginate)
+        self.client.get::<ListCollaboratorsEndpoint>(&*path, Option::from(RequestOptions{ filters: None, sort: None, paginate: Some(paginate)}))
     }
 
     // At the time of the add, a collaborator may or may not have a DNSimple account.

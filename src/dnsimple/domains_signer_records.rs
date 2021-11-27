@@ -1,5 +1,5 @@
 use crate::dnsimple::domains::Domains;
-use crate::dnsimple::{DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, Filters, Paginate, Sort};
+use crate::dnsimple::{DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, Paginate, RequestOptions, Sort};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -43,10 +43,10 @@ impl Domains<'_> {
     ///
     /// `account_id`: The account ID
     /// `domain`: The ID or name of the domain we want list the signer records from
-    pub fn list_delegation_signer_records(&self, account_id: u64, domain: String, filters: Filters, sort: Sort, paginate: Paginate) -> Result<DNSimpleResponse<Vec<SignerRecord>>, String> {
+    pub fn list_delegation_signer_records(&self, account_id: u64, domain: String, sort: Sort, paginate: Paginate) -> Result<DNSimpleResponse<Vec<SignerRecord>>, String> {
         let path = format!("/{}/domains/{}/ds_records", account_id, domain);
 
-        self.client.get::<ListSignerRecordsEndpoint>(&*path, filters, sort, paginate)
+        self.client.get::<ListSignerRecordsEndpoint>(&*path, Option::from(RequestOptions{filters: None, sort: Some(sort), paginate: Some(paginate)}))
     }
 
     /// Creates a delegation signer record
@@ -75,7 +75,7 @@ impl Domains<'_> {
     pub fn get_delegation_signer_record(&self, account_id: u64, domain: String) -> Result<DNSimpleResponse<SignerRecord>, String> {
         let path = format!("/{}/domains/{}/ds_records", account_id, domain);
         
-        self.client.get::<SignerRecordEndpoint>(&*path, Filters { filters: Default::default() }, Sort { sort_by: "".to_string() }, Paginate { per_page: 0, page: 0 })
+        self.client.get::<SignerRecordEndpoint>(&*path, None)
     }
 
     /// Delete a Delegation Signer record

@@ -1,5 +1,4 @@
-use std::collections::HashMap;
-use dnsimple_rust::dnsimple::{Filters, Paginate, Sort};
+use dnsimple_rust::dnsimple::{Paginate, Sort};
 use dnsimple_rust::dnsimple::domains_signer_records::SignerRecordPayload;
 use crate::common::setup_mock_for;
 mod common;
@@ -10,11 +9,10 @@ fn test_list_delegation_signer_records() {
     let client = setup.0;
     let account_id = 1385 as u64;
     let domain= "example.com";
-    let filters = Filters::new(HashMap::new());
     let sort = Sort::new(String::from(""));
     let paginate = Paginate{ per_page: 0, page: 0 };
 
-    let response = client.domains().list_delegation_signer_records(account_id, String::from(domain), filters, sort, paginate).unwrap();
+    let response = client.domains().list_delegation_signer_records(account_id, String::from(domain), sort, paginate).unwrap();
     let signer_records = response.data.unwrap();
 
     assert_eq!(1, signer_records.len());
