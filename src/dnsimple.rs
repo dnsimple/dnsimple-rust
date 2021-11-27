@@ -22,6 +22,7 @@ pub mod domains_push;
 pub mod certificates;
 pub mod tlds;
 pub mod registrar;
+pub mod registrar_name_servers;
 
 const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
@@ -256,6 +257,21 @@ impl Client {
     /// `data`: the json payload to be sent to the server
     pub fn post<E: Endpoint>(&self, path: &str, data: Value) -> Result<DNSimpleResponse<E::Output>, String> {
         let request = self.build_post_request(&path);
+
+        match request.send_json(data) {
+            Ok(response) => {
+                Self::build_dnsimple_response::<E>(response)
+            },
+            Err(Error::Status(_code, response)) => {
+                Self::build_dnsimple_response::<E>(response)
+            },
+            Err(_) => { panic!("Something went really wrong!")}
+        }
+    }
+
+    pub fn put<E: Endpoint>(&self, path: &str, data: Value) -> Result<DNSimpleResponse<E::Output>, String> {
+        let request = self.build_put_request(&path);
+
         match request.send_json(data) {
             Ok(response) => {
                 Self::build_dnsimple_response::<E>(response)
@@ -344,16 +360,23 @@ impl Client {
     // TODO: remove the '_' from filters, sort and paginate once you've figured out how to do 295
     fn build_get_request(&self, path: &&str, _options: Option<RequestOptions>) -> Request {
 
+        // TODO: figure out how to add the query (with filters and sort to the request)
         let request = self._agent.get(&*self.url(path))
             .set("User-Agent", &self.user_agent)
             .set("Accept", "application/json");
 
-        // TODO: figure out how to add the query (with filters and sort to the request)
+
         self.add_headers_to_request(request.to_owned())
     }
 
     pub fn build_post_request(&self, path: &&str) -> Request {
         self._agent.post(&self.url(path))
+            .set("User-Agent", &self.user_agent)
+            .set("Accept", "application/json")
+    }
+
+    pub fn build_put_request(&self, path: &&str) -> Request {
+        self._agent.put(&self.url(path))
             .set("User-Agent", &self.user_agent)
             .set("Accept", "application/json")
     }
@@ -364,17 +387,6 @@ impl Client {
             .set("Accept", "application/json");
         self.add_headers_to_request(request)
     }
-
-    // TODO: see build_get_request ...
-    // fn add_query_to_request(&self, request: &Request, filters: Filters, sort: Sort, paginate: Paginate) -> Request {
-    //     for (key, value) in filters.filters.into_iter() {
-    //         request.query(&*key, &*value);
-    //     }
-    //     if !sort.sort_by.is_empty() {
-    //         request.query("sort", &*sort.sort_by);
-    //     }
-    //     request
-    // }
 
     fn add_headers_to_request(&self, request: Request) -> Request {
         let auth_token = &format!("Bearer {}", self.auth_token);
