@@ -77,6 +77,7 @@ impl Domains<'_> {
     /// ```
     ///
     /// # Arguments
+    ///
     /// `account_id`: The account ID
     // pub fn list_domains(&self, account_id: u64) -> DNSimpleResponse<DomainsData> {
     pub fn list_domains(&self, account_id: u64, filters: Filters, sort: Sort, paginate: Paginate) -> Result<DNSimpleResponse<Vec<Domain>>, String> {

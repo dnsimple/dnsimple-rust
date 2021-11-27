@@ -10,6 +10,7 @@ use crate::dnsimple::identity::Identity;
 use crate::dnsimple::certificates::Certificates;
 use crate::dnsimple::tlds::Tlds;
 use crate::dnsimple::registrar::Registrar;
+use crate::dnsimple::zones::Zones;
 
 pub mod identity;
 pub mod accounts;
@@ -25,6 +26,7 @@ pub mod registrar;
 pub mod registrar_name_servers;
 pub mod registrar_auto_renewal;
 pub mod registrar_whois_privacy;
+pub mod zones;
 
 const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
@@ -212,6 +214,13 @@ impl Client {
     /// Returns the `tlds` service attached to this endpoint
     pub fn tlds(&self) -> Tlds {
         Tlds {
+            client: self
+        }
+    }
+
+    /// Returns the `zones` service attached to this endpoint
+    pub fn zones(&self) -> Zones {
+        Zones {
             client: self
         }
     }
