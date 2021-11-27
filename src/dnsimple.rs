@@ -24,6 +24,7 @@ pub mod tlds;
 pub mod registrar;
 pub mod registrar_name_servers;
 pub mod registrar_auto_renewal;
+pub mod registrar_whois_privacy;
 
 const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
@@ -257,31 +258,11 @@ impl Client {
     /// `path`: the path to the endpoint
     /// `data`: the json payload to be sent to the server
     pub fn post<E: Endpoint>(&self, path: &str, data: Value) -> Result<DNSimpleResponse<E::Output>, String> {
-        let request = self.build_post_request(&path);
-
-        match request.send_json(data) {
-            Ok(response) => {
-                Self::build_dnsimple_response::<E>(response)
-            },
-            Err(Error::Status(_code, response)) => {
-                Self::build_dnsimple_response::<E>(response)
-            },
-            Err(_) => { panic!("Something went really wrong!")}
-        }
+        self.call_with_payload::<E>(self.build_post_request(&path), data)
     }
 
     pub fn put<E: Endpoint>(&self, path: &str, data: Value) -> Result<DNSimpleResponse<E::Output>, String> {
-        let request = self.build_put_request(&path);
-
-        match request.send_json(data) {
-            Ok(response) => {
-                Self::build_dnsimple_response::<E>(response)
-            },
-            Err(Error::Status(_code, response)) => {
-                Self::build_dnsimple_response::<E>(response)
-            },
-            Err(_) => { panic!("Something went really wrong!")}
-        }
+        self.call_with_payload::<E>(self.build_put_request(&path), data)
     }
 
     pub fn empty_put(&self, path: &str) -> DNSimpleEmptyResponse {
@@ -308,6 +289,18 @@ impl Client {
 
     pub fn empty_post(&self, path: &str) -> DNSimpleEmptyResponse {
         self.call_empty(self.build_post_request(&path))
+    }
+
+    fn call_with_payload<E: Endpoint>(&self, request: Request, data: Value) -> Result<DNSimpleResponse<E::Output>, String> {
+        match request.send_json(data) {
+            Ok(response) => {
+                Self::build_dnsimple_response::<E>(response)
+            },
+            Err(Error::Status(_code, response)) => {
+                Self::build_dnsimple_response::<E>(response)
+            },
+            Err(_) => { panic!("Something went really wrong!")}
+        }
     }
 
     fn call<E: Endpoint>(&self, request: Request) -> Result<DNSimpleResponse<E::Output>, String> {
