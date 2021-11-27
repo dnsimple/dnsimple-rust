@@ -23,6 +23,7 @@ pub mod certificates;
 pub mod tlds;
 pub mod registrar;
 pub mod registrar_name_servers;
+pub mod registrar_auto_renewal;
 
 const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
@@ -281,6 +282,10 @@ impl Client {
             },
             Err(_) => { panic!("Something went really wrong!")}
         }
+    }
+
+    pub fn empty_put(&self, path: &str) -> DNSimpleEmptyResponse {
+        self.call_empty(self.build_put_request(&path))
     }
 
     /// Sends a DELETE request to the DNSimple API
