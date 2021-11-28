@@ -1,4 +1,3 @@
-use dnsimple_rust::dnsimple::RequestOptions;
 use crate::common::setup_mock_for;
 mod common;
 
@@ -7,13 +6,8 @@ fn list_zones_test() {
     let setup = setup_mock_for("/1010/zones", "listZones/success", "GET");
     let client = setup.0;
     let account_id = 1010;
-    let request_options = RequestOptions {
-        filters: None,
-        sort: None,
-        paginate: None
-    };
 
-    let zones = client.zones().list_zones(account_id, Option::from(request_options)).unwrap().data.unwrap();
+    let zones = client.zones().list_zones(account_id, None).unwrap().data.unwrap();
 
     assert_eq!(2, zones.len());
 

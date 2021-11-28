@@ -27,6 +27,7 @@ pub mod registrar_name_servers;
 pub mod registrar_auto_renewal;
 pub mod registrar_whois_privacy;
 pub mod zones;
+pub mod zones_records;
 
 const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
@@ -278,6 +279,10 @@ impl Client {
         self.call_empty(self.build_put_request(&path))
     }
 
+    pub fn patch<E: Endpoint>(&self, path: &str, data: Value) -> Result<DNSimpleResponse<E::Output>, String> {
+        self.call_with_payload::<E>(self.build_patch_request(&path), data)
+    }
+
     /// Sends a DELETE request to the DNSimple API
     ///
     /// # Arguments
@@ -388,6 +393,12 @@ impl Client {
             .set("Accept", "application/json")
     }
 
+    pub fn build_patch_request(&self, path: &&str) -> Request {
+        self._agent.request("PATCH", &self.url(path))
+            .set("User-Agent", &self.user_agent)
+            .set("Accept", "application/json")
+    }
+
     fn build_delete_request(&self, path: &&str) -> Request {
         let request = self._agent.delete(&self.url(path))
             .set("User-Agent", &self.user_agent)
@@ -429,4 +440,6 @@ mod tests {
 
         assert_eq!(client.versioned_url(), "https://example.com/v2");
     }
+
+    // TODO: Add tests to make sure the request options do work
 }

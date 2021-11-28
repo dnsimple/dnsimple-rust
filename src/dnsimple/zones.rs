@@ -17,7 +17,7 @@ pub struct ZoneFile  {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct ZoneDistribution  {
+pub struct Distribution {
     pub distributed: bool,
 }
 
@@ -39,10 +39,10 @@ impl Endpoint for ZoneFileEndpoint {
     type Output = ZoneFile;
 }
 
-struct ZoneDistributionEndpoint;
+pub(crate) struct DistributionEndpoint;
 
-impl Endpoint for ZoneDistributionEndpoint {
-    type Output = ZoneDistribution;
+impl Endpoint for DistributionEndpoint {
+    type Output = Distribution;
 }
 
 pub struct Zones<'a> {
@@ -92,9 +92,9 @@ impl Zones<'_> {
     ///
     /// `account_id`: The account ID
     /// `zone`: The zone name
-    pub fn check_zone_distribution(&self, account_id: u64, zone: &str) -> Result<DNSimpleResponse<ZoneDistribution>, String> {
+    pub fn check_zone_distribution(&self, account_id: u64, zone: &str) -> Result<DNSimpleResponse<Distribution>, String> {
         let path = format!("/{}/zones/{}/distribution", account_id, zone);
 
-        self.client.get::<ZoneDistributionEndpoint>(&*path, None)
+        self.client.get::<DistributionEndpoint>(&*path, None)
     }
 }
