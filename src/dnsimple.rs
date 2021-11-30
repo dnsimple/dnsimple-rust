@@ -13,6 +13,7 @@ use crate::dnsimple::registrar::Registrar;
 use crate::dnsimple::services::Services;
 use crate::dnsimple::templates::Templates;
 use crate::dnsimple::tlds::Tlds;
+use crate::dnsimple::vanity_name_servers::VanityNameServers;
 use crate::dnsimple::zones::Zones;
 
 pub mod identity;
@@ -34,6 +35,7 @@ pub mod zones_records;
 pub mod contacts;
 pub mod services;
 pub mod templates;
+pub mod vanity_name_servers;
 
 const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
@@ -242,6 +244,13 @@ impl Client {
     /// Returns the `tlds` service attached to this endpoint
     pub fn tlds(&self) -> Tlds {
         Tlds {
+            client: self
+        }
+    }
+
+    /// Returns the `vanity_name_servers` service attached to this endpoint
+    pub fn vanity_name_servers(&self) -> VanityNameServers {
+        VanityNameServers {
             client: self
         }
     }

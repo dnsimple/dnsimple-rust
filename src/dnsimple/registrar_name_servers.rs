@@ -10,7 +10,7 @@ impl Endpoint for DomainDelegationEndpoint {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct VanityServer {
+pub struct VanityNameServer {
     pub id: u64,
     pub name: String,
     pub ipv4: String,
@@ -22,7 +22,7 @@ pub struct VanityServer {
 struct DomainDelegationVanityEndpoint;
 
 impl Endpoint for DomainDelegationVanityEndpoint {
-    type Output = Vec<VanityServer>;
+    type Output = Vec<VanityNameServer>;
 }
 
 impl Registrar<'_> {
@@ -59,7 +59,7 @@ impl Registrar<'_> {
     /// `account_id`: The account ID
     /// `domain`: The domain name or id
     /// `server_names`: A list of name server names as strings
-    pub fn change_domain_delegation_to_vanity(&self, account_id: u64, domain: String, server_names: Vec<&str>) -> Result<DNSimpleResponse<Vec<VanityServer>>, String> {
+    pub fn change_domain_delegation_to_vanity(&self, account_id: u64, domain: String, server_names: Vec<&str>) -> Result<DNSimpleResponse<Vec<VanityNameServer>>, String> {
         let path = format!("/{}/registrar/domains/{}/delegation/vanity", account_id, domain);
 
         self.client.put::<DomainDelegationVanityEndpoint>(&*path, Value::from(server_names))
