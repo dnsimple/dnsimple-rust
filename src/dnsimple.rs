@@ -11,6 +11,7 @@ use crate::dnsimple::certificates::Certificates;
 use crate::dnsimple::contacts::Contacts;
 use crate::dnsimple::tlds::Tlds;
 use crate::dnsimple::registrar::Registrar;
+use crate::dnsimple::services::Services;
 use crate::dnsimple::zones::Zones;
 
 pub mod identity;
@@ -30,6 +31,7 @@ pub mod registrar_whois_privacy;
 pub mod zones;
 pub mod zones_records;
 pub mod contacts;
+pub mod services;
 
 const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
@@ -216,6 +218,13 @@ impl Client {
     /// Returns the `registrar` service attached to this client
     pub fn registrar(&self) -> Registrar {
         Registrar {
+            client: self
+        }
+    }
+
+    /// Returns the `services` service attached to this client
+    pub fn services(&self) -> Services {
+        Services {
             client: self
         }
     }
