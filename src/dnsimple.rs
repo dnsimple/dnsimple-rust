@@ -5,13 +5,14 @@ use serde::de::DeserializeOwned;
 use serde_json::{json, Value};
 use ureq::{Error, Request, Response};
 use crate::dnsimple::accounts::Accounts;
-use crate::dnsimple::domains::Domains;
-use crate::dnsimple::identity::Identity;
 use crate::dnsimple::certificates::Certificates;
 use crate::dnsimple::contacts::Contacts;
-use crate::dnsimple::tlds::Tlds;
+use crate::dnsimple::domains::Domains;
+use crate::dnsimple::identity::Identity;
 use crate::dnsimple::registrar::Registrar;
 use crate::dnsimple::services::Services;
+use crate::dnsimple::templates::Templates;
+use crate::dnsimple::tlds::Tlds;
 use crate::dnsimple::zones::Zones;
 
 pub mod identity;
@@ -32,6 +33,7 @@ pub mod zones;
 pub mod zones_records;
 pub mod contacts;
 pub mod services;
+pub mod templates;
 
 const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
@@ -188,6 +190,7 @@ impl Client {
         }
     }
 
+    /// Returns the `contacts` service attached to this client
     pub fn contacts(&self) -> Contacts {
         Contacts {
             client: self
@@ -225,6 +228,13 @@ impl Client {
     /// Returns the `services` service attached to this client
     pub fn services(&self) -> Services {
         Services {
+            client: self
+        }
+    }
+
+    /// Returns the `templates` service attached to this client
+    pub fn templates(&self) -> Templates {
+        Templates {
             client: self
         }
     }
