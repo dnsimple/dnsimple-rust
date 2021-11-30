@@ -8,6 +8,7 @@ use crate::dnsimple::accounts::Accounts;
 use crate::dnsimple::domains::Domains;
 use crate::dnsimple::identity::Identity;
 use crate::dnsimple::certificates::Certificates;
+use crate::dnsimple::contacts::Contacts;
 use crate::dnsimple::tlds::Tlds;
 use crate::dnsimple::registrar::Registrar;
 use crate::dnsimple::zones::Zones;
@@ -28,6 +29,7 @@ pub mod registrar_auto_renewal;
 pub mod registrar_whois_privacy;
 pub mod zones;
 pub mod zones_records;
+pub mod contacts;
 
 const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
@@ -180,6 +182,12 @@ impl Client {
     ///Returns the `accounts` service attached to this client
     pub fn accounts(&self) -> Accounts {
         Accounts {
+            client: self
+        }
+    }
+
+    pub fn contacts(&self) -> Contacts {
+        Contacts {
             client: self
         }
     }
