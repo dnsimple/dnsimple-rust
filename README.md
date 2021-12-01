@@ -19,18 +19,7 @@ A Rust client for the [DNSimple API v2](https://developer.dnsimple.com/v2/).
 use dnsimple_rust::dnsimple::{Client, new_client};
 
 let client = new_client(true, String::from("AUTH_TOKEN"));
-let identity_response = client.identity().whoami().data;
-
-match identity_response {
-        None => panic!("We should have a payload here."),
-        Some(whoami) =>  match whoami.data.account {
-            None => panic!("We should have the account data here"),
-            Some(account) => {
-            // so something with the account, like retrieving the id
-            // with account.id
-            }
-        }
-}
+let identity_response = client.identity().whoami().unwrap().data.unwrap();
 ```
 
 ## License
