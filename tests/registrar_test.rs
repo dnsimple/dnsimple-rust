@@ -7,7 +7,7 @@ fn test_check_domain() {
     let setup = setup_mock_for("/1010/registrar/domains/ruby.codes/check", "checkDomain/success", "GET");
     let client = setup.0;
     let account_id = 1010;
-    let domain = String::from("ruby.codes");
+    let domain = "ruby.codes";
 
     let response = client.registrar().check_domain(account_id, domain).unwrap();
     let domain_check = response.data.unwrap();
@@ -22,7 +22,7 @@ fn test_check_domain_premium_price() {
     let setup = setup_mock_for("/1010/registrar/domains/ruby.codes/premium_price?action=registration", "checkDomainPremiumPrice/success", "GET");
     let client = setup.0;
     let account_id = 1010;
-    let domain = String::from("ruby.codes");
+    let domain = "ruby.codes";
 
     let response = client.registrar().check_domain_premium_price(account_id, domain, None).unwrap();
     let domain_premium_price = response.data.unwrap();
@@ -36,7 +36,7 @@ fn test_check_domain_premium_price_not_a_premium_domain() {
     let setup = setup_mock_for("/1010/registrar/domains/cocotero.love/premium_price?action=registration", "checkDomainPremiumPrice/error_400_not_a_premium_domain", "GET");
     let client = setup.0;
     let account_id = 1010;
-    let domain = String::from("cocotero.love");
+    let domain = "cocotero.love";
 
     let response = client.registrar().check_domain_premium_price(account_id, domain, None).unwrap();
     let error = response.errors.unwrap();
@@ -48,7 +48,7 @@ fn test_check_domain_premium_price_tld_not_supported() {
     let setup = setup_mock_for("/1010/registrar/domains/.love/premium_price?action=registration", "checkDomainPremiumPrice/error_400_tld_not_supported", "GET");
     let client = setup.0;
     let account_id = 1010;
-    let domain = String::from(".love");
+    let domain = ".love";
 
     let response = client.registrar().check_domain_premium_price(account_id, domain, None).unwrap();
     let error = response.errors.unwrap();
@@ -61,7 +61,7 @@ fn test_get_domain_prices() {
     let setup = setup_mock_for("/1010/registrar/domains/bingo.pizza/prices", "getDomainPrices/success", "GET");
     let client = setup.0;
     let account_id = 1010;
-    let domain = String::from("bingo.pizza");
+    let domain = "bingo.pizza";
 
     let response = client.registrar().get_domain_prices(account_id, domain).unwrap();
     let domain_prices = response.data.unwrap();
@@ -78,7 +78,7 @@ fn test_get_domain_prices_failure() {
     let setup = setup_mock_for("/1010/registrar/domains/bingo.pineapple/prices", "getDomainPrices/failure", "GET");
     let client = setup.0;
     let account_id = 1010;
-    let domain = String::from("bingo.pineapple");
+    let domain = "bingo.pineapple";
 
     let response = client.registrar().get_domain_prices(account_id, domain).unwrap();
     let error = response.errors.unwrap();
@@ -91,7 +91,7 @@ fn test_register_domain() {
     let setup = setup_mock_for("/1010/registrar/domains/example.com/registrations", "registerDomain/success", "POST");
     let client = setup.0;
     let account_id = 1010;
-    let domain = String::from("example.com");
+    let domain = "example.com";
     let payload = DomainRegistrationPayload {
         registrant_id: 2,
         whois_privacy: None,
@@ -119,7 +119,7 @@ fn test_transfer_domain() {
     let setup = setup_mock_for("/1010/registrar/domains/example.com/transfers", "transferDomain/success", "POST");
     let client = setup.0;
     let account_id = 1010;
-    let domain = String::from("example.com");
+    let domain = "example.com";
     let payload = DomainTransferPayload {
         registrant_id: 2,
         auth_code: String::from("THE_AUTH_CODE"),
@@ -147,7 +147,7 @@ fn test_transfer_domain_error_in_dnsimple() {
     let setup = setup_mock_for("/1010/registrar/domains/google.com/transfers", "transferDomain/error-indnsimple", "POST");
     let client = setup.0;
     let account_id = 1010;
-    let domain = String::from("google.com");
+    let domain = "google.com";
     let payload = DomainTransferPayload {
         registrant_id: 2,
         auth_code: String::from("THE_AUTH_CODE"),
@@ -168,7 +168,7 @@ fn test_transfer_domain_error_missing_auth_code() {
     let setup = setup_mock_for("/1010/registrar/domains/google.com/transfers", "transferDomain/error-missing-authcode", "POST");
     let client = setup.0;
     let account_id = 1010;
-    let domain = String::from("google.com");
+    let domain = "google.com";
     let payload = DomainTransferPayload {
         registrant_id: 2,
         auth_code: String::from(""),

@@ -1,4 +1,3 @@
-use dnsimple_rust::dnsimple::Paginate;
 use crate::common::setup_mock_for;
 mod common;
 
@@ -9,9 +8,7 @@ fn test_list_collaborators() {
     let account_id = 1385 as u64;
     let domain_id = 1 as u64;
 
-    let paginate = Paginate{ per_page: 0, page: 0 };
-
-    let response = client.domains().list_collaborators(account_id, domain_id, paginate);
+    let response = client.domains().list_collaborators(account_id, domain_id, None);
     let collaborators = response.unwrap().data.unwrap();
 
     assert_eq!(2, collaborators.len());
@@ -39,7 +36,7 @@ fn test_add_collaborator_success() {
     let client = setup.0;
     let account_id = 1385 as u64;
     let domain_id = 1 as u64;
-    let collaborator_email = "existing-user@example.com".to_string();
+    let collaborator_email = "existing-user@example.com";
     let collaborator = client.domains().add_collaborator(account_id, domain_id, collaborator_email).unwrap().data.unwrap();
 
     assert_eq!(100, collaborator.id);
@@ -59,7 +56,7 @@ fn test_add_collaborator_invite_success() {
     let client = setup.0;
     let account_id = 1385 as u64;
     let domain_id = 1 as u64;
-    let collaborator_email = "invited-user@example.com".to_string();
+    let collaborator_email = "invited-user@example.com";
 
     let collaborator = client.domains().add_collaborator(account_id, domain_id, collaborator_email).unwrap().data.unwrap();
 

@@ -3,8 +3,6 @@ use serde::{Deserialize, Serialize};
 use crate::dnsimple::{Client, DNSimpleResponse, Endpoint};
 
 /// Represents a User
-///
-/// See [API Documentation: identity](https://developer.dnsimple.com/v2/identity/)
 #[derive(Debug, Deserialize, Serialize)]
 pub struct User {
     /// The ID of the user in DNSimple
@@ -18,8 +16,6 @@ pub struct User {
 }
 
 /// Represents an Account
-///
-/// See [API Documentation: identity](https://developer.dnsimple.com/v2/identity/)
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Account {
     /// The account ID in DNSimple
@@ -35,8 +31,6 @@ pub struct Account {
 }
 
 /// Represents the structure holding a User and Account structs.
-///
-/// See [API Documentation: identity](https://developer.dnsimple.com/v2/identity/)
 #[derive(Debug, Deserialize, Serialize)]
 pub struct WhoamiData{
     /// The account, if present
@@ -67,8 +61,8 @@ impl Identity<'_> {
     /// use dnsimple_rust::dnsimple::{Client, new_client};
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let identity_response = client.identity().whoami().unwrap().data.unwrap();
-    /// let account = identity_response.account.unwrap();
+    /// let response = client.identity().whoami().unwrap().data.unwrap();
+    /// let account = response.account.unwrap();
     ///
     /// ```
     pub fn whoami(&self) -> Result<DNSimpleResponse<WhoamiData>, String> {

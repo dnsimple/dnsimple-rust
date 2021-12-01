@@ -23,10 +23,10 @@ impl Accounts<'_> {
     /// use dnsimple_rust::dnsimple::new_client;
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     ///
-    /// let accounts_response = client.accounts().list_accounts().unwrap();
-    /// let accounts = accounts_response.data.unwrap();
+    /// let response = client.accounts().list_accounts().unwrap();
+    /// let accounts = response.data.unwrap();
     /// let first_account = accounts.first().unwrap();
-    ///
+    /// ```
     pub fn list_accounts(&self) -> Result<DNSimpleResponse<Vec<Account>>, String> {
         self.client.get::<AccountsEndpoint>("/accounts", None)
     }

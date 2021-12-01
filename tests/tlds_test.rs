@@ -1,4 +1,3 @@
-use dnsimple_rust::dnsimple::{Paginate, Sort};
 use crate::common::setup_mock_for;
 mod common;
 
@@ -7,7 +6,7 @@ fn test_list_tlds() {
     let setup = setup_mock_for("/tlds", "listTlds/success", "GET");
     let client = setup.0;
 
-    let response = client.tlds().list_tlds(Sort { sort_by: "".to_string() }, Paginate { per_page: 30, page: 1 }).unwrap();
+    let response = client.tlds().list_tlds(None).unwrap();
     let tlds = response.data.unwrap();
 
     assert_eq!(2, tlds.len());

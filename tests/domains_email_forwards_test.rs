@@ -1,4 +1,3 @@
-use dnsimple_rust::dnsimple::{Paginate, Sort};
 use dnsimple_rust::dnsimple::domains_email_forwards::EmailForwardPayload;
 use crate::common::setup_mock_for;
 mod common;
@@ -10,10 +9,7 @@ fn test_list_email_forwards() {
     let account_id = 1385 as u64;
     let domain= "example.com";
 
-    let sort = Sort::new(String::from(""));
-    let paginate = Paginate{ per_page: 0, page: 0 };
-
-    let response = client.domains().list_email_forwards(account_id, String::from(domain), sort, paginate).unwrap();
+    let response = client.domains().list_email_forwards(account_id, domain, None).unwrap();
     let email_forwards_list = response.data.unwrap();
 
     assert_eq!(2, email_forwards_list.len());
@@ -39,7 +35,7 @@ fn test_create_email_forward() {
         destination_email: String::from("example@example.com")
     };
 
-    let record = client.domains().create_email_forward(account_id, String::from(domain), payload).unwrap().data.unwrap();
+    let record = client.domains().create_email_forward(account_id, domain, payload).unwrap().data.unwrap();
 
     assert_eq!(41872, record.id);
     assert_eq!(235146, record.domain_id);
@@ -59,7 +55,7 @@ fn test_get_email_forward() {
     let domain = "example.com";
     let email_forward = 41872;
 
-    let record = client.domains().get_email_forward(account_id, String::from(domain), email_forward).unwrap().data.unwrap();
+    let record = client.domains().get_email_forward(account_id, domain, email_forward).unwrap().data.unwrap();
 
     assert_eq!(41872, record.id);
     assert_eq!(235146, record.domain_id);
@@ -79,7 +75,7 @@ fn test_delete_email_forward() {
     let domain = "example.com";
     let email_forward = 41872;
 
-    let response = client.domains().delete_email_forward(account_id, String::from(domain), email_forward);
+    let response = client.domains().delete_email_forward(account_id, domain, email_forward);
 
     assert_eq!(response.status, 204);
 }

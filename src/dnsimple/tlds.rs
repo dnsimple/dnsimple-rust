@@ -1,4 +1,4 @@
-use crate::dnsimple::{Client, DNSimpleResponse, Endpoint, Paginate, RequestOptions, Sort};
+use crate::dnsimple::{Client, DNSimpleResponse, Endpoint, RequestOptions};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -55,13 +55,11 @@ pub struct Tlds<'a> {
 
 impl Tlds<'_> {
     /// Returns the list of TLDs supported for registration or transfer.
-    pub fn list_tlds(&self, sort: Sort, paginate: Paginate) -> Result<DNSimpleResponse<Vec<Tld>>, String> {
+    pub fn list_tlds(&self, options: Option<RequestOptions>) -> Result<DNSimpleResponse<Vec<Tld>>, String> {
         let path = "/tlds";
 
-        self.client.get::<ListTldsEndpoint>(&*path,
-                                            Option::from(
-                                                RequestOptions{filters: None,
-                                                    sort: Some(sort), paginate: Some(paginate)})) }
+        self.client.get::<ListTldsEndpoint>(&*path, options)
+    }
 
     /// Retrieves the details of a supported TLD.
     ///

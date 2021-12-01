@@ -55,21 +55,13 @@ const DEFAULT_SANDBOX_URL: &str  = "https://api.sandbox.dnsimple.com";
 /// # Examples
 ///
 /// ```no_run
-/// // use dnsimple_rust::dnsimple::{Client, new_client};
+/// use dnsimple_rust::dnsimple::{Client, new_client};
 ///
-/// // let client = new_client(true, String::from("AUTH_TOKEN"));
-/// // let identity_response = client.identity().whoami().data;
+/// let client = new_client(true, String::from("AUTH_TOKEN"));
+/// let identity = client.identity().whoami().unwrap().data.unwrap();
 ///
-/// // match identity_response {
-/// //         None => panic!("We should have a payload here."),
-/// //         Some(whoami) =>  match whoami.data.account {
-/// //             None => panic!("We should have the account data here"),
-/// //             Some(account) => {
-///             // so something with the account, like retrieving the id
-///             // with account.id
-///             // }
-///         // }
-/// // }
+/// let account = identity.account.unwrap();
+/// ```
 ///
 pub struct Client {
     base_url: String,
@@ -85,45 +77,75 @@ pub struct APIErrorMessage {
     pub errors: Option<Value>,
 }
 
+/// Defines the Endpoint trait for the different API endpoints
 pub trait Endpoint {
     type Output: DeserializeOwned;
 }
 
+/// Represents the response from an API call
 #[derive(Debug)]
 pub struct DNSimpleResponse<T> {
+    /// The maximum number of requests you can perform per hour.
     pub rate_limit: String,
+    /// The number of requests remaining in the current rate limit window.
     pub rate_limit_remaining: String,
+    /// The time at which the current rate limit window in [Unix time](https://en.wikipedia.org/wiki/Unix_time) format.
     pub rate_limit_reset: String,
+    /// The HTTP Status Code
     pub status: u16,
+    /// The object or a Vec<T> of objects (the type `T` will depend on the endpoint).
     pub data: Option<T>,
+    /// The error response if any
     pub errors: Option<APIErrorMessage>,
+    /// Any API endpoint that returns a list of items requires pagination.
     pub pagination: Option<Pagination>,
+    /// The body as a JSON `Value`
     pub body: Option<Value>,
 }
 
+/// Any API endpoint that returns a list of items requires pagination.
+/// By default we will return 30 records from any listing endpoint. If an API endpoint returns
+/// a list of items, then it will include a pagination object that contains pagination
+/// information.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Pagination {
-    current_page: u64,
-    per_page: u64,
-    total_entries: u64,
-    total_pages: u64,
+    /// The page currently returned (default: 1)
+    pub current_page: u64,
+    /// The number of entries returned per page (default: 30)
+    pub per_page: u64,
+    /// The total number of entries available in the entire collection
+    pub total_entries: u64,
+    /// The total number of pages available given the current `per_page` value
+    pub total_pages: u64,
 }
 
+/// When you can send some options into the request (i.e. for pagination).
 pub struct RequestOptions {
+    /// Filtering makes it possible to ask only for the exact subset of data that you you’re looking for.
     pub filters: Option<Filters>,
+    /// API v2 results are implicitly sorted according to policies that vary from endpoint to endpoint.
     pub sort: Option<Sort>,
+    /// Pagination options
     pub paginate: Option<Paginate>,
 }
 
 /// Represents an empty response from the DNSimple API
 /// (_these type of responses happen when issuing DELETE commands for example_)
 pub struct DNSimpleEmptyResponse {
+    /// The maximum number of requests you can perform per hour.
     pub rate_limit: String,
+    /// The number of requests remaining in the current rate limit window.
     pub rate_limit_remaining: String,
+    /// The time at which the current rate limit window in [Unix time](https://en.wikipedia.org/wiki/Unix_time) format.
     pub rate_limit_reset: String,
+    /// The HTTP Status Code
     pub status: u16,
 }
 
+/// Filtering makes it possible to ask only for the exact subset of data that you you’re looking for.
+//
+// With potential hundreds of result entries, it’s convenient to apply a filter and receive only the
+// interesting data.
 #[derive(Debug)]
 pub struct Filters {
     pub filters: HashMap<String, String>
@@ -135,6 +157,14 @@ impl Filters {
     }
 }
 
+/// API v2 results are implicitly sorted according to policies that vary from endpoint to endpoint.
+//
+// You can decide your own sorting policy for each single API call via the sort parameter.
+//
+// This parameter accepts a set of comma separated key-value pairs: the name of a field and the
+// order criteria (asc for ascending and desc for descending).
+//
+// The order of fields is relevant, as it will determine the priority of the sorting policies.
 #[derive(Debug)]
 pub struct Sort {
     pub sort_by: String
@@ -146,16 +176,13 @@ impl Sort {
     }
 }
 
+/// The pagination instructions for the request
 pub struct Paginate {
+    /// The number of items you want
     pub per_page: u32,
+    /// The page number
     pub page: u32,
 }
-
-/// Wrapper around a DNSimpleResponse and the raw http response of the DNSimple API
-// pub struct APIResponse<T> {
-//     pub response: DNSimpleResponse <T>,
-//     pub raw_http_response: Response
-// }
 
 /// Helper function to create a new client
 ///
@@ -178,6 +205,7 @@ pub fn new_client(sandbox: bool, token: String) -> Client {
     if sandbox {
         url = DEFAULT_SANDBOX_URL;
     }
+
     Client {
         base_url: String::from(url),
         user_agent: DEFAULT_USER_AGENT.to_owned() + VERSION,
@@ -302,6 +330,7 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
+    /// `options`: optionally a `RequestOptions` with things like pagination, filtering and sorting
     pub fn get<E: Endpoint>(&self, path: &str, options: Option<RequestOptions>) -> Result<DNSimpleResponse<E::Output>, String> {
         self.call::<E>(self.build_get_request(&path, options))
     }
@@ -316,14 +345,40 @@ impl Client {
         self.call_with_payload::<E>(self.build_post_request(&path), data)
     }
 
+    /// Sends a POST request to the DNSimple API without any payload
+    ///
+    /// # Arguments
+    ///
+    /// `path`: the path to the endpoint
+    pub fn empty_post(&self, path: &str) -> DNSimpleEmptyResponse {
+        self.call_empty(self.build_post_request(&path))
+    }
+
+    /// Sends a PUT request to the DNSimple API
+    ///
+    /// # Arguments
+    ///
+    /// `path`: the path to the endpoint
+    /// `data`: the json payload to be sent to the server
     pub fn put<E: Endpoint>(&self, path: &str, data: Value) -> Result<DNSimpleResponse<E::Output>, String> {
         self.call_with_payload::<E>(self.build_put_request(&path), data)
     }
 
+    /// Sends a PUT request to the DNSimple API without any payload
+    ///
+    /// # Arguments
+    ///
+    /// `path`: the path to the endpoint
     pub fn empty_put(&self, path: &str) -> DNSimpleEmptyResponse {
         self.call_empty(self.build_put_request(&path))
     }
 
+    /// Sends a PATCH request to the DNSimple API
+    ///
+    /// # Arguments
+    ///
+    /// `path`: the path to the endpoint
+    /// `data`: the json payload to be sent to the server
     pub fn patch<E: Endpoint>(&self, path: &str, data: Value) -> Result<DNSimpleResponse<E::Output>, String> {
         self.call_with_payload::<E>(self.build_patch_request(&path), data)
     }
@@ -337,17 +392,13 @@ impl Client {
         self.call_empty(self.build_delete_request(&path))
     }
 
-    /// Sends a DELETE request to the DNSimple API
+    /// Sends a DELETE request to the DNSimple API returning a response containing a `DNSimpleResponse`
     ///
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
     pub fn delete_with_response<E: Endpoint>(&self, path: &str) -> Result<DNSimpleResponse<E::Output>, String> {
         self.call::<E>(self.build_delete_request(&path))
-    }
-
-    pub fn empty_post(&self, path: &str) -> DNSimpleEmptyResponse {
-        self.call_empty(self.build_post_request(&path))
     }
 
     fn call_with_payload<E: Endpoint>(&self, request: Request, data: Value) -> Result<DNSimpleResponse<E::Output>, String> {
@@ -414,14 +465,37 @@ impl Client {
         }
     }
 
-    // TODO: remove the '_' from filters, sort and paginate once you've figured out how to do 295
-    fn build_get_request(&self, path: &&str, _options: Option<RequestOptions>) -> Request {
-
-        // TODO: figure out how to add the query (with filters and sort to the request)
-        let request = self._agent.get(&*self.url(path))
+    fn build_get_request(&self, path: &&str, options: Option<RequestOptions>) -> Request {
+        let mut request = self._agent.get(&*self.url(path))
             .set("User-Agent", &self.user_agent)
             .set("Accept", "application/json");
 
+        match options {
+            Some(options) => {
+                match options.paginate {
+                    Some(pagination) =>  {
+                        request = request.query("page", &*pagination.page.to_string());
+                        request = request.query("per_page", &*pagination.per_page.to_string())
+                    }
+                    _ => {}
+                }
+                match options.filters {
+                    Some(filters) => {
+                        for(key, value) in filters.filters {
+                            request = request.query(&*key, &*value);
+                        }
+                    }
+                    _ => {}
+                }
+                match options.sort {
+                    Some(sort) => {
+                        request = request.query("sort", &*sort.sort_by);
+                    }
+                    _ => {}
+                }
+            }
+            _ => {}
+        }
 
         self.add_headers_to_request(request.to_owned())
     }
@@ -485,6 +559,4 @@ mod tests {
 
         assert_eq!(client.versioned_url(), "https://example.com/v2");
     }
-
-    // TODO: Add tests to make sure the request options do work
 }

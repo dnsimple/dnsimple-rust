@@ -1,9 +1,7 @@
-use crate::dnsimple::{Client, DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, Filters, Paginate, RequestOptions, Sort};
+use crate::dnsimple::{Client, DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, RequestOptions};
 use serde::{Deserialize, Serialize};
 
 /// Represents a domain
-///
-/// See [API Documentation: domains](https://developer.dnsimple.com/v2/domains/)
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Domain {
     /// The domain ID in DNSimple
@@ -33,16 +31,14 @@ pub struct Domain {
 }
 
 /// Represents the payload to be send when creating a domain
-///
-/// See [API Documentation: domains](https://developer.dnsimple.com/v2/domains/)
 #[derive(Debug, Deserialize, Serialize)]
 pub struct DomainCreationPayload {
     pub name: String,
 }
 
-struct ListDomainsEndpoint;
+struct DomainsEndpoint;
 
-impl Endpoint for ListDomainsEndpoint {
+impl Endpoint for DomainsEndpoint {
     type Output = Vec<Domain>;
 }
 
@@ -67,22 +63,21 @@ impl Domains<'_> {
     ///
     /// ```no_run
     /// use std::collections::HashMap;
-    /// use dnsimple_rust::dnsimple::{Client, new_client, Filters, Sort, Paginate};
-    /// let filters = Filters::new(HashMap::new());
-    /// let sort = Sort::new(String::from(""));
-    /// let paginate = Paginate{ per_page: 0, page: 0 };
+    /// use dnsimple_rust::dnsimple::{Client, new_client};
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let domains_response = client.domains().list_domains(1234, filters, sort, paginate);
+    /// let domains = client.domains().list_domains(1234, None).unwrap().data.unwrap();
     /// ```
     ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
-    // pub fn list_domains(&self, account_id: u64) -> DNSimpleResponse<DomainsData> {
-    pub fn list_domains(&self, account_id: u64, filters: Filters, sort: Sort, paginate: Paginate) -> Result<DNSimpleResponse<Vec<Domain>>, String> {
+    /// `options`: The `RequestOptions`
+    ///             - Filters: `name_like`, `registrant_id`
+    ///             - Sorting: `id`, `name`, `expiration`
+    pub fn list_domains(&self, account_id: u64, options: Option<RequestOptions>) -> Result<DNSimpleResponse<Vec<Domain>>, String> {
         let path = format!("/{}/domains", account_id);
-        self.client.get::<ListDomainsEndpoint>(&*path, Option::from(RequestOptions { filters: Some(filters), sort: Some(sort), paginate: Some(paginate) }))
+        self.client.get::<DomainsEndpoint>(&*path, options)
     }
 
     /// Adds a domain to the account.
