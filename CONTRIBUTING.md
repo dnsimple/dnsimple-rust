@@ -25,20 +25,20 @@ The following instructions uses `$VERSION` as a placeholder, where `$VERSION` is
     const VERSION: &str = "0.1.0";
     ```
 
-1. Run the test suite and ensure all the tests pass.
+2. Run the test suite and ensure all the tests pass.
 
-1. Finalize the `## main` section in `CHANGELOG.md` assigning the version.
+3. Finalize the `## main` section in `CHANGELOG.md` assigning the version.
 
-1. Commit and push the changes
+4. Commit and push the changes
 
     ```shell
     git commit -a -m "Release $VERSION"
     git push origin main
     ```
 
-1. Wait for CI to complete.
+5. Wait for CI to complete.
 
-1. Create a signed tag.
+6. Create a signed tag.
 
     ```shell
     git tag -a v$VERSION -s -m "Release $VERSION"
