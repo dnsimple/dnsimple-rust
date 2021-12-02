@@ -24,8 +24,8 @@ fn list_zone_records_test() {
     assert_eq!(3600, zone_record.ttl);
     assert_eq!(None, zone_record.priority);
     assert_eq!("SOA", zone_record.record_type);
-    assert_eq!(1, zone_record.regions.len());
-    assert_eq!("global", zone_record.regions.first().unwrap());
+    assert_eq!(1, zone_record.regions.as_ref().unwrap().len());
+    assert_eq!("global", zone_record.regions.as_ref().unwrap().first().unwrap());
     assert_eq!(true, zone_record.system_record);
     assert_eq!("2016-03-22T10:20:53Z", zone_record.created_at);
     assert_eq!("2016-10-05T09:26:38Z", zone_record.updated_at);
@@ -57,8 +57,9 @@ fn create_zone_record_test() {
     assert_eq!(None, zone_record.priority);
     assert_eq!("A", zone_record.record_type);
     assert_eq!(false, zone_record.system_record);
-    assert_eq!(1, zone_record.regions.len());
-    assert_eq!("global", zone_record.regions.first().unwrap());
+    let regions = zone_record.regions.unwrap();
+    assert_eq!(1, regions.len());
+    assert_eq!("global", regions.first().unwrap());
     assert_eq!("2016-01-07T17:45:13Z", zone_record.created_at);
     assert_eq!("2016-01-07T17:45:13Z", zone_record.updated_at);
 
@@ -89,8 +90,9 @@ fn create_apex_zone_record_test() {
     assert_eq!(None, zone_record.priority);
     assert_eq!("A", zone_record.record_type);
     assert_eq!(false, zone_record.system_record);
-    assert_eq!(1, zone_record.regions.len());
-    assert_eq!("global", zone_record.regions.first().unwrap());
+    let regions = zone_record.regions.unwrap();
+    assert_eq!(1, regions.len());
+    assert_eq!("global", regions.first().unwrap());
     assert_eq!("2016-01-07T17:45:13Z", zone_record.created_at);
     assert_eq!("2016-01-07T17:45:13Z", zone_record.updated_at);
 }
@@ -114,9 +116,10 @@ fn get_zone_record_test() {
     assert_eq!(10, zone_record.priority.unwrap());
     assert_eq!("MX", zone_record.record_type);
     assert_eq!(false, zone_record.system_record);
-    assert_eq!(2, zone_record.regions.len());
-    assert_eq!("SV1", zone_record.regions[0]);
-    assert_eq!("IAD", zone_record.regions[1]);
+    let regions = zone_record.regions.unwrap();
+    assert_eq!(2, regions.len());
+    assert_eq!("SV1", regions[0]);
+    assert_eq!("IAD", regions[1]);
     assert_eq!("2016-10-05T09:51:35Z", zone_record.created_at);
     assert_eq!("2016-10-05T09:51:35Z", zone_record.updated_at);
 }
@@ -147,8 +150,9 @@ fn update_zone_record_test() {
     assert_eq!(20, zone_record.priority.unwrap());
     assert_eq!("MX", zone_record.record_type);
     assert_eq!(false, zone_record.system_record);
-    assert_eq!(1, zone_record.regions.len());
-    assert_eq!("global", zone_record.regions.first().unwrap());
+    let regions = zone_record.regions.unwrap();
+    assert_eq!(1, regions.len());
+    assert_eq!("global", regions.first().unwrap());
     assert_eq!("2016-10-05T09:51:35Z", zone_record.created_at);
     assert_eq!("2016-10-05T09:51:35Z", zone_record.updated_at);
 }

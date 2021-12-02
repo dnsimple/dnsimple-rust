@@ -1,45 +1,73 @@
 use crate::dnsimple::{Client, DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, RequestOptions};
 use serde::{Deserialize, Serialize};
 
+/// Represents a template in DNSimple
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Template {
+    /// The template ID in DNSimple.
     pub id: u64,
+    /// The associated account ID.
     pub account_id: u64,
+    /// The template name.
     pub name: String,
+    /// The string ID for the template.
     pub sid: String,
+    /// The template description.
     pub description: String,
+    /// When the template was created in DNSimple
     pub created_at: String,
+    /// When the template was last updated in DNSimple
     pub updated_at: String,
 }
 
+/// Payload used when creating a template
 #[derive(Debug, Deserialize, Serialize)]
 pub struct TemplatePayload {
+    /// The template name
     pub name: String,
+    /// The string ID for the template
     pub sid: String,
+    /// The template description
     pub description: Option<String>,
 }
 
+/// Represents a template record
 #[derive(Debug, Deserialize, Serialize)]
 pub struct TemplateRecord {
+    /// The template record ID in DNSimple.
     pub id: u64,
+    /// The template ID in DNSimple.
     pub template_id: u64,
+    /// The template record name (without the domain name).
     pub name: String,
+    /// The plain-text template record content.
     pub content: String,
+    /// The template record TTL value.
     pub ttl: u64,
+    /// The priority value, if the type of template record accepts a priority.
     pub priority: Option<u64>,
+    /// The type of template record, in uppercase.
     #[serde(rename = "type")]
     pub record_type: String,
+    /// When the template record was created in DNSimple.
     pub created_at: String,
+    /// When the template record was last updated in DNSimple.
     pub updated_at: String,
 }
 
+/// Payload used to create a template record
 #[derive(Debug, Deserialize, Serialize)]
 pub struct TemplateRecordPayload {
+    /// The template record name (without the domain name).
     pub name: String,
+    /// The type of template record, in uppercase.
     #[serde(rename = "type")]
     pub record_type: String,
+    /// The plain-text template record content.
     pub content: String,
+    /// The template record TTL value.
     pub ttl: Option<u64>,
+    /// The priority value, if the type of template record accepts a priority.
     pub priority: Option<u64>,
 }
 
@@ -67,6 +95,9 @@ impl Endpoint for TemplateRecordEndpoint {
     type Output = TemplateRecord;
 }
 
+/// The Templates Service handles the domains templates of the DNSimple API.
+///
+/// See [API Documentation: templates](https://developer.dnsimple.com/v2/templates/)
 pub struct Templates<'a> {
     pub client: &'a Client
 }

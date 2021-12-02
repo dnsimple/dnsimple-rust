@@ -9,13 +9,20 @@ impl Endpoint for DomainDelegationEndpoint {
     type Output = Vec<String>;
 }
 
+/// Represents a vanity name server
 #[derive(Debug, Deserialize)]
 pub struct VanityNameServer {
+    /// The vanity name server ID in DNSimple.
     pub id: u64,
+    /// The vanity name server name.
     pub name: String,
+    /// The vanity name server IPv4.
     pub ipv4: String,
+    /// The vanity name server IPv6.
     pub ipv6: String,
+    /// When the vanity name server was created in DNSimple.
     pub created_at: String,
+    /// When the vanity name server was last updated in DNSimple.
     pub updated_at: String,
 }
 

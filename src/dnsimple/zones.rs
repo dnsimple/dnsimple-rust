@@ -1,23 +1,34 @@
 use crate::dnsimple::{Client, DNSimpleResponse, Endpoint, RequestOptions};
 use serde::{Deserialize, Serialize};
 
+/// Represents a zone in DNSimple
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Zone {
+    /// The zone ID in DNSimple.
     pub id: u64,
+    ///  The associated account ID.
     pub account_id: u64,
+    /// The zone name.
     pub name: String,
+    /// True if the zone is a reverse zone.
     pub reverse: bool,
+    ///  When the zone was created in DNSimple.
     pub created_at: String,
+    ///  When the zone was created in DNSimple.
     pub updated_at: String,
 }
 
+/// Represents a zone file in DNSimple
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ZoneFile  {
+    /// The zone file contents.
     pub zone: String,
 }
 
+/// Represents a Zone Distribution in DNSimple
 #[derive(Debug, Deserialize, Serialize)]
-pub struct Distribution {
+pub struct ZoneDistribution {
+    /// true if the zone is properly distributed across all DNSimple name servers.
     pub distributed: bool,
 }
 
@@ -42,9 +53,12 @@ impl Endpoint for ZoneFileEndpoint {
 pub(crate) struct DistributionEndpoint;
 
 impl Endpoint for DistributionEndpoint {
-    type Output = Distribution;
+    type Output = ZoneDistribution;
 }
 
+/// The Zones Service handles the zone distribution of the DNSimple API.
+///
+/// See [API Documentation: zones](https://developer.dnsimple.com/v2/zones/)
 pub struct Zones<'a> {
     pub client: &'a Client
 }
@@ -92,7 +106,7 @@ impl Zones<'_> {
     ///
     /// `account_id`: The account ID
     /// `zone`: The zone name
-    pub fn check_zone_distribution(&self, account_id: u64, zone: &str) -> Result<DNSimpleResponse<Distribution>, String> {
+    pub fn check_zone_distribution(&self, account_id: u64, zone: &str) -> Result<DNSimpleResponse<ZoneDistribution>, String> {
         let path = format!("/{}/zones/{}/distribution", account_id, zone);
 
         self.client.get::<DistributionEndpoint>(&*path, None)

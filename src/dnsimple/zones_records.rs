@@ -1,42 +1,67 @@
-use crate::dnsimple::zones::{Distribution, Zones};
+use crate::dnsimple::zones::{ZoneDistribution, Zones};
 use serde::{Deserialize, Serialize};
 use crate::dnsimple::{DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, RequestOptions};
 use crate::dnsimple::zones::DistributionEndpoint;
 
-
+/// Represents a zone record in DNSimple
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ZoneRecord {
+    /// The record ID in DNSimple.
     pub id: u64,
+    /// The associated zone ID.
     pub zone_id: String,
+    /// The ID of the parent record, if this record is dependent on another record.
     pub parent_id: Option<String>,
+    /// The record name (without the domain name).
     pub name: String,
+    /// The plain-text record content.
     pub content: String,
+    /// The TTL value.
     pub ttl: u64,
+    /// The priority value, if the type of record accepts a priority.
     pub priority: Option<u64>,
+    /// The type of record, in uppercase.
     #[serde(rename = "type")]
     pub record_type: String,
-    pub regions: Vec<String>,
+    /// The regions where the record is propagated. This is optional.
+    pub regions: Option<Vec<String>>,
+    /// True if this is a system record created by DNSimple. System records are read-only.
     pub system_record: bool,
+    /// When the record was created in DNSimple.
     pub created_at: String,
+    /// When the record was last updated in DNSimple.
     pub updated_at: String,
 }
 
+/// Represents the payload to be send to create a zone record
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ZoneRecordPayload {
+    /// The record name (without the domain name).
     pub name: String,
+    /// The type of record, in uppercase.
     pub record_type: String,
+    /// The plain-text record content.
     pub content: String,
+    /// The TTL value.
     pub ttl: Option<u64>,
+    /// The priority value, if the type of record accepts a priority.
     pub priority: Option<u64>,
+    /// The regions where the record is propagated. This is optional.
     pub regions: Option<Vec<String>>,
 }
 
+/// Represents the payload to be send to update a zone record
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ZoneRecordUpdatePayload {
+    /// The record name (without the domain name).
     pub name: Option<String>,
+    /// The plain-text record content.
     pub content: Option<String>,
+    /// The TTL value.
     pub ttl: Option<u64>,
+    /// The priority value, if the type of record accepts a priority.
     pub priority: Option<u64>,
+    /// The regions where the record is propagated. This is optional.
     pub regions: Option<Vec<String>>,
 }
 
@@ -54,7 +79,6 @@ impl Endpoint for ZoneRecordEndpoint {
 
 impl Zones<'_> {
 
-    // TODO: change all functions that accept String to accept &str?
     /// List zone records
     ///
     /// # Arguments
@@ -127,7 +151,7 @@ impl Zones<'_> {
     /// `account_id`: The account ID
     /// `zone`: The zone name
     /// `record`: The record id
-    pub fn check_zone_record_distribution(&self, account_id: u64, zone: &str, record: u64) -> Result<DNSimpleResponse<Distribution>, String> {
+    pub fn check_zone_record_distribution(&self, account_id: u64, zone: &str, record: u64) -> Result<DNSimpleResponse<ZoneDistribution>, String> {
         let path = format!("/{}/zones/{}/records/{}/distribution", account_id, zone, record);
 
         self.client.get::<DistributionEndpoint>(&*path, None)

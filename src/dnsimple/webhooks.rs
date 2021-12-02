@@ -1,14 +1,19 @@
 use crate::dnsimple::{Client, DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, RequestOptions};
 use serde::{Deserialize, Serialize};
 
+/// Represents a webhook
 #[derive(Debug, Deserialize)]
 pub struct Webhook {
+    /// The webhook ID in DNSimple.
     pub id: u64,
+    /// The callback URL.
     pub url: String,
 }
 
+/// Represents the payload to be sent to create a webhook
 #[derive(Debug, Serialize)]
 pub struct WebhookPayload {
+    /// The callback url
     pub url: String,
 }
 
@@ -24,6 +29,9 @@ impl Endpoint for WebhookEndpoint {
     type Output = Webhook;
 }
 
+/// The Webhooks Service handles the webhooks of the DNSimple API.
+///
+/// See [API Documentation: webhooks](https://developer.dnsimple.com/v2/webhooks/)
 pub struct Webhooks<'a> {
     pub client: &'a Client
 }

@@ -1,27 +1,45 @@
 use crate::dnsimple::{Client, DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, RequestOptions};
 use serde::{Deserialize, Serialize};
 
+/// Represents a service in DNSimple
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Service {
+    /// The service ID in DNSimple.
     pub id: u64,
+    /// The service name.
     pub name: String,
+    ///  A string ID for the service.
     pub sid: String,
+    /// The service description.
     pub description: String,
+    /// The service setup description.
     pub setup_description: Option<String>,
+    /// Whether the service requires extra setup.
     pub requires_setup: bool,
+    /// The default subdomain where the service will be applied.
     pub default_subdomain: Option<String>,
+    /// When the service was created in DNSimple
     pub created_at: String,
+    /// When the service was last updated in DNSimple
     pub updated_at: String,
+    /// The array of settings to setup this service, if setup is required.
     pub settings: Vec<ServiceSetting>
 }
 
+/// Represents a service setting
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ServiceSetting {
+    /// The setting name.
     pub name: String,
+    /// The setting label.
     pub label: String,
+    /// A suffix to be appended to the setting value.
     pub append: Option<String>,
+    /// The setting description.
     pub description: String,
+    /// The setting description.
     pub example: Option<String>,
+    /// Whether the setting requires a password.
     pub password: bool,
 }
 
@@ -37,6 +55,9 @@ impl Endpoint for ServiceEndpoint {
     type Output = Service;
 }
 
+/// The Services Service handles the domains services of the DNSimple API.
+///
+/// See [API Documentation: services](https://developer.dnsimple.com/v2/services/)
 pub struct Services<'a> {
     pub client: &'a Client
 }

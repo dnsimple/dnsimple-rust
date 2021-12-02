@@ -8,6 +8,9 @@ impl Endpoint for VanityNameServersEndpoint {
     type Output = Vec<VanityNameServer>;
 }
 
+/// The Vanity Name Servers Service handles the vanity name servers of the DNSimple API.
+///
+/// See [API Documentation: vanity](https://developer.dnsimple.com/v2/vanity/)
 pub struct VanityNameServers<'a> {
     pub client: &'a Client
 }

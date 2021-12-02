@@ -3,25 +3,41 @@ use crate::dnsimple::registrar::Registrar;
 use serde::Deserialize;
 use serde_json::Value;
 
+/// Represents the whois privacy data
 #[derive(Debug, Deserialize)]
 pub struct WhoisPrivacy {
+    /// The whois privacy id in DNSimple
     pub id: u64,
+    /// The associated domain ID.
     pub domain_id: u64,
+    /// The date the whois privacy will expire on.
     pub expires_on: Option<String>,
+    /// Whether the whois privacy is enabled for the domain.
     pub enabled: Option<bool>,
+    /// When the whois privacy was created in DNSimple.
     pub created_at: String,
+    /// When the whois privacy was created in DNSimple.
     pub updated_at: String,
 }
 
+/// Represents the whois privacy renewal data
 #[derive(Debug, Deserialize)]
 pub struct WhoisPrivacyRenewal {
+    /// The renewal id in DNSimple
     pub id: u64,
+    /// The associated domain ID.
     pub domain_id: u64,
+    /// The associated WHOIS Privacy ID.
     pub whois_privacy_id: u64,
+    /// The WHOIS Privacy order state.
     pub state: String,
+    /// The date the WHOIS Privacy will expire on.
     pub expires_on: String,
+    /// Whether the WHOIS Privacy is enabled for the domain.
     pub enabled: bool,
+    /// When the WHOIS Privacy was created in DNSimple.
     pub created_at: String,
+    /// When the WHOIS Privacy was last updated in DNSimple.
     pub updated_at: String,
 }
 

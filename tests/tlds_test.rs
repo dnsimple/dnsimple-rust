@@ -22,7 +22,7 @@ fn test_list_tlds() {
     assert_eq!(true, tld.registration_enabled);
     assert_eq!(true, tld.renewal_enabled);
     assert_eq!(false, tld.transfer_enabled);
-    assert_eq!("ds", tld.dnssec_interface_type);
+    assert_eq!("ds", tld.dnssec_interface_type.as_ref().unwrap());
 }
 
 #[test]
@@ -42,7 +42,7 @@ fn test_get_tld() {
     assert_eq!(true, tld.registration_enabled);
     assert_eq!(true, tld.renewal_enabled);
     assert_eq!(true, tld.transfer_enabled);
-    assert_eq!("ds", tld.dnssec_interface_type);
+    assert_eq!("ds", tld.dnssec_interface_type.unwrap());
 }
 
 #[test]
