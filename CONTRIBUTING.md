@@ -24,27 +24,39 @@ The following instructions uses `$VERSION` as a placeholder, where `$VERSION` is
     ```rust
     const VERSION: &str = "0.1.0";
     ```
+2. Set the version in `Cargo.toml`
 
-2. Run the test suite and ensure all the tests pass.
+3. Run the test suite and ensure all the tests pass.
 
-3. Finalize the `## main` section in `CHANGELOG.md` assigning the version.
+4. Finalize the `## main` section in `CHANGELOG.md` assigning the version.
 
-4. Commit and push the changes
+5. Commit and push the changes
 
     ```shell
     git commit -a -m "Release $VERSION"
     git push origin main
     ```
 
-5. Wait for CI to complete.
+6. Wait for CI to complete.
 
-6. Create a signed tag.
+7. Create a signed tag.
 
     ```shell
     git tag -a v$VERSION -s -m "Release $VERSION"
     git push origin --tags
     ```
+8. Dry run the package publishing
+   
+   ```shell
+   cargo publish --dry-run
+   ```
+   
+9. Publish the package (if there are no errors)
 
+   ```shell
+   cargo publish
+   ```
+   
 ## Testing
 
 To run the test suite:
