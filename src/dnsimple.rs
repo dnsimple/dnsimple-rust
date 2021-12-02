@@ -9,6 +9,7 @@ use crate::dnsimple::certificates::Certificates;
 use crate::dnsimple::contacts::Contacts;
 use crate::dnsimple::domains::Domains;
 use crate::dnsimple::identity::Identity;
+use crate::dnsimple::oauth::OAuth;
 use crate::dnsimple::registrar::Registrar;
 use crate::dnsimple::services::Services;
 use crate::dnsimple::templates::Templates;
@@ -38,6 +39,7 @@ pub mod services;
 pub mod templates;
 pub mod vanity_name_servers;
 pub mod webhooks;
+pub mod oauth;
 
 const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
@@ -246,6 +248,13 @@ impl Client {
     /// Returns the `identity` service attached to this client
     pub fn identity(&self) -> Identity {
         Identity {
+            client: self
+        }
+    }
+
+    /// Returns the `oauth` service attached to this client
+    pub fn oauth(&self) -> OAuth {
+        OAuth {
             client: self
         }
     }

@@ -185,13 +185,13 @@ impl Endpoint for DomainRenewalEndpoint {
     type Output = DomainRenewal;
 }
 
+/// The Registrar Service handles the domains registrations of the DNSimple API.
+///
+/// See [API Documentation: registrar](https://developer.dnsimple.com/v2/registrar/)
 pub struct Registrar<'a> {
     pub client: &'a Client
 }
 
-/// The Registrar Service handles the domains registrations of the DNSimple API.
-///
-/// See [API Documentation: registrar](https://developer.dnsimple.com/v2/registrar/)
 impl Registrar<'_> {
     /// Checks a domain name for availability.
     ///
