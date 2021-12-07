@@ -50,17 +50,8 @@ The following instructions uses `$VERSION` as a placeholder, where `$VERSION` is
     git tag -a v$VERSION -s -m "Release $VERSION"
     git push origin --tags
     ```
-9. Dry run the package publishing
    
-   ```shell
-   cargo publish --dry-run
-   ```
-   
-10. Publish the package (if there are no errors)
-
-    ```shell
-    cargo publish
-    ```
+9. The `release` GitHub action should take it from here and release the package to crates.io
    
 ## Testing
 
