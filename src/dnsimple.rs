@@ -41,7 +41,7 @@ pub mod vanity_name_servers;
 pub mod webhooks;
 pub mod oauth;
 
-const VERSION: &str = "0.1.0";
+const VERSION: &str = "0.1.1";
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
 
 const API_VERSION: &str = "v2";
