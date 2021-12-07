@@ -1,4 +1,4 @@
-use dnsimple_rust::dnsimple::domains_push::InitiatePushPayload;
+use dnsimple::dnsimple::domains_push::InitiatePushPayload;
 use crate::common::setup_mock_for;
 mod common;
 

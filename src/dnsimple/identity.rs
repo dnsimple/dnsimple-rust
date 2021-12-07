@@ -58,7 +58,7 @@ impl Identity<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::{Client, new_client};
+    /// use dnsimple::dnsimple::{Client, new_client};
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let response = client.identity().whoami().unwrap().data.unwrap();

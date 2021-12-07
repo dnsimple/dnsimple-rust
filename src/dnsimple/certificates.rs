@@ -160,7 +160,7 @@ impl Certificates<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::{Client, new_client};
+    /// use dnsimple::dnsimple::{Client, new_client};
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let certificates = client.certificates().list_certificates(1010, "example.com", None).unwrap().data.unwrap();
@@ -183,7 +183,7 @@ impl Certificates<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::{Client, new_client};
+    /// use dnsimple::dnsimple::{Client, new_client};
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let certificate = client.certificates().get_certificate(1010, "example.com", 42).unwrap().data.unwrap();
@@ -205,7 +205,7 @@ impl Certificates<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::{Client, new_client};
+    /// use dnsimple::dnsimple::{Client, new_client};
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let certificate = client.certificates().download_certificate(1010, "example.com", 42).unwrap().data.unwrap();
@@ -227,7 +227,7 @@ impl Certificates<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::{Client, new_client};
+    /// use dnsimple::dnsimple::{Client, new_client};
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let private_key = client.certificates().get_certificate_private_key(1010, "example.com", 42).unwrap().data.unwrap();
@@ -249,8 +249,8 @@ impl Certificates<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::{Client, new_client};
-    /// use dnsimple_rust::dnsimple::certificates::LetsEncryptPurchasePayload;
+    /// use dnsimple::dnsimple::{Client, new_client};
+    /// use dnsimple::dnsimple::certificates::LetsEncryptPurchasePayload;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let payload = LetsEncryptPurchasePayload {
@@ -278,7 +278,7 @@ impl Certificates<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::{Client, new_client};
+    /// use dnsimple::dnsimple::{Client, new_client};
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let issued = client.certificates().issue_letsencrypt_certificate(1010, "example.com", 42).unwrap().data.unwrap();
@@ -300,8 +300,8 @@ impl Certificates<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::{Client, new_client};
-    /// use dnsimple_rust::dnsimple::certificates::LetsEncryptPurchaseRenewalPayload;
+    /// use dnsimple::dnsimple::{Client, new_client};
+    /// use dnsimple::dnsimple::certificates::LetsEncryptPurchaseRenewalPayload;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let payload = LetsEncryptPurchaseRenewalPayload {
@@ -325,7 +325,7 @@ impl Certificates<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::{Client, new_client};
+    /// use dnsimple::dnsimple::{Client, new_client};
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let issued = client.certificates().issue_letsencrypt_certificate_renewal(1010, "example.com", 41, 42).unwrap().data.unwrap();

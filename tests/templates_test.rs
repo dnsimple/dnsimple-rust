@@ -1,4 +1,4 @@
-use dnsimple_rust::dnsimple::templates::{TemplatePayload, TemplateRecordPayload};
+use dnsimple::dnsimple::templates::{TemplatePayload, TemplateRecordPayload};
 use crate::common::setup_mock_for;
 mod common;
 

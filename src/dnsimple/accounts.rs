@@ -20,7 +20,7 @@ impl Accounts<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::new_client;
+    /// use dnsimple::dnsimple::new_client;
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     ///
     /// let response = client.accounts().list_accounts().unwrap();

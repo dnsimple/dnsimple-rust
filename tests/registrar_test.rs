@@ -1,4 +1,4 @@
-use dnsimple_rust::dnsimple::registrar::{DomainRegistrationPayload, DomainRenewalPayload, DomainTransferPayload};
+use dnsimple::dnsimple::registrar::{DomainRegistrationPayload, DomainRenewalPayload, DomainTransferPayload};
 use crate::common::setup_mock_for;
 mod common;
 

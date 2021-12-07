@@ -1,6 +1,6 @@
 use std::fs;
 use mockito::{mock, Mock};
-use dnsimple_rust::dnsimple::{Client, new_client};
+use dnsimple::dnsimple::{Client, new_client};
 
 /// Creates a mockserver and a client (changing the url of the client
 /// to that of the mockserver to capture the requests).

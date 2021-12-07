@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use crate::common::setup_mock_for;
 mod common;
 use serde::Deserialize;
-use dnsimple_rust::dnsimple::{Endpoint, Filters, Paginate, RequestOptions, Sort};
+use dnsimple::dnsimple::{Endpoint, Filters, Paginate, RequestOptions, Sort};
 
 #[derive(Debug, Deserialize)]
 struct Id {

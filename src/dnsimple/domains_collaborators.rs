@@ -54,7 +54,7 @@ impl Domains<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::{Filters, new_client, Paginate, Sort};
+    /// use dnsimple::dnsimple::{Filters, new_client, Paginate, Sort};
     /// use std::collections::HashMap;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
@@ -84,7 +84,7 @@ impl Domains<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::new_client;
+    /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let email = "existing-user@example.com";
@@ -110,8 +110,8 @@ impl Domains<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::{Client, new_client};
-    /// use dnsimple_rust::dnsimple::domains::DomainCreationPayload;
+    /// use dnsimple::dnsimple::{Client, new_client};
+    /// use dnsimple::dnsimple::domains::DomainCreationPayload;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let response = client.domains().remove_collaborator(1234, 42, 100);

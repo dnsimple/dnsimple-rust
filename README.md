@@ -18,7 +18,7 @@ A Rust client for the [DNSimple API v2](https://developer.dnsimple.com/v2/).
 ## Usage
 
 ```
-use dnsimple_rust::dnsimple::{Client, new_client};
+use dnsimple::dnsimple::{Client, new_client};
 
 let client = new_client(true, String::from("AUTH_TOKEN"));
 let identity_response = client.identity().whoami().unwrap().data.unwrap();

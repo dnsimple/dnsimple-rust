@@ -1,4 +1,4 @@
-use dnsimple_rust::dnsimple::domains_email_forwards::EmailForwardPayload;
+use dnsimple::dnsimple::domains_email_forwards::EmailForwardPayload;
 use crate::common::setup_mock_for;
 mod common;
 

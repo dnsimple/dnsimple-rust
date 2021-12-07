@@ -1,4 +1,4 @@
-use dnsimple_rust::dnsimple::oauth::OAuthTokenPayload;
+use dnsimple::dnsimple::oauth::OAuthTokenPayload;
 use crate::common::setup_mock_for;
 mod common;
 

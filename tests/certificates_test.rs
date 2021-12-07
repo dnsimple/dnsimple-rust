@@ -1,4 +1,4 @@
-use dnsimple_rust::dnsimple::certificates::{LetsEncryptPurchasePayload, LetsEncryptPurchaseRenewalPayload};
+use dnsimple::dnsimple::certificates::{LetsEncryptPurchasePayload, LetsEncryptPurchaseRenewalPayload};
 use crate::common::setup_mock_for;
 mod common;
 

@@ -63,7 +63,7 @@ impl Domains<'_> {
     ///
     /// ```no_run
     /// use std::collections::HashMap;
-    /// use dnsimple_rust::dnsimple::{Client, new_client};
+    /// use dnsimple::dnsimple::{Client, new_client};
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let domains = client.domains().list_domains(1234, None).unwrap().data.unwrap();
@@ -85,8 +85,8 @@ impl Domains<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::{Client, new_client};
-    /// use dnsimple_rust::dnsimple::domains::DomainCreationPayload;
+    /// use dnsimple::dnsimple::{Client, new_client};
+    /// use dnsimple::dnsimple::domains::DomainCreationPayload;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let domain_name = String::from("example-beta.com");
@@ -112,8 +112,8 @@ impl Domains<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::{Client, new_client};
-    /// use dnsimple_rust::dnsimple::domains::DomainCreationPayload;
+    /// use dnsimple::dnsimple::{Client, new_client};
+    /// use dnsimple::dnsimple::domains::DomainCreationPayload;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let domains_response = client.domains().get_domain(1234, 42);
@@ -134,8 +134,8 @@ impl Domains<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::{Client, new_client};
-    /// use dnsimple_rust::dnsimple::domains::DomainCreationPayload;
+    /// use dnsimple::dnsimple::{Client, new_client};
+    /// use dnsimple::dnsimple::domains::DomainCreationPayload;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let domains_response = client.domains().delete_domain(1234, 42);

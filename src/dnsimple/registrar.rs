@@ -198,7 +198,7 @@ impl Registrar<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::new_client;
+    /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let domain_check = client.registrar().check_domain(1234, "example.com").unwrap().data.unwrap();
@@ -219,7 +219,7 @@ impl Registrar<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::new_client;
+    /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let domain_check = client.registrar().check_domain_premium_price(1234, "example.com", None).unwrap().data.unwrap();
@@ -241,7 +241,7 @@ impl Registrar<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::new_client;
+    /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let domain_check = client.registrar().get_domain_prices(1234, "example.com").unwrap().data.unwrap();
@@ -262,8 +262,8 @@ impl Registrar<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::new_client;
-    /// use dnsimple_rust::dnsimple::registrar::DomainRegistrationPayload;
+    /// use dnsimple::dnsimple::new_client;
+    /// use dnsimple::dnsimple::registrar::DomainRegistrationPayload;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let payload = DomainRegistrationPayload {
@@ -292,8 +292,8 @@ impl Registrar<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::new_client;
-    /// use dnsimple_rust::dnsimple::registrar::DomainTransferPayload;
+    /// use dnsimple::dnsimple::new_client;
+    /// use dnsimple::dnsimple::registrar::DomainTransferPayload;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let payload = DomainTransferPayload {

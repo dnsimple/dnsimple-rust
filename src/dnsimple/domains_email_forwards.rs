@@ -71,7 +71,7 @@ impl Domains<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::new_client;
+    /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let email_forwards_list = client.domains().list_email_forwards(1234, "example.com", None).unwrap().data.unwrap();
@@ -95,8 +95,8 @@ impl Domains<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::domains_email_forwards::EmailForwardPayload;
-    /// use dnsimple_rust::dnsimple::new_client;
+    /// use dnsimple::dnsimple::domains_email_forwards::EmailForwardPayload;
+    /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let payload = EmailForwardPayload {
@@ -122,7 +122,7 @@ impl Domains<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::new_client;
+    /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let email_forwards = client.domains().get_email_forward(1234, "example.com", 42).unwrap().data.unwrap();
@@ -144,7 +144,7 @@ impl Domains<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::new_client;
+    /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// client.domains().delete_email_forward(1234, "example.com", 42);

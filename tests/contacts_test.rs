@@ -1,4 +1,4 @@
-use dnsimple_rust::dnsimple::contacts::ContactPayload;
+use dnsimple::dnsimple::contacts::ContactPayload;
 use crate::common::setup_mock_for;
 mod common;
 

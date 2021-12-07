@@ -61,7 +61,7 @@ impl Domains<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::new_client;
+    /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let signer_records = client.domains().list_delegation_signer_records(1234, "example.com", None).unwrap().data.unwrap();
@@ -89,8 +89,8 @@ impl Domains<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::domains_signer_records::DelegationSignerRecordPayload;
-    /// use dnsimple_rust::dnsimple::new_client;
+    /// use dnsimple::dnsimple::domains_signer_records::DelegationSignerRecordPayload;
+    /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let payload = DelegationSignerRecordPayload {
@@ -119,7 +119,7 @@ impl Domains<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::new_client;
+    /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let signer_records = client.domains().get_delegation_signer_record(1234, "example.com").unwrap().data.unwrap();
@@ -140,7 +140,7 @@ impl Domains<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::new_client;
+    /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// client.domains().delete_delegation_signer_record(1234, "example.com", 42);

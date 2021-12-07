@@ -57,7 +57,7 @@ const DEFAULT_SANDBOX_URL: &str  = "https://api.sandbox.dnsimple.com";
 /// # Examples
 ///
 /// ```no_run
-/// use dnsimple_rust::dnsimple::{Client, new_client};
+/// use dnsimple::dnsimple::{Client, new_client};
 ///
 /// let client = new_client(true, String::from("AUTH_TOKEN"));
 /// let identity = client.identity().whoami().unwrap().data.unwrap();
@@ -193,7 +193,7 @@ pub struct Paginate {
 /// # Examples
 ///
 /// ```no_run
-/// use dnsimple_rust::dnsimple::{Client, new_client};
+/// use dnsimple::dnsimple::{Client, new_client};
 ///
 /// let client = new_client(true, String::from("AUTH_TOKEN"));
 /// ```
@@ -314,7 +314,7 @@ impl Client {
     /// Note that if you want to do this you will have to declare your client mutable.
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::{Client, new_client};
+    /// use dnsimple::dnsimple::{Client, new_client};
     /// let mut client = new_client(true, String::from("ACCESS_TOKEN"));
     /// client.set_base_url("https://example.com");
     /// ```

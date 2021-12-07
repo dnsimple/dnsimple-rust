@@ -1,4 +1,4 @@
-use dnsimple_rust::dnsimple::zones_records::{ZoneRecordPayload, ZoneRecordUpdatePayload};
+use dnsimple::dnsimple::zones_records::{ZoneRecordPayload, ZoneRecordUpdatePayload};
 use crate::common::setup_mock_for;
 mod common;
 

@@ -1,4 +1,4 @@
-use dnsimple_rust::dnsimple::domains_signer_records::DelegationSignerRecordPayload;
+use dnsimple::dnsimple::domains_signer_records::DelegationSignerRecordPayload;
 use crate::common::setup_mock_for;
 mod common;
 

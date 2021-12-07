@@ -30,7 +30,7 @@ impl Domains<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::new_client;
+    /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let dnssec = client.domains().enable_dnssec(1234, "example.com").unwrap().data.unwrap();
@@ -51,7 +51,7 @@ impl Domains<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::new_client;
+    /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// client.domains().disable_dnssec(1234, "example.com");
@@ -72,7 +72,7 @@ impl Domains<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple_rust::dnsimple::new_client;
+    /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let dnssec = client.domains().get_dnssec(1234, "example.com").unwrap().data.unwrap();
