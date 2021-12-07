@@ -7,7 +7,7 @@ description = "Rust DNSimple API client"
 readme = "README.md"
 license-file = "LICENSE.txt"
 repository = "https://github.com/dnsimple/dnsimple-rust"
-keywords = ["DNS", "domain", "domain managent", "domain automation"]
+keywords = ["DNS", "domain", "management", "automation"]
 categories = ["api-bindings"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
