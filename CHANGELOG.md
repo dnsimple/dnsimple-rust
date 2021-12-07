@@ -6,4 +6,5 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/).
 
 ## 0.1.0
 
+- ADDS: Automatic releasing when tagging a release
 - First implementation of the dnsimple-rust client (including all the endpoints)
