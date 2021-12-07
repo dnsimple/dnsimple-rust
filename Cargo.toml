@@ -1,5 +1,5 @@
 [package]
-name = "dnsimple-rust"
+name = "dnsimple"
 version = "0.1.0"
 authors = ["Enrique Comba Riepenhausen <enrique.comba@dnsimple.com>"]
 edition = "2018"
