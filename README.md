@@ -1,5 +1,3 @@
-[![ci](https://github.com/dnsimple/dnsimple-rust/actions/workflows/ci.yml/badge.svg)](https://github.com/dnsimple/dnsimple-rust/actions/workflows/ci.yml)
-
 ## :warning: Development Warning
 
 This project targets the development of the API client for the [DNSimple API v2](https://developer.dnsimple.com/v2/).
@@ -14,6 +12,9 @@ expect :bomb: bugs to be merged into main. Regardless, use this library at your 
 # DNSimple Rust Client
 
 A Rust client for the [DNSimple API v2](https://developer.dnsimple.com/v2/).
+
+[![Build Status](https://github.com/dnsimple/dnsimple-rust/actions/workflows/ci.yml/badge.svg)](https://github.com/dnsimple/dnsimple-rust/actions/workflows/ci.yml)
+
 
 ## Usage
 
