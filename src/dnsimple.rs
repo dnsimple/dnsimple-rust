@@ -303,7 +303,7 @@ impl Client {
     /// Returns the current url (including the `API_VERSION` as part of the path).
     pub fn versioned_url(&self) -> String {
         let mut url = String::from(&self.base_url);
-        url.push_str("/");
+        url.push('/');
         url.push_str(API_VERSION);
         url
     }
@@ -480,34 +480,24 @@ impl Client {
             .set("User-Agent", &self.user_agent)
             .set("Accept", "application/json");
 
-        match options {
-            Some(options) => {
-                match options.paginate {
-                    Some(pagination) => {
-                        request = request.query("page", &*pagination.page.to_string());
-                        request = request.query("per_page", &*pagination.per_page.to_string())
-                    }
-                    _ => {}
-                }
-                match options.filters {
-                    Some(filters) => {
-                        for (key, value) in filters.filters {
-                            request = request.query(&*key, &*value);
-                        }
-                    }
-                    _ => {}
-                }
-                match options.sort {
-                    Some(sort) => {
-                        request = request.query("sort", &*sort.sort_by);
-                    }
-                    _ => {}
+        if let Some(options) = options {
+            if let Some(pagination) = options.paginate {
+                request = request.query("page", &*pagination.page.to_string());
+                request = request.query("per_page", &*pagination.per_page.to_string())
+            }
+
+            if let Some(filters) = options.filters {
+                for (key, value) in filters.filters {
+                    request = request.query(&*key, &*value);
                 }
             }
-            _ => {}
+
+            if let Some(sort) = options.sort {
+                request = request.query("sort", &*sort.sort_by);
+            }
         }
 
-        self.add_headers_to_request(request.to_owned())
+        self.add_headers_to_request(request)
     }
 
     pub fn build_post_request(&self, path: &&str) -> Request {

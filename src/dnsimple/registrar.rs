@@ -244,7 +244,7 @@ impl Registrar<'_> {
             "/{}/registrar/domains/{}/premium_price?action={}",
             account_id,
             domain,
-            action.unwrap_or(String::from("registration"))
+            action.unwrap_or_else(|| "registration".into())
         );
 
         self.client.get::<DomainPremiumPriceEndpoint>(&*path, None)

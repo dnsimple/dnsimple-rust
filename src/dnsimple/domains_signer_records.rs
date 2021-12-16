@@ -166,7 +166,7 @@ impl Domains<'_> {
     ///
     /// `account_id`: The account ID
     /// `domain`: The ID or name of the domain we want list the signer records from
-    /// `ds_record_id`:	The delegation signer record id
+    /// `ds_record_id`: The delegation signer record id
     pub fn delete_delegation_signer_record(
         &self,
         account_id: u64,
