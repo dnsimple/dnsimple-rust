@@ -1,6 +1,6 @@
+use crate::dnsimple::tlds::TldExtendedAttribute;
 use crate::dnsimple::{Client, DNSimpleEmptyResponse, DNSimpleResponse, Endpoint};
 use serde::{Deserialize, Serialize};
-use crate::dnsimple::tlds::TldExtendedAttribute;
 
 /// Represents the domain check
 #[derive(Debug, Deserialize, Serialize)]
@@ -19,7 +19,7 @@ pub struct DomainPremiumPrice {
     /// The domain premium price
     pub premium_price: String,
     /// The action: registration/transfer/renewal
-    pub action: String
+    pub action: String,
 }
 
 /// Represents the domain prices
@@ -189,7 +189,7 @@ impl Endpoint for DomainRenewalEndpoint {
 ///
 /// See [API Documentation: registrar](https://developer.dnsimple.com/v2/registrar/)
 pub struct Registrar<'a> {
-    pub client: &'a Client
+    pub client: &'a Client,
 }
 
 impl Registrar<'_> {
@@ -208,7 +208,11 @@ impl Registrar<'_> {
     ///
     /// `account_id`: The account id
     /// `domain`: The domain name
-    pub fn check_domain(&self, account_id: u64, domain: &str) -> Result<DNSimpleResponse<DomainCheck>, String> {
+    pub fn check_domain(
+        &self,
+        account_id: u64,
+        domain: &str,
+    ) -> Result<DNSimpleResponse<DomainCheck>, String> {
         let path = format!("/{}/registrar/domains/{}/check", account_id, domain);
 
         self.client.get::<DomainCheckEndpoint>(&*path, None)
@@ -229,9 +233,19 @@ impl Registrar<'_> {
     ///
     /// `account_id`: The account id
     /// `domain`: The domain name
-    #[deprecated(note="please use `get_domain_prices` instead")]
-    pub fn check_domain_premium_price(&self, account_id: u64, domain: &str, action: Option<String>) -> Result<DNSimpleResponse<DomainPremiumPrice>, String> {
-        let path = format!("/{}/registrar/domains/{}/premium_price?action={}", account_id, domain, action.unwrap_or(String::from("registration")));
+    #[deprecated(note = "please use `get_domain_prices` instead")]
+    pub fn check_domain_premium_price(
+        &self,
+        account_id: u64,
+        domain: &str,
+        action: Option<String>,
+    ) -> Result<DNSimpleResponse<DomainPremiumPrice>, String> {
+        let path = format!(
+            "/{}/registrar/domains/{}/premium_price?action={}",
+            account_id,
+            domain,
+            action.unwrap_or(String::from("registration"))
+        );
 
         self.client.get::<DomainPremiumPriceEndpoint>(&*path, None)
     }
@@ -251,7 +265,11 @@ impl Registrar<'_> {
     ///
     /// `account_id`: The account id
     /// `domain`: The domain name
-    pub fn get_domain_prices(&self, account_id: u64, domain: &str) -> Result<DNSimpleResponse<DomainPrice>, String> {
+    pub fn get_domain_prices(
+        &self,
+        account_id: u64,
+        domain: &str,
+    ) -> Result<DNSimpleResponse<DomainPrice>, String> {
         let path = format!("/{}/registrar/domains/{}/prices", account_id, domain);
 
         self.client.get::<DomainPricesEndpoint>(&*path, None)
@@ -281,10 +299,16 @@ impl Registrar<'_> {
     /// `account_id`: The account id
     /// `domain`: The domain name
     /// `payload`: The `DomainRegistrationPayload` with the information needed to register the domain
-    pub fn register_domain(&self, account_id: u64, domain: &str, payload: DomainRegistrationPayload) -> Result<DNSimpleResponse<DomainRegistration>, String> {
+    pub fn register_domain(
+        &self,
+        account_id: u64,
+        domain: &str,
+        payload: DomainRegistrationPayload,
+    ) -> Result<DNSimpleResponse<DomainRegistration>, String> {
         let path = format!("/{}/registrar/domains/{}/registrations", account_id, domain);
 
-        self.client.post::<DomainRegistrationEndpoint>(&*path, serde_json::to_value(payload).unwrap())
+        self.client
+            .post::<DomainRegistrationEndpoint>(&*path, serde_json::to_value(payload).unwrap())
     }
 
     /// Transfer a domain name from another domain registrar into DNSimple.
@@ -312,10 +336,16 @@ impl Registrar<'_> {
     /// `account_id`: The account id
     /// `domain`: The domain name
     /// `payload`: The `DomainTransferPayload` with the information needed to transfer the domain
-    pub fn transfer_domain(&self, account_id: u64, domain: &str, payload: DomainTransferPayload) -> Result<DNSimpleResponse<DomainTransfer>, String> {
+    pub fn transfer_domain(
+        &self,
+        account_id: u64,
+        domain: &str,
+        payload: DomainTransferPayload,
+    ) -> Result<DNSimpleResponse<DomainTransfer>, String> {
         let path = format!("/{}/registrar/domains/{}/transfers", account_id, domain);
 
-        self.client.post::<DomainTransferEndpoint>(&*path, serde_json::to_value(payload).unwrap())
+        self.client
+            .post::<DomainTransferEndpoint>(&*path, serde_json::to_value(payload).unwrap())
     }
 
     /// Retrieves the details of an existing domain transfer.
@@ -325,8 +355,16 @@ impl Registrar<'_> {
     /// `account_id`: The account id
     /// `domain`: The domain name
     /// `domain_transfer`: The domain transfer id
-    pub fn get_domain_transfer(&self, account_id: u64, domain: String, domain_transfer: u64) -> Result<DNSimpleResponse<DomainTransfer>, String> {
-        let path = format!("/{}/registrar/domains/{}/transfers/{}", account_id, domain, domain_transfer);
+    pub fn get_domain_transfer(
+        &self,
+        account_id: u64,
+        domain: String,
+        domain_transfer: u64,
+    ) -> Result<DNSimpleResponse<DomainTransfer>, String> {
+        let path = format!(
+            "/{}/registrar/domains/{}/transfers/{}",
+            account_id, domain, domain_transfer
+        );
 
         self.client.get::<DomainTransferEndpoint>(&*path, None)
     }
@@ -338,10 +376,19 @@ impl Registrar<'_> {
     /// `account_id`: The account id
     /// `domain`: The domain name
     /// `domain_transfer`: The domain transfer id
-    pub fn cancel_domain_transfer(&self, account_id: u64, domain: String, domain_transfer: u64) -> Result<DNSimpleResponse<DomainTransfer>, String> {
-        let path = format!("/{}/registrar/domains/{}/transfers/{}", account_id, domain, domain_transfer);
+    pub fn cancel_domain_transfer(
+        &self,
+        account_id: u64,
+        domain: String,
+        domain_transfer: u64,
+    ) -> Result<DNSimpleResponse<DomainTransfer>, String> {
+        let path = format!(
+            "/{}/registrar/domains/{}/transfers/{}",
+            account_id, domain, domain_transfer
+        );
 
-        self.client.delete_with_response::<DomainTransferEndpoint>(&*path)
+        self.client
+            .delete_with_response::<DomainTransferEndpoint>(&*path)
     }
 
     /// Get a domain’s price for registration, renewal, and transfer.
@@ -351,10 +398,16 @@ impl Registrar<'_> {
     /// `account_id`: The account id
     /// `domain`: The domain name
     /// `payload`: The `DomainRenewalPayload` with the information needed to renew the domain
-    pub fn renew_domain(&self, account_id: u64, domain: String, payload: DomainRenewalPayload) -> Result<DNSimpleResponse<DomainRenewal>, String> {
+    pub fn renew_domain(
+        &self,
+        account_id: u64,
+        domain: String,
+        payload: DomainRenewalPayload,
+    ) -> Result<DNSimpleResponse<DomainRenewal>, String> {
         let path = format!("/{}/registrar/domains/{}/renewals", account_id, domain);
 
-        self.client.post::<DomainRenewalEndpoint>(&*path, serde_json::to_value(payload).unwrap())
+        self.client
+            .post::<DomainRenewalEndpoint>(&*path, serde_json::to_value(payload).unwrap())
     }
 
     /// Authorize a domain transfer out
@@ -364,7 +417,10 @@ impl Registrar<'_> {
     /// `account_id`: The account id
     /// `domain`: The domain name
     pub fn transfer_domain_out(&self, account_id: u64, domain: String) -> DNSimpleEmptyResponse {
-        let path = format!("/{}/registrar/domains/{}/authorize_transfer_out", account_id, domain);
+        let path = format!(
+            "/{}/registrar/domains/{}/authorize_transfer_out",
+            account_id, domain
+        );
 
         self.client.empty_post(&*path)
     }

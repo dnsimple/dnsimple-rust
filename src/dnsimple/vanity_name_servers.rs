@@ -1,6 +1,6 @@
+use crate::dnsimple::registrar_name_servers::VanityNameServer;
 use crate::dnsimple::{Client, DNSimpleEmptyResponse, DNSimpleResponse, Endpoint};
 use serde_json::Value;
-use crate::dnsimple::registrar_name_servers::VanityNameServer;
 
 struct VanityNameServersEndpoint;
 
@@ -12,7 +12,7 @@ impl Endpoint for VanityNameServersEndpoint {
 ///
 /// See [API Documentation: vanity](https://developer.dnsimple.com/v2/vanity/)
 pub struct VanityNameServers<'a> {
-    pub client: &'a Client
+    pub client: &'a Client,
 }
 
 impl VanityNameServers<'_> {
@@ -21,10 +21,15 @@ impl VanityNameServers<'_> {
     /// # Arguments
     /// `account_id`: The account id
     /// `domain`: The domain name or id
-    pub fn enable_vanity_name_servers(&self, account_id: u64, domain: String) -> Result<DNSimpleResponse<Vec<VanityNameServer>>, String> {
+    pub fn enable_vanity_name_servers(
+        &self,
+        account_id: u64,
+        domain: String,
+    ) -> Result<DNSimpleResponse<Vec<VanityNameServer>>, String> {
         let path = format!("/{}/vanity/{}", account_id, domain);
 
-        self.client.put::<VanityNameServersEndpoint>(&path, Value::Null)
+        self.client
+            .put::<VanityNameServersEndpoint>(&path, Value::Null)
     }
 
     /// Enable vanity name servers
@@ -32,7 +37,11 @@ impl VanityNameServers<'_> {
     /// # Arguments
     /// `account_id`: The account id
     /// `domain`: The domain name or id
-    pub fn disable_vanity_name_servers(&self, account_id: u64, domain: String) -> DNSimpleEmptyResponse {
+    pub fn disable_vanity_name_servers(
+        &self,
+        account_id: u64,
+        domain: String,
+    ) -> DNSimpleEmptyResponse {
         let path = format!("/{}/vanity/{}", account_id, domain);
 
         self.client.delete(&path)

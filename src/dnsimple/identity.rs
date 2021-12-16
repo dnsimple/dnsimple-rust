@@ -32,7 +32,7 @@ pub struct Account {
 
 /// Represents the structure holding a User and Account structs.
 #[derive(Debug, Deserialize, Serialize)]
-pub struct WhoamiData{
+pub struct WhoamiData {
     /// The account, if present
     pub account: Option<Account>,
     /// The user, if present
@@ -49,7 +49,7 @@ impl Endpoint for IdentityEndpoint {
 ///
 /// See [API Documentation: identity](https://developer.dnsimple.com/v2/identity/)
 pub struct Identity<'a> {
-    pub client: &'a Client
+    pub client: &'a Client,
 }
 
 impl Identity<'_> {
@@ -66,7 +66,7 @@ impl Identity<'_> {
     ///
     /// ```
     pub fn whoami(&self) -> Result<DNSimpleResponse<WhoamiData>, String> {
-        self.client.get::<IdentityEndpoint>("/whoami",None)
+        self.client.get::<IdentityEndpoint>("/whoami", None)
     }
 }
 

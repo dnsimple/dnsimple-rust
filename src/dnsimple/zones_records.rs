@@ -1,7 +1,7 @@
-use crate::dnsimple::zones::{ZoneDistribution, Zones};
-use serde::{Deserialize, Serialize};
-use crate::dnsimple::{DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, RequestOptions};
 use crate::dnsimple::zones::DistributionEndpoint;
+use crate::dnsimple::zones::{ZoneDistribution, Zones};
+use crate::dnsimple::{DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, RequestOptions};
+use serde::{Deserialize, Serialize};
 
 /// Represents a zone record in DNSimple
 #[derive(Debug, Deserialize, Serialize)]
@@ -78,14 +78,18 @@ impl Endpoint for ZoneRecordEndpoint {
 }
 
 impl Zones<'_> {
-
     /// List zone records
     ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
     /// `zone`: The zone name
-    pub fn list_zone_records(&self, account_id: u64, zone: &str, options: Option<RequestOptions>) -> Result<DNSimpleResponse<Vec<ZoneRecord>>, String> {
+    pub fn list_zone_records(
+        &self,
+        account_id: u64,
+        zone: &str,
+        options: Option<RequestOptions>,
+    ) -> Result<DNSimpleResponse<Vec<ZoneRecord>>, String> {
         let path = format!("/{}/zones/{}/records", account_id, zone);
 
         self.client.get::<ZoneRecordsEndpoint>(&*path, options)
@@ -98,10 +102,16 @@ impl Zones<'_> {
     /// `account_id`: The account ID
     /// `zone`: The zone name
     /// `payload`: The `ZoneRecordPayload` with the information to create the zone record
-    pub fn create_zone_record(&self, account_id: u64, zone: &str, payload: ZoneRecordPayload) -> Result<DNSimpleResponse<ZoneRecord>, String> {
+    pub fn create_zone_record(
+        &self,
+        account_id: u64,
+        zone: &str,
+        payload: ZoneRecordPayload,
+    ) -> Result<DNSimpleResponse<ZoneRecord>, String> {
         let path = format!("/{}/zones/{}/records", account_id, zone);
 
-        self.client.post::<ZoneRecordEndpoint>(&*path, serde_json::to_value(payload).unwrap())
+        self.client
+            .post::<ZoneRecordEndpoint>(&*path, serde_json::to_value(payload).unwrap())
     }
 
     /// Retrieve a zone record
@@ -111,7 +121,12 @@ impl Zones<'_> {
     /// `account_id`: The account ID
     /// `zone`: The zone name
     /// `record`: The record id
-    pub fn get_zone_record(&self, account_id: u64, zone: &str, record: u64) -> Result<DNSimpleResponse<ZoneRecord>, String> {
+    pub fn get_zone_record(
+        &self,
+        account_id: u64,
+        zone: &str,
+        record: u64,
+    ) -> Result<DNSimpleResponse<ZoneRecord>, String> {
         let path = format!("/{}/zones/{}/records/{}", account_id, zone, record);
 
         self.client.get::<ZoneRecordEndpoint>(&*path, None)
@@ -125,10 +140,17 @@ impl Zones<'_> {
     /// `zone`: The zone name
     /// `record`: The record id
     /// `payload`: The `ZoneRecordUpdatePayload` with the information to create the zone record
-    pub fn update_zone_record(&self, account_id: u64, zone: &str, record: u64, payload: ZoneRecordUpdatePayload) -> Result<DNSimpleResponse<ZoneRecord>, String> {
+    pub fn update_zone_record(
+        &self,
+        account_id: u64,
+        zone: &str,
+        record: u64,
+        payload: ZoneRecordUpdatePayload,
+    ) -> Result<DNSimpleResponse<ZoneRecord>, String> {
         let path = format!("/{}/zones/{}/records/{}", account_id, zone, record);
 
-        self.client.patch::<ZoneRecordEndpoint>(&*path, serde_json::to_value(payload).unwrap())
+        self.client
+            .patch::<ZoneRecordEndpoint>(&*path, serde_json::to_value(payload).unwrap())
     }
 
     /// Delete a zone record
@@ -138,7 +160,12 @@ impl Zones<'_> {
     /// `account_id`: The account ID
     /// `zone`: The zone name
     /// `record`: The record id
-    pub fn delete_zone_record(&self, account_id: u64, zone: &str, record: u64) -> DNSimpleEmptyResponse {
+    pub fn delete_zone_record(
+        &self,
+        account_id: u64,
+        zone: &str,
+        record: u64,
+    ) -> DNSimpleEmptyResponse {
         let path = format!("/{}/zones/{}/records/{}", account_id, zone, record);
 
         self.client.delete(&*path)
@@ -151,8 +178,16 @@ impl Zones<'_> {
     /// `account_id`: The account ID
     /// `zone`: The zone name
     /// `record`: The record id
-    pub fn check_zone_record_distribution(&self, account_id: u64, zone: &str, record: u64) -> Result<DNSimpleResponse<ZoneDistribution>, String> {
-        let path = format!("/{}/zones/{}/records/{}/distribution", account_id, zone, record);
+    pub fn check_zone_record_distribution(
+        &self,
+        account_id: u64,
+        zone: &str,
+        record: u64,
+    ) -> Result<DNSimpleResponse<ZoneDistribution>, String> {
+        let path = format!(
+            "/{}/zones/{}/records/{}/distribution",
+            account_id, zone, record
+        );
 
         self.client.get::<DistributionEndpoint>(&*path, None)
     }

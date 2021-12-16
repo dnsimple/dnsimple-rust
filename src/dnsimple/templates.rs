@@ -99,18 +99,21 @@ impl Endpoint for TemplateRecordEndpoint {
 ///
 /// See [API Documentation: templates](https://developer.dnsimple.com/v2/templates/)
 pub struct Templates<'a> {
-    pub client: &'a Client
+    pub client: &'a Client,
 }
 
 impl Templates<'_> {
-
     /// List templates in the account.
     ///
     /// # Arguments
     ///
     /// `account_id`: The account id
     /// `options`: The `RequestOptions` for sorting, etc.
-    pub fn list_templates(&self, account_id: u64, options: Option<RequestOptions>) -> Result<DNSimpleResponse<Vec<Template>>, String> {
+    pub fn list_templates(
+        &self,
+        account_id: u64,
+        options: Option<RequestOptions>,
+    ) -> Result<DNSimpleResponse<Vec<Template>>, String> {
         let path = format!("/{}/templates", account_id);
 
         self.client.get::<TemplatesEndpoint>(&path, options)
@@ -122,10 +125,15 @@ impl Templates<'_> {
     ///
     /// `account_id`: The account id
     /// `payload`: The `Template payload` with the information to create the template
-    pub fn create_template(&self, account_id: u64, payload: TemplatePayload) -> Result<DNSimpleResponse<Template>, String> {
+    pub fn create_template(
+        &self,
+        account_id: u64,
+        payload: TemplatePayload,
+    ) -> Result<DNSimpleResponse<Template>, String> {
         let path = format!("/{}/templates", account_id);
 
-        self.client.post::<TemplateEndpoint>(&path, serde_json::to_value(payload).unwrap())
+        self.client
+            .post::<TemplateEndpoint>(&path, serde_json::to_value(payload).unwrap())
     }
 
     /// Retrieve a template in the account
@@ -134,7 +142,11 @@ impl Templates<'_> {
     ///
     /// `account_id`: The account id
     /// `template`: The template name or id
-    pub fn get_template(&self, account_id: u64, template: String) -> Result<DNSimpleResponse<Template>,String> {
+    pub fn get_template(
+        &self,
+        account_id: u64,
+        template: String,
+    ) -> Result<DNSimpleResponse<Template>, String> {
         let path = format!("/{}/templates/{}", account_id, template);
 
         self.client.get::<TemplateEndpoint>(&path, None)
@@ -147,10 +159,16 @@ impl Templates<'_> {
     /// `account_id`: The account id
     /// `template`: The template name or id
     /// `payload`: The `Template payload` with the information to create the template
-    pub fn update_template(&self, account_id: u64, template: String, payload: TemplatePayload) -> Result<DNSimpleResponse<Template>, String> {
+    pub fn update_template(
+        &self,
+        account_id: u64,
+        template: String,
+        payload: TemplatePayload,
+    ) -> Result<DNSimpleResponse<Template>, String> {
         let path = format!("/{}/templates/{}", account_id, template);
 
-        self.client.patch::<TemplateEndpoint>(&path, serde_json::to_value(payload).unwrap())
+        self.client
+            .patch::<TemplateEndpoint>(&path, serde_json::to_value(payload).unwrap())
     }
 
     /// Deletes a template from the account
@@ -169,7 +187,12 @@ impl Templates<'_> {
     /// # Arguments
     /// `account_id`: The account id
     /// `template`: The template name or id
-    pub fn list_template_records(&self, account_id: u64, template: String, options: Option<RequestOptions>) -> Result<DNSimpleResponse<Vec<TemplateRecord>>, String> {
+    pub fn list_template_records(
+        &self,
+        account_id: u64,
+        template: String,
+        options: Option<RequestOptions>,
+    ) -> Result<DNSimpleResponse<Vec<TemplateRecord>>, String> {
         let path = format!("/{}/templates/{}/records", account_id, template);
 
         self.client.get::<TemplateRecordsEndpoint>(&path, options)
@@ -181,10 +204,16 @@ impl Templates<'_> {
     /// `account_id`: The account id
     /// `template`: The template name or id
     /// `payload`: The `TemplateRecordPayload` with the information needed to create the template record
-    pub fn create_template_record(&self, account_id: u64, template: String, payload: TemplateRecordPayload) -> Result<DNSimpleResponse<TemplateRecord>, String> {
+    pub fn create_template_record(
+        &self,
+        account_id: u64,
+        template: String,
+        payload: TemplateRecordPayload,
+    ) -> Result<DNSimpleResponse<TemplateRecord>, String> {
         let path = format!("/{}/templates/{}/records", account_id, template);
 
-        self.client.post::<TemplateRecordEndpoint>(&path, serde_json::to_value(payload).unwrap())
+        self.client
+            .post::<TemplateRecordEndpoint>(&path, serde_json::to_value(payload).unwrap())
     }
 
     /// Retrieve a template record
@@ -193,7 +222,12 @@ impl Templates<'_> {
     /// `account_id`: The account id
     /// `template`: The template name or id
     /// `record`: The record id
-    pub fn get_template_record(&self, account_id: u64, template: String, record: u64) -> Result<DNSimpleResponse<TemplateRecord>, String> {
+    pub fn get_template_record(
+        &self,
+        account_id: u64,
+        template: String,
+        record: u64,
+    ) -> Result<DNSimpleResponse<TemplateRecord>, String> {
         let path = format!("/{}/templates/{}/records/{}", account_id, template, record);
 
         self.client.get::<TemplateRecordEndpoint>(&path, None)
@@ -205,7 +239,12 @@ impl Templates<'_> {
     /// `account_id`: The account id
     /// `template`: The template name or id
     /// `record`: The record id
-    pub fn delete_template_record(&self, account_id: u64, template: String, record: u64) -> DNSimpleEmptyResponse {
+    pub fn delete_template_record(
+        &self,
+        account_id: u64,
+        template: String,
+        record: u64,
+    ) -> DNSimpleEmptyResponse {
         let path = format!("/{}/templates/{}/records/{}", account_id, template, record);
 
         self.client.delete(&path)
@@ -217,7 +256,12 @@ impl Templates<'_> {
     /// `account_id`: The account id
     /// `domain`: The domain name or id
     /// `template`: The template id or short name
-    pub fn apply_template(&self, account_id: u64, domain: String, template: String) -> DNSimpleEmptyResponse {
+    pub fn apply_template(
+        &self,
+        account_id: u64,
+        domain: String,
+        template: String,
+    ) -> DNSimpleEmptyResponse {
         let path = format!("/{}/domains/{}/templates/{}", account_id, domain, template);
 
         self.client.empty_post(&path)

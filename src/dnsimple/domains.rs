@@ -27,7 +27,7 @@ pub struct Domain {
     /// When the domain was created
     pub created_at: String,
     /// When the domain was last updated
-    pub updated_at: String
+    pub updated_at: String,
 }
 
 /// Represents the payload to be send when creating a domain
@@ -48,12 +48,11 @@ impl Endpoint for DomainEndpoint {
     type Output = Domain;
 }
 
-
 /// The Domains Service handles the domains endpoint of the DNSimple API.
 ///
 /// See [API Documentation: domains](https://developer.dnsimple.com/v2/domains/)
 pub struct Domains<'a> {
-    pub client: &'a Client
+    pub client: &'a Client,
 }
 
 impl Domains<'_> {
@@ -75,7 +74,11 @@ impl Domains<'_> {
     /// `options`: The `RequestOptions`
     ///             - Filters: `name_like`, `registrant_id`
     ///             - Sorting: `id`, `name`, `expiration`
-    pub fn list_domains(&self, account_id: u64, options: Option<RequestOptions>) -> Result<DNSimpleResponse<Vec<Domain>>, String> {
+    pub fn list_domains(
+        &self,
+        account_id: u64,
+        options: Option<RequestOptions>,
+    ) -> Result<DNSimpleResponse<Vec<Domain>>, String> {
         let path = format!("/{}/domains", account_id);
         self.client.get::<DomainsEndpoint>(&*path, options)
     }
@@ -99,12 +102,17 @@ impl Domains<'_> {
     /// `account_id`: The account ID
     /// `name`: The name of the domain we want to create
     // pub fn create_domain(&self, account_id: u64, name: String) -> DNSimpleResponse<DomainData> {
-    pub fn create_domain(&self, account_id: u64, name: String) -> Result<DNSimpleResponse<Domain>, String> {
+    pub fn create_domain(
+        &self,
+        account_id: u64,
+        name: String,
+    ) -> Result<DNSimpleResponse<Domain>, String> {
         let path = format!("/{}/domains", account_id);
 
         let payload = DomainCreationPayload { name };
 
-        self.client.post::<DomainEndpoint>(&*path, serde_json::to_value(payload).unwrap())
+        self.client
+            .post::<DomainEndpoint>(&*path, serde_json::to_value(payload).unwrap())
     }
 
     /// Retrieves the details of an existing domain.
@@ -124,7 +132,11 @@ impl Domains<'_> {
     /// `account_id`: The account ID
     /// `domain_id`: The ID of the domain we want to retrieve
     // pub fn get_domain(&self, account_id: u64, domain_id: u64) -> DNSimpleResponse<DomainData> {
-    pub fn get_domain(&self, account_id: u64, domain_id: u64) -> Result<DNSimpleResponse<Domain>, String> {
+    pub fn get_domain(
+        &self,
+        account_id: u64,
+        domain_id: u64,
+    ) -> Result<DNSimpleResponse<Domain>, String> {
         let path = format!("/{}/domains/{}", account_id, domain_id);
         self.client.get::<DomainEndpoint>(&*path, None)
     }

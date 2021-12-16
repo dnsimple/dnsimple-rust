@@ -3,12 +3,21 @@ mod common;
 
 #[test]
 fn get_whois_privacy_test() {
-    let setup = setup_mock_for("/1385/registrar/domains/example.com/whois_privacy", "getWhoisPrivacy/success", "GET");
+    let setup = setup_mock_for(
+        "/1385/registrar/domains/example.com/whois_privacy",
+        "getWhoisPrivacy/success",
+        "GET",
+    );
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
 
-    let whois_privacy = client.registrar().get_whois_privacy(account_id, String::from(domain)).unwrap().data.unwrap();
+    let whois_privacy = client
+        .registrar()
+        .get_whois_privacy(account_id, String::from(domain))
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(1, whois_privacy.id);
     assert_eq!(2, whois_privacy.domain_id);
@@ -20,12 +29,19 @@ fn get_whois_privacy_test() {
 
 #[test]
 fn enable_whois_privacy_test() {
-    let setup = setup_mock_for("/1385/registrar/domains/example.com/whois_privacy", "enableWhoisPrivacy/success", "PUT");
+    let setup = setup_mock_for(
+        "/1385/registrar/domains/example.com/whois_privacy",
+        "enableWhoisPrivacy/success",
+        "PUT",
+    );
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
 
-    let response = client.registrar().enable_whois_privacy(account_id, String::from(domain)).unwrap();
+    let response = client
+        .registrar()
+        .enable_whois_privacy(account_id, String::from(domain))
+        .unwrap();
 
     assert_eq!(200, response.status);
 
@@ -41,24 +57,38 @@ fn enable_whois_privacy_test() {
 
 #[test]
 fn enable_whois_privacy_purchased_and_enabled_test() {
-    let setup = setup_mock_for("/1385/registrar/domains/example.com/whois_privacy", "enableWhoisPrivacy/created", "PUT");
+    let setup = setup_mock_for(
+        "/1385/registrar/domains/example.com/whois_privacy",
+        "enableWhoisPrivacy/created",
+        "PUT",
+    );
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
 
-    let response = client.registrar().enable_whois_privacy(account_id, String::from(domain)).unwrap();
+    let response = client
+        .registrar()
+        .enable_whois_privacy(account_id, String::from(domain))
+        .unwrap();
 
     assert_eq!(201, response.status);
 }
 
 #[test]
 fn disable_whois_privacy_test() {
-    let setup = setup_mock_for("/1385/registrar/domains/example.com/whois_privacy", "disableWhoisPrivacy/success", "DELETE");
+    let setup = setup_mock_for(
+        "/1385/registrar/domains/example.com/whois_privacy",
+        "disableWhoisPrivacy/success",
+        "DELETE",
+    );
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
 
-    let response = client.registrar().disable_whois_privacy(account_id, String::from(domain)).unwrap();
+    let response = client
+        .registrar()
+        .disable_whois_privacy(account_id, String::from(domain))
+        .unwrap();
 
     assert_eq!(200, response.status);
 
@@ -74,12 +104,19 @@ fn disable_whois_privacy_test() {
 
 #[test]
 fn renew_whois_privacy_test() {
-    let setup = setup_mock_for("/1385/registrar/domains/example.com/whois_privacy", "renewWhoisPrivacy/success", "POST");
+    let setup = setup_mock_for(
+        "/1385/registrar/domains/example.com/whois_privacy",
+        "renewWhoisPrivacy/success",
+        "POST",
+    );
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
 
-    let response = client.registrar().renew_whois_privacy(account_id, String::from(domain)).unwrap();
+    let response = client
+        .registrar()
+        .renew_whois_privacy(account_id, String::from(domain))
+        .unwrap();
 
     assert_eq!(201, response.status);
 
@@ -97,12 +134,19 @@ fn renew_whois_privacy_test() {
 
 #[test]
 fn renew_whois_privacy_duplicated_order_test() {
-    let setup = setup_mock_for("/1385/registrar/domains/example.com/whois_privacy", "renewWhoisPrivacy/whois-privacy-duplicated-order", "POST");
+    let setup = setup_mock_for(
+        "/1385/registrar/domains/example.com/whois_privacy",
+        "renewWhoisPrivacy/whois-privacy-duplicated-order",
+        "POST",
+    );
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
 
-    let response = client.registrar().renew_whois_privacy(account_id, String::from(domain)).unwrap();
+    let response = client
+        .registrar()
+        .renew_whois_privacy(account_id, String::from(domain))
+        .unwrap();
     let errors = response.errors.unwrap();
 
     assert_eq!("The whois privacy for example.com has just been renewed, a new renewal cannot be started at this time", errors.message.unwrap());
@@ -110,13 +154,23 @@ fn renew_whois_privacy_duplicated_order_test() {
 
 #[test]
 fn renew_whois_privacy_not_found_test() {
-    let setup = setup_mock_for("/1385/registrar/domains/example.com/whois_privacy", "renewWhoisPrivacy/whois-privacy-not-found", "POST");
+    let setup = setup_mock_for(
+        "/1385/registrar/domains/example.com/whois_privacy",
+        "renewWhoisPrivacy/whois-privacy-not-found",
+        "POST",
+    );
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
 
-    let response = client.registrar().renew_whois_privacy(account_id, String::from(domain)).unwrap();
+    let response = client
+        .registrar()
+        .renew_whois_privacy(account_id, String::from(domain))
+        .unwrap();
     let errors = response.errors.unwrap();
 
-    assert_eq!("WHOIS privacy not found for example.com", errors.message.unwrap());
+    assert_eq!(
+        "WHOIS privacy not found for example.com",
+        errors.message.unwrap()
+    );
 }

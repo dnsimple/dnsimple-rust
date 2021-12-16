@@ -1,5 +1,5 @@
-use dnsimple::dnsimple::contacts::ContactPayload;
 use crate::common::setup_mock_for;
+use dnsimple::dnsimple::contacts::ContactPayload;
 mod common;
 
 #[test]
@@ -8,7 +8,12 @@ fn list_contacts_test() {
     let client = setup.0;
     let account_id = 1010;
 
-    let contacts = client.contacts().list_contacts(account_id, None).unwrap().data.unwrap();
+    let contacts = client
+        .contacts()
+        .list_contacts(account_id, None)
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(2, contacts.len());
 
@@ -56,7 +61,12 @@ fn create_contact_test() {
         fax: Some(String::from("+18011234567")),
     };
 
-    let contact = client.contacts().create_contact(account_id, payload).unwrap().data.unwrap();
+    let contact = client
+        .contacts()
+        .create_contact(account_id, payload)
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(1, contact.id);
     assert_eq!(account_id, contact.account_id);
@@ -83,7 +93,12 @@ fn get_contact_test() {
     let account_id = 1010;
     let contact_id = 1;
 
-    let contact = client.contacts().get_contact(account_id, contact_id).unwrap().data.unwrap();
+    let contact = client
+        .contacts()
+        .get_contact(account_id, contact_id)
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(1, contact.id);
     assert_eq!(account_id, contact.account_id);
@@ -128,7 +143,12 @@ fn update_contact_test() {
         fax: Some(String::from("+18011234567")),
     };
 
-    let contact = client.contacts().update_contact(account_id, contact_id, payload).unwrap().data.unwrap();
+    let contact = client
+        .contacts()
+        .update_contact(account_id, contact_id, payload)
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(1, contact.id);
     assert_eq!(account_id, contact.account_id);

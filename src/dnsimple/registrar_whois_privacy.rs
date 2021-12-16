@@ -1,5 +1,5 @@
-use crate::dnsimple::{DNSimpleResponse, Endpoint};
 use crate::dnsimple::registrar::Registrar;
+use crate::dnsimple::{DNSimpleResponse, Endpoint};
 use serde::Deserialize;
 use serde_json::Value;
 
@@ -54,14 +54,17 @@ impl Endpoint for WhoisPrivacyRenewalEndpoint {
 }
 
 impl Registrar<'_> {
-
     /// Retrieve the domain WHOIS privacy
     ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
     /// `domain`: The domain name or id
-    pub fn get_whois_privacy(&self, account_id: u64, domain: String) -> Result<DNSimpleResponse<WhoisPrivacy>, String> {
+    pub fn get_whois_privacy(
+        &self,
+        account_id: u64,
+        domain: String,
+    ) -> Result<DNSimpleResponse<WhoisPrivacy>, String> {
         let path = format!("/{}/registrar/domains/{}/whois_privacy", account_id, domain);
 
         self.client.get::<WhoisPrivacyEndpoint>(&*path, None)
@@ -73,7 +76,11 @@ impl Registrar<'_> {
     ///
     /// `account_id`: The account ID
     /// `domain`: The domain name or id
-    pub fn enable_whois_privacy(&self, account_id: u64, domain: String) -> Result<DNSimpleResponse<WhoisPrivacy>, String> {
+    pub fn enable_whois_privacy(
+        &self,
+        account_id: u64,
+        domain: String,
+    ) -> Result<DNSimpleResponse<WhoisPrivacy>, String> {
         let path = format!("/{}/registrar/domains/{}/whois_privacy", account_id, domain);
 
         self.client.put::<WhoisPrivacyEndpoint>(&*path, Value::Null)
@@ -85,10 +92,15 @@ impl Registrar<'_> {
     ///
     /// `account_id`: The account ID
     /// `domain`: The domain name or id
-    pub fn disable_whois_privacy(&self, account_id: u64, domain: String) -> Result<DNSimpleResponse<WhoisPrivacy>, String> {
+    pub fn disable_whois_privacy(
+        &self,
+        account_id: u64,
+        domain: String,
+    ) -> Result<DNSimpleResponse<WhoisPrivacy>, String> {
         let path = format!("/{}/registrar/domains/{}/whois_privacy", account_id, domain);
 
-        self.client.delete_with_response::<WhoisPrivacyEndpoint>(&*path)
+        self.client
+            .delete_with_response::<WhoisPrivacyEndpoint>(&*path)
     }
 
     /// Renew WHOIS privacy
@@ -97,9 +109,14 @@ impl Registrar<'_> {
     ///
     /// `account_id`: The account ID
     /// `domain`: The domain name or id
-    pub fn renew_whois_privacy(&self, account_id: u64, domain: String) -> Result<DNSimpleResponse<WhoisPrivacyRenewal>, String> {
+    pub fn renew_whois_privacy(
+        &self,
+        account_id: u64,
+        domain: String,
+    ) -> Result<DNSimpleResponse<WhoisPrivacyRenewal>, String> {
         let path = format!("/{}/registrar/domains/{}/whois_privacy", account_id, domain);
 
-        self.client.post::<WhoisPrivacyRenewalEndpoint>(&*path, Value::Null)
+        self.client
+            .post::<WhoisPrivacyRenewalEndpoint>(&*path, Value::Null)
     }
 }

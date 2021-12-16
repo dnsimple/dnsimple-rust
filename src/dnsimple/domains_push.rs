@@ -30,7 +30,7 @@ pub struct DomainPush {
     /// When the domain push was last updated in DNSimple.
     pub updated_at: String,
     /// When the domain push was accepted in DNSimple.
-    pub accepted_at: Option<String>
+    pub accepted_at: Option<String>,
 }
 
 /// Payload to initiate a push
@@ -44,7 +44,6 @@ pub struct InitiatePushPayload {
 ///
 /// See [API Documentation: domains/pushes](https://developer.dnsimple.com/v2/domains/pushes)
 impl Domains<'_> {
-
     /// Initiate a push
     ///
     /// # Examples
@@ -65,10 +64,16 @@ impl Domains<'_> {
     /// `account_id`: The account id
     /// `domain`: The domain name or id
     /// `payload`: The `InitiatePushPayload` used to initiate a push
-    pub fn initiate_push(&self, account_id: u64, domain: &str, payload: InitiatePushPayload) -> Result<DNSimpleResponse<DomainPush>, String> {
+    pub fn initiate_push(
+        &self,
+        account_id: u64,
+        domain: &str,
+        payload: InitiatePushPayload,
+    ) -> Result<DNSimpleResponse<DomainPush>, String> {
         let path = format!("/{}/domains/{}/pushes", account_id, domain);
 
-        self.client.post::<DomainPushEndpoint>(&path, serde_json::to_value(payload).unwrap())
+        self.client
+            .post::<DomainPushEndpoint>(&path, serde_json::to_value(payload).unwrap())
     }
 
     /// List pending pushes for the target account.
@@ -87,7 +92,11 @@ impl Domains<'_> {
     /// `account_id`: The account id
     /// `options`: The `RequestOptions`
     ///            - Pagination
-    pub fn list_pushes(&self, account_id: u64, options: Option<RequestOptions>) -> Result<DNSimpleResponse<Vec<DomainPush>>, String> {
+    pub fn list_pushes(
+        &self,
+        account_id: u64,
+        options: Option<RequestOptions>,
+    ) -> Result<DNSimpleResponse<Vec<DomainPush>>, String> {
         let path = format!("/{}/domains/pushes", account_id);
 
         self.client.get::<DomainPushesListEndpoint>(&*path, options)

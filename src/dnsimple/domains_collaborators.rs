@@ -48,7 +48,6 @@ impl Endpoint for CollaboratorEndpoint {
 ///
 /// See [API Documentation: domains/collaborators](https://developer.dnsimple.com/v2/domains/collaborators)
 impl Domains<'_> {
-
     /// List collaborators for the domain in the account.
     ///
     /// # Examples
@@ -67,10 +66,16 @@ impl Domains<'_> {
     /// `domain_id`: The ID of the domain we want to list the collaborators from
     /// `options`: The `RequestOptions`
     ///            - Pagination
-    pub fn list_collaborators(&self, account_id: u64, domain_id: u64, options: Option<RequestOptions>) -> Result<DNSimpleResponse<Vec<Collaborator>>, String> {
+    pub fn list_collaborators(
+        &self,
+        account_id: u64,
+        domain_id: u64,
+        options: Option<RequestOptions>,
+    ) -> Result<DNSimpleResponse<Vec<Collaborator>>, String> {
         let path = format!("/{}/domains/{}/collaborators", account_id, domain_id);
 
-        self.client.get::<ListCollaboratorsEndpoint>(&*path, options)
+        self.client
+            .get::<ListCollaboratorsEndpoint>(&*path, options)
     }
 
     /// At the time of the add, a collaborator may or may not have a DNSimple account.
@@ -97,12 +102,20 @@ impl Domains<'_> {
     /// `account_id`: The account ID
     /// `domain_id`: The ID of the domain we want to list the collaborators of
     /// `email`: The email of the collaborator to be added
-    pub fn add_collaborator(&self, account_id: u64, domain_id: u64, email: &str) -> Result<DNSimpleResponse<Collaborator>, String> {
+    pub fn add_collaborator(
+        &self,
+        account_id: u64,
+        domain_id: u64,
+        email: &str,
+    ) -> Result<DNSimpleResponse<Collaborator>, String> {
         let path = format!("/{}/domains/{}/collaborators", account_id, domain_id);
 
-        let payload = AddCollaboratorPayload { email: email.into() };
+        let payload = AddCollaboratorPayload {
+            email: email.into(),
+        };
 
-        self.client.post::<CollaboratorEndpoint>(&*path, serde_json::to_value(payload).unwrap())
+        self.client
+            .post::<CollaboratorEndpoint>(&*path, serde_json::to_value(payload).unwrap())
     }
 
     /// Removes a collaborator from a domain
@@ -122,8 +135,16 @@ impl Domains<'_> {
     /// `account_id`: The account ID
     /// `domain_id`: The ID of the domain we want to permanently delete
     /// `collaborator_id`: The id of the collaborator we want to remove from the domain
-    pub fn remove_collaborator(&self, account_id: u64, domain_id: u64, collaborator_id: u64) -> DNSimpleEmptyResponse {
-        let path = format!("/{}/domains/{}/collaborators/{}", account_id, domain_id, collaborator_id);
+    pub fn remove_collaborator(
+        &self,
+        account_id: u64,
+        domain_id: u64,
+        collaborator_id: u64,
+    ) -> DNSimpleEmptyResponse {
+        let path = format!(
+            "/{}/domains/{}/collaborators/{}",
+            account_id, domain_id, collaborator_id
+        );
         self.client.delete(&*path)
     }
 }

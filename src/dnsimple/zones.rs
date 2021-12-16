@@ -20,7 +20,7 @@ pub struct Zone {
 
 /// Represents a zone file in DNSimple
 #[derive(Debug, Deserialize, Serialize)]
-pub struct ZoneFile  {
+pub struct ZoneFile {
     /// The zone file contents.
     pub zone: String,
 }
@@ -60,17 +60,20 @@ impl Endpoint for DistributionEndpoint {
 ///
 /// See [API Documentation: zones](https://developer.dnsimple.com/v2/zones/)
 pub struct Zones<'a> {
-    pub client: &'a Client
+    pub client: &'a Client,
 }
 
 impl Zones<'_> {
-
     /// Lists the zones in the account.
     ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
-    pub fn list_zones(&self, account_id: u64, options: Option<RequestOptions>) -> Result<DNSimpleResponse<Vec<Zone>>, String> {
+    pub fn list_zones(
+        &self,
+        account_id: u64,
+        options: Option<RequestOptions>,
+    ) -> Result<DNSimpleResponse<Vec<Zone>>, String> {
         let path = format!("/{}/zones", account_id);
 
         self.client.get::<ListZonesEndpoint>(&*path, options)
@@ -94,7 +97,11 @@ impl Zones<'_> {
     ///
     /// `account_id`: The account ID
     /// `zone`: The zone name
-    pub fn get_zone_file(&self, account_id: u64, zone: &str) -> Result<DNSimpleResponse<ZoneFile>, String> {
+    pub fn get_zone_file(
+        &self,
+        account_id: u64,
+        zone: &str,
+    ) -> Result<DNSimpleResponse<ZoneFile>, String> {
         let path = format!("/{}/zones/{}/file", account_id, zone);
 
         self.client.get::<ZoneFileEndpoint>(&*path, None)
@@ -106,7 +113,11 @@ impl Zones<'_> {
     ///
     /// `account_id`: The account ID
     /// `zone`: The zone name
-    pub fn check_zone_distribution(&self, account_id: u64, zone: &str) -> Result<DNSimpleResponse<ZoneDistribution>, String> {
+    pub fn check_zone_distribution(
+        &self,
+        account_id: u64,
+        zone: &str,
+    ) -> Result<DNSimpleResponse<ZoneDistribution>, String> {
         let path = format!("/{}/zones/{}/distribution", account_id, zone);
 
         self.client.get::<DistributionEndpoint>(&*path, None)

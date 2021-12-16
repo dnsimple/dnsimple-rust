@@ -1,10 +1,14 @@
-use dnsimple::dnsimple::domains_push::InitiatePushPayload;
 use crate::common::setup_mock_for;
+use dnsimple::dnsimple::domains_push::InitiatePushPayload;
 mod common;
 
 #[test]
 fn test_initiate_push_test() {
-    let setup = setup_mock_for("/1385/domains/target-account.test/pushes", "initiatePush/success", "POST");
+    let setup = setup_mock_for(
+        "/1385/domains/target-account.test/pushes",
+        "initiatePush/success",
+        "POST",
+    );
     let client = setup.0;
     let account_id = 1385 as u64;
     let domain = "target-account.test";
@@ -12,7 +16,12 @@ fn test_initiate_push_test() {
         new_account_email: String::from("admin@target-account.test"),
     };
 
-    let push = client.domains().initiate_push(account_id, domain, payload).unwrap().data.unwrap();
+    let push = client
+        .domains()
+        .initiate_push(account_id, domain, payload)
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(1, push.id);
     assert_eq!(100, push.domain_id);
