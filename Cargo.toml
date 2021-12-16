@@ -1,7 +1,7 @@
 [package]
 name = "dnsimple"
 version = "0.1.1"
-authors = ["Enrique Comba Riepenhausen <enrique.comba@dnsimple.com>"]
+authors = ["Enrique Comba Riepenhausen <enrique.comba@dnsimple.com>", "Amelia Aronsohn <amelia.aronsohn@dnsimple.com>"]
 edition = "2018"
 description = "Rust DNSimple API client"
 readme = "README.md"
@@ -13,9 +13,9 @@ categories = ["api-bindings"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ureq = { version = "2.3.1", features = ["json"] }
-serde = { version = "1.0.131", features = ["derive"] }
+ureq = { version = "2.3", features = ["json"] }
+serde = { version = "1.0", features = ["derive"] }
 serde_json = { version = "1.0", features = ["raw_value"] }
 
 [dev-dependencies]
-mockito = "0.30.0"
+mockito = "0.30"

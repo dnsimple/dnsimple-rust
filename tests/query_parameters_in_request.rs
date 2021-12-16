@@ -6,6 +6,7 @@ use dnsimple::dnsimple::{Endpoint, Filters, Paginate, RequestOptions, Sort};
 
 #[derive(Debug, Deserialize)]
 struct Id {
+    #[allow(dead_code)] // Unread but required for test fixture
     pub id: u64,
 }
 
