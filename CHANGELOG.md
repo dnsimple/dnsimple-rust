@@ -4,6 +4,10 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/).
 
 ## main
 
+## 0.1.2
+
+- FIX: Clippy, RustFmt, Cargo cleanup
+
 ## 0.1.1
 
 - FIX: Renames the project from `dnsimple_rust` to `dnsimple`
