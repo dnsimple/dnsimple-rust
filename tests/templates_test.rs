@@ -1,5 +1,5 @@
-use dnsimple::dnsimple::templates::{TemplatePayload, TemplateRecordPayload};
 use crate::common::setup_mock_for;
+use dnsimple::dnsimple::templates::{TemplatePayload, TemplateRecordPayload};
 mod common;
 
 #[test]
@@ -8,7 +8,12 @@ fn list_templates_test() {
     let client = setup.0;
     let account_id = 1010;
 
-    let templates = client.templates().list_templates(account_id, None).unwrap().data.unwrap();
+    let templates = client
+        .templates()
+        .list_templates(account_id, None)
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(2, templates.len());
 }
@@ -21,10 +26,15 @@ fn create_template_test() {
     let payload = TemplatePayload {
         name: String::from("Beta"),
         sid: String::from("beta"),
-        description: Some(String::from("A beta template."))
+        description: Some(String::from("A beta template.")),
     };
 
-    let template = client.templates().create_template(account_id, payload).unwrap().data.unwrap();
+    let template = client
+        .templates()
+        .create_template(account_id, payload)
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(1, template.id);
     assert_eq!(1010, template.account_id);
@@ -42,7 +52,12 @@ fn get_template_test() {
     let account_id = 1010;
     let template = String::from("alpha");
 
-    let template = client.templates().get_template(account_id, template).unwrap().data.unwrap();
+    let template = client
+        .templates()
+        .get_template(account_id, template)
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(1, template.id);
     assert_eq!(1010, template.account_id);
@@ -66,7 +81,12 @@ fn update_template_test() {
         description: Some(String::from("An alpha template.")),
     };
 
-    let template = client.templates().update_template(account_id, template_id, payload).unwrap().data.unwrap();
+    let template = client
+        .templates()
+        .update_template(account_id, template_id, payload)
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(1, template.id);
     assert_eq!(1010, template.account_id);
@@ -78,7 +98,7 @@ fn update_template_test() {
 }
 
 #[test]
-fn delete_template () {
+fn delete_template() {
     let setup = setup_mock_for("/1010/templates/beta", "deleteTemplate/success", "DELETE");
     let client = setup.0;
     let account_id = 1010;
@@ -91,19 +111,32 @@ fn delete_template () {
 
 #[test]
 fn list_template_records() {
-    let setup = setup_mock_for("/1010/templates/beta/records", "listTemplateRecords/success", "GET");
+    let setup = setup_mock_for(
+        "/1010/templates/beta/records",
+        "listTemplateRecords/success",
+        "GET",
+    );
     let client = setup.0;
     let account_id = 1010;
     let template = String::from("beta");
 
-    let records = client.templates().list_template_records(account_id, template, None).unwrap().data.unwrap();
+    let records = client
+        .templates()
+        .list_template_records(account_id, template, None)
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(2, records.len());
 }
 
 #[test]
 fn create_template_record() {
-    let setup = setup_mock_for("/1010/templates/beta/records", "createTemplateRecord/created", "POST");
+    let setup = setup_mock_for(
+        "/1010/templates/beta/records",
+        "createTemplateRecord/created",
+        "POST",
+    );
     let client = setup.0;
     let account_id = 1010;
     let template = String::from("beta");
@@ -115,7 +148,12 @@ fn create_template_record() {
         priority: None,
     };
 
-    let record = client.templates().create_template_record(account_id, template, payload).unwrap().data.unwrap();
+    let record = client
+        .templates()
+        .create_template_record(account_id, template, payload)
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(300, record.id);
     assert_eq!(268, record.template_id);
@@ -130,13 +168,22 @@ fn create_template_record() {
 
 #[test]
 fn get_template_record() {
-    let setup = setup_mock_for("/1010/templates/beta/records/301", "getTemplateRecord/success", "GET");
+    let setup = setup_mock_for(
+        "/1010/templates/beta/records/301",
+        "getTemplateRecord/success",
+        "GET",
+    );
     let client = setup.0;
     let account_id = 1010;
     let template = String::from("beta");
     let record_id = 301;
 
-    let record = client.templates().get_template_record(account_id, template, record_id).unwrap().data.unwrap();
+    let record = client
+        .templates()
+        .get_template_record(account_id, template, record_id)
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(301, record.id);
     assert_eq!(268, record.template_id);
@@ -151,26 +198,38 @@ fn get_template_record() {
 
 #[test]
 fn delete_template_record() {
-    let setup = setup_mock_for("/1010/templates/beta/records/301", "deleteTemplateRecord/success", "DELETE");
+    let setup = setup_mock_for(
+        "/1010/templates/beta/records/301",
+        "deleteTemplateRecord/success",
+        "DELETE",
+    );
     let client = setup.0;
     let account_id = 1010;
     let template = String::from("beta");
     let record_id = 301;
 
-    let response = client.templates().delete_template_record(account_id, template, record_id);
+    let response = client
+        .templates()
+        .delete_template_record(account_id, template, record_id);
 
     assert_eq!(204, response.status);
 }
 
 #[test]
 fn apply_template() {
-    let setup = setup_mock_for("/1010/domains/example.com/templates/301", "applyTemplate/success", "POST");
+    let setup = setup_mock_for(
+        "/1010/domains/example.com/templates/301",
+        "applyTemplate/success",
+        "POST",
+    );
     let client = setup.0;
     let account_id = 1010;
     let domain = String::from("example.com");
     let template = String::from("301");
 
-    let response = client.templates().apply_template(account_id, domain, template);
+    let response = client
+        .templates()
+        .apply_template(account_id, domain, template);
 
     assert_eq!(204, response.status);
 }

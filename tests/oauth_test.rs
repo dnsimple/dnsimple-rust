@@ -1,5 +1,5 @@
-use dnsimple::dnsimple::oauth::OAuthTokenPayload;
 use crate::common::setup_mock_for;
+use dnsimple::dnsimple::oauth::OAuthTokenPayload;
 mod common;
 
 #[test]
@@ -17,7 +17,10 @@ fn exchange_authorization_for_token_test() {
 
     let access_token = client.oauth().exchange_authorization_for_token(payload);
 
-    assert_eq!("zKQ7OLqF5N1gylcJweA9WodA000BUNJD", access_token.access_token);
+    assert_eq!(
+        "zKQ7OLqF5N1gylcJweA9WodA000BUNJD",
+        access_token.access_token
+    );
     assert_eq!("Bearer", access_token.token_type);
     assert_eq!(None, access_token.scope);
     assert_eq!(1, access_token.account_id);

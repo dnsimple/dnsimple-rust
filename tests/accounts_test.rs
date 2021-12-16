@@ -19,7 +19,6 @@ fn list_accounts_account_success() {
 
 #[test]
 fn list_accounts_user_success() {
-
     let setup = setup_mock_for("/accounts", "accounts/success-user", "GET");
     let client = setup.0;
 

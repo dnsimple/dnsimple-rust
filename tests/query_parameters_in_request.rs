@@ -1,8 +1,8 @@
-use std::collections::HashMap;
 use crate::common::setup_mock_for;
+use std::collections::HashMap;
 mod common;
-use serde::Deserialize;
 use dnsimple::dnsimple::{Endpoint, Filters, Paginate, RequestOptions, Sort};
+use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 struct Id {
@@ -25,11 +25,13 @@ fn can_paginate() {
         sort: None,
         paginate: Some(Paginate {
             per_page: 2,
-            page: 2
-        })
+            page: 2,
+        }),
     };
 
-    client.get::<IdsEndpoint>("/pagination_test", Some(options)).unwrap();
+    client
+        .get::<IdsEndpoint>("/pagination_test", Some(options))
+        .unwrap();
 }
 
 #[test]
@@ -39,14 +41,14 @@ fn can_filter() {
     let mut filters = HashMap::new();
     filters.insert("name_like".to_string(), "example".to_string());
     let options = RequestOptions {
-        filters: Some(Filters {
-            filters: filters
-        }),
+        filters: Some(Filters { filters: filters }),
         sort: None,
         paginate: None,
     };
 
-    client.get::<IdsEndpoint>("/filter_test", Some(options)).unwrap();
+    client
+        .get::<IdsEndpoint>("/filter_test", Some(options))
+        .unwrap();
 }
 
 #[test]
@@ -56,10 +58,12 @@ fn can_sort() {
     let options = RequestOptions {
         filters: None,
         sort: Some(Sort {
-            sort_by: "expiration:asc".to_string()
+            sort_by: "expiration:asc".to_string(),
         }),
         paginate: None,
     };
 
-    client.get::<IdsEndpoint>("/sort_test", Some(options)).unwrap();
+    client
+        .get::<IdsEndpoint>("/sort_test", Some(options))
+        .unwrap();
 }

@@ -40,10 +40,15 @@ impl Domains<'_> {
     ///
     /// `account_id`: The account ID
     /// `domain`: The ID or name of the domain we want to enable DNSSEC on
-    pub fn enable_dnssec(&self, account_id: u64, domain: &str) -> Result<DNSimpleResponse<Dnssec>, String> {
+    pub fn enable_dnssec(
+        &self,
+        account_id: u64,
+        domain: &str,
+    ) -> Result<DNSimpleResponse<Dnssec>, String> {
         let path = format!("/{}/domains/{}/dnssec", account_id, domain);
 
-        self.client.post::<DnssecStatusEndpoint>(&*path, Value::Null)
+        self.client
+            .post::<DnssecStatusEndpoint>(&*path, Value::Null)
     }
 
     /// Disable DNSSEC for the domain in the account.
@@ -82,7 +87,11 @@ impl Domains<'_> {
     ///
     /// `account_id`: The account ID
     /// `domain`: The ID or name of the domain we want retrieve the DNSSEC status from
-    pub fn get_dnssec(&self, account_id: u64, domain: &str) -> Result<DNSimpleResponse<Dnssec>, String> {
+    pub fn get_dnssec(
+        &self,
+        account_id: u64,
+        domain: &str,
+    ) -> Result<DNSimpleResponse<Dnssec>, String> {
         let path = format!("/{}/domains/{}/dnssec", account_id, domain);
 
         self.client.get::<DnssecStatusEndpoint>(&*path, None)

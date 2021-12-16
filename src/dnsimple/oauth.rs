@@ -44,7 +44,7 @@ pub struct AccessToken {
 ///
 /// See [API Documentation: oauth](https://developer.dnsimple.com/v2/oauth/)
 pub struct OAuth<'a> {
-    pub client: &'a Client
+    pub client: &'a Client,
 }
 
 impl OAuth<'_> {
@@ -80,10 +80,13 @@ impl OAuth<'_> {
             client_secret: payload.client_secret,
             code: payload.code,
             redirect_uri: payload.redirect_uri,
-            state: payload.state
+            state: payload.state,
         };
 
-        let response = self.client._agent.post(&*self.client.url(path))
+        let response = self
+            .client
+            ._agent
+            .post(&*self.client.url(path))
             .send_json(serde_json::to_value(params).unwrap());
         response.unwrap().into_json::<AccessToken>().unwrap()
     }

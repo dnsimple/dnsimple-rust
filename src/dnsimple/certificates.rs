@@ -1,4 +1,4 @@
-use crate::dnsimple::{Client, DNSimpleResponse, Endpoint, RequestOptions };
+use crate::dnsimple::{Client, DNSimpleResponse, Endpoint, RequestOptions};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
@@ -151,7 +151,7 @@ impl Endpoint for LetsEncryptPurchaseRenewalEndpoint {
 ///
 /// See [API Documentation: certificates](https://developer.dnsimple.com/v2/certificates/)
 pub struct Certificates<'a> {
-    pub client: &'a Client
+    pub client: &'a Client,
 }
 
 impl Certificates<'_> {
@@ -172,7 +172,12 @@ impl Certificates<'_> {
     /// `domain`: The domain name or id
     /// `options`: The `RequestOptions`.
     ///            - Sorting: `id`, `common_name`, `expiration`
-    pub fn list_certificates(&self, account_id: u64, domain: &str, options: Option<RequestOptions>) -> Result<DNSimpleResponse<Vec<Certificate>>, String> {
+    pub fn list_certificates(
+        &self,
+        account_id: u64,
+        domain: &str,
+        options: Option<RequestOptions>,
+    ) -> Result<DNSimpleResponse<Vec<Certificate>>, String> {
         let path = format!("/{}/domains/{}/certificates", account_id, domain);
 
         self.client.get::<ListCertificatesEndpoint>(&*path, options)
@@ -194,8 +199,16 @@ impl Certificates<'_> {
     /// `account_id`: The id of the account
     /// `domain`: The domain name or id
     /// `certificate_id`: The certificate id
-    pub fn get_certificate(&self, account_id: u64, domain: &str, certificate_id: u64) -> Result<DNSimpleResponse<Certificate>, String> {
-        let path = format!("/{}/domains/{}/certificates/{}", account_id, domain, certificate_id);
+    pub fn get_certificate(
+        &self,
+        account_id: u64,
+        domain: &str,
+        certificate_id: u64,
+    ) -> Result<DNSimpleResponse<Certificate>, String> {
+        let path = format!(
+            "/{}/domains/{}/certificates/{}",
+            account_id, domain, certificate_id
+        );
 
         self.client.get::<CertificateEndpoint>(&*path, None)
     }
@@ -216,8 +229,16 @@ impl Certificates<'_> {
     /// `account_id`: The id of the account
     /// `domain`: The domain name or id
     /// `certificate_id`: The certificate id
-    pub fn download_certificate(&self, account_id: u64, domain: &str, certificate_id: u64) -> Result<DNSimpleResponse<CertificateBundle>, String> {
-        let path = format!("/{}/domains/{}/certificates/{}/download", account_id, domain, certificate_id);
+    pub fn download_certificate(
+        &self,
+        account_id: u64,
+        domain: &str,
+        certificate_id: u64,
+    ) -> Result<DNSimpleResponse<CertificateBundle>, String> {
+        let path = format!(
+            "/{}/domains/{}/certificates/{}/download",
+            account_id, domain, certificate_id
+        );
 
         self.client.get::<CertificateDownloadEndpoint>(&*path, None)
     }
@@ -238,10 +259,19 @@ impl Certificates<'_> {
     /// `account_id`: The id of the account
     /// `domain`: The domain name or id
     /// `certificate_id`: The certificate id
-    pub fn get_certificate_private_key(&self, account_id: u64, domain: &str, certificate_id: u64) -> Result<DNSimpleResponse<CertificatePrivateKey>, String> {
-        let path = format!("/{}/domains/{}/certificates/{}/private_key", account_id, domain, certificate_id);
+    pub fn get_certificate_private_key(
+        &self,
+        account_id: u64,
+        domain: &str,
+        certificate_id: u64,
+    ) -> Result<DNSimpleResponse<CertificatePrivateKey>, String> {
+        let path = format!(
+            "/{}/domains/{}/certificates/{}/private_key",
+            account_id, domain, certificate_id
+        );
 
-        self.client.get::<CertificatePrivateKeyEndpoint>(&*path, None)
+        self.client
+            .get::<CertificatePrivateKeyEndpoint>(&*path, None)
     }
 
     /// Purchase a Let’s Encrypt certificate with DNSimple.
@@ -267,10 +297,19 @@ impl Certificates<'_> {
     /// `account_id`: The id of the account
     /// `domain`: The domain name or id
     /// `payload`: The `LetsEncryptPurchasePayload` containing the information to purchase the certificate
-    pub fn purchase_letsencrypt_certificate(&self, account_id: u64, domain: &str, payload: LetsEncryptPurchasePayload) -> Result<DNSimpleResponse<LetsEncryptPurchase>, String> {
-        let path = format!("/{}/domains/{}/certificates/letsencrypt", account_id, domain);
+    pub fn purchase_letsencrypt_certificate(
+        &self,
+        account_id: u64,
+        domain: &str,
+        payload: LetsEncryptPurchasePayload,
+    ) -> Result<DNSimpleResponse<LetsEncryptPurchase>, String> {
+        let path = format!(
+            "/{}/domains/{}/certificates/letsencrypt",
+            account_id, domain
+        );
 
-        self.client.post::<LetsEncryptPurchaseEndpoint>(&*path, serde_json::to_value(payload).unwrap())
+        self.client
+            .post::<LetsEncryptPurchaseEndpoint>(&*path, serde_json::to_value(payload).unwrap())
     }
 
     /// Issue a Let’s Encrypt certificate for a domain in the account
@@ -289,8 +328,16 @@ impl Certificates<'_> {
     /// `account_id`: The id of the account
     /// `domain`: The domain name or id
     /// `certificate_id`: The id of the certificate to be issued
-    pub fn issue_letsencrypt_certificate(&self, account_id: u64, domain: &str, certificate_id: u64) -> Result<DNSimpleResponse<Certificate>, String> {
-        let path = format!("/{}/domains/{}/certificates/letsencrypt/{}/issue", account_id, domain, certificate_id);
+    pub fn issue_letsencrypt_certificate(
+        &self,
+        account_id: u64,
+        domain: &str,
+        certificate_id: u64,
+    ) -> Result<DNSimpleResponse<Certificate>, String> {
+        let path = format!(
+            "/{}/domains/{}/certificates/letsencrypt/{}/issue",
+            account_id, domain, certificate_id
+        );
 
         self.client.post::<CertificateEndpoint>(&*path, Value::Null)
     }
@@ -314,10 +361,22 @@ impl Certificates<'_> {
     /// `account_id`: The id of the account
     /// `domain`: The domain name or id
     /// `payload`: The `LetsEncryptPurchaseRenewalPayload` containing the information to purchase the certificate
-    pub fn purchase_letsencrypt_certificate_renewal(&self, account_id: u64, domain: &str, certificate_id: u64, payload: LetsEncryptPurchaseRenewalPayload) -> Result<DNSimpleResponse<LetsEncryptPurchaseRenewal>, String> {
-        let path = format!("/{}/domains/{}/certificates/letsencrypt/{}/renewals", account_id, domain, certificate_id);
+    pub fn purchase_letsencrypt_certificate_renewal(
+        &self,
+        account_id: u64,
+        domain: &str,
+        certificate_id: u64,
+        payload: LetsEncryptPurchaseRenewalPayload,
+    ) -> Result<DNSimpleResponse<LetsEncryptPurchaseRenewal>, String> {
+        let path = format!(
+            "/{}/domains/{}/certificates/letsencrypt/{}/renewals",
+            account_id, domain, certificate_id
+        );
 
-        self.client.post::<LetsEncryptPurchaseRenewalEndpoint>(&*path, serde_json::to_value(payload).unwrap())
+        self.client.post::<LetsEncryptPurchaseRenewalEndpoint>(
+            &*path,
+            serde_json::to_value(payload).unwrap(),
+        )
     }
 
     /// Issue a Let’s Encrypt certificate for a domain in the account
@@ -336,8 +395,17 @@ impl Certificates<'_> {
     /// `domain`: The domain name or id
     /// `certificate_id`: The id of the certificate to be issued
     /// `certificate_renewal_id`: The certificate renewal id
-    pub fn issue_letsencrypt_certificate_renewal(&self, account_id: u64, domain: &str, certificate_id: u64, certificate_renewal_id: u64) -> Result<DNSimpleResponse<Certificate>, String> {
-        let path = format!("/{}/domains/{}/certificates/letsencrypt/{}/renewals/{}/issue", account_id, domain, certificate_id, certificate_renewal_id);
+    pub fn issue_letsencrypt_certificate_renewal(
+        &self,
+        account_id: u64,
+        domain: &str,
+        certificate_id: u64,
+        certificate_renewal_id: u64,
+    ) -> Result<DNSimpleResponse<Certificate>, String> {
+        let path = format!(
+            "/{}/domains/{}/certificates/letsencrypt/{}/renewals/{}/issue",
+            account_id, domain, certificate_id, certificate_renewal_id
+        );
 
         self.client.post::<CertificateEndpoint>(&*path, Value::Null)
     }

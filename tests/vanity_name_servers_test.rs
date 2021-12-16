@@ -3,12 +3,21 @@ mod common;
 
 #[test]
 fn enable_vanity_name_servers_test() {
-    let setup = setup_mock_for("/1010/vanity/example.com", "enableVanityNameServers/success", "PUT");
+    let setup = setup_mock_for(
+        "/1010/vanity/example.com",
+        "enableVanityNameServers/success",
+        "PUT",
+    );
     let client = setup.0;
     let account_id = 1010;
     let domain = String::from("example.com");
 
-    let vanity_name_servers = client.vanity_name_servers().enable_vanity_name_servers(account_id, domain).unwrap().data.unwrap();
+    let vanity_name_servers = client
+        .vanity_name_servers()
+        .enable_vanity_name_servers(account_id, domain)
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(4, vanity_name_servers.len());
 
@@ -24,12 +33,18 @@ fn enable_vanity_name_servers_test() {
 
 #[test]
 fn disable_vanity_name_servers_test() {
-    let setup = setup_mock_for("/1010/vanity/example.com", "disableVanityNameServers/success", "DELETE");
+    let setup = setup_mock_for(
+        "/1010/vanity/example.com",
+        "disableVanityNameServers/success",
+        "DELETE",
+    );
     let client = setup.0;
     let account_id = 1010;
     let domain = String::from("example.com");
 
-    let request = client.vanity_name_servers().disable_vanity_name_servers(account_id, domain);
+    let request = client
+        .vanity_name_servers()
+        .disable_vanity_name_servers(account_id, domain);
 
     assert_eq!(204, request.status);
 }

@@ -23,7 +23,7 @@ pub struct Service {
     /// When the service was last updated in DNSimple
     pub updated_at: String,
     /// The array of settings to setup this service, if setup is required.
-    pub settings: Vec<ServiceSetting>
+    pub settings: Vec<ServiceSetting>,
 }
 
 /// Represents a service setting
@@ -59,12 +59,15 @@ impl Endpoint for ServiceEndpoint {
 ///
 /// See [API Documentation: services](https://developer.dnsimple.com/v2/services/)
 pub struct Services<'a> {
-    pub client: &'a Client
+    pub client: &'a Client,
 }
 
 impl Services<'_> {
     /// List services
-    pub fn list_services(&self, options: Option<RequestOptions>) -> Result<DNSimpleResponse<Vec<Service>>, String> {
+    pub fn list_services(
+        &self,
+        options: Option<RequestOptions>,
+    ) -> Result<DNSimpleResponse<Vec<Service>>, String> {
         let path = "/services";
 
         self.client.get::<ServicesEndpoint>(&*path, options)
@@ -85,7 +88,12 @@ impl Services<'_> {
     /// # Arguments
     /// `account_id`: The account id
     /// `domain`: The domain name or id
-    pub fn applied_services(&self, account_id: u64, domain: String, options: Option<RequestOptions>) -> Result<DNSimpleResponse<Vec<Service>>, String> {
+    pub fn applied_services(
+        &self,
+        account_id: u64,
+        domain: String,
+        options: Option<RequestOptions>,
+    ) -> Result<DNSimpleResponse<Vec<Service>>, String> {
         let path = format!("/{}/domains/{}/services", account_id, domain);
 
         self.client.get::<ServicesEndpoint>(&*path, options)
@@ -97,7 +105,12 @@ impl Services<'_> {
     /// `account_id`: The account id
     /// `domain`: The domain name or id
     /// `service`: The service name or id
-    pub fn apply_service(&self, account_id: u64, domain: String, service: String) -> DNSimpleEmptyResponse {
+    pub fn apply_service(
+        &self,
+        account_id: u64,
+        domain: String,
+        service: String,
+    ) -> DNSimpleEmptyResponse {
         let path = format!("/{}/domains/{}/services/{}", account_id, domain, service);
 
         self.client.empty_post(&*path)
@@ -109,7 +122,12 @@ impl Services<'_> {
     /// `account_id`: The account id
     /// `domain`: The domain name or id
     /// `service`: The service name or id
-    pub fn unapply_service(&self, account_id: u64, domain: String, service: String) -> DNSimpleEmptyResponse {
+    pub fn unapply_service(
+        &self,
+        account_id: u64,
+        domain: String,
+        service: String,
+    ) -> DNSimpleEmptyResponse {
         let path = format!("/{}/domains/{}/services/{}", account_id, domain, service);
 
         self.client.delete(&*path)

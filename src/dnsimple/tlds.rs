@@ -72,12 +72,15 @@ impl Endpoint for ListTldsExtendedAttributesEndpoint {
 ///
 /// See [API Documentation: tlds](https://developer.dnsimple.com/v2/tlds/)
 pub struct Tlds<'a> {
-    pub client: &'a Client
+    pub client: &'a Client,
 }
 
 impl Tlds<'_> {
     /// Returns the list of TLDs supported for registration or transfer.
-    pub fn list_tlds(&self, options: Option<RequestOptions>) -> Result<DNSimpleResponse<Vec<Tld>>, String> {
+    pub fn list_tlds(
+        &self,
+        options: Option<RequestOptions>,
+    ) -> Result<DNSimpleResponse<Vec<Tld>>, String> {
         let path = "/tlds";
 
         self.client.get::<ListTldsEndpoint>(&*path, options)
@@ -99,9 +102,13 @@ impl Tlds<'_> {
     /// # Attributes
     ///
     /// `tld`: The TLD name
-    pub fn get_tld_extended_attributes(&self, tld: String) -> Result<DNSimpleResponse<Vec<TldExtendedAttribute>>, String> {
+    pub fn get_tld_extended_attributes(
+        &self,
+        tld: String,
+    ) -> Result<DNSimpleResponse<Vec<TldExtendedAttribute>>, String> {
         let path = format!("/tlds/{}/extended_attributes", tld);
 
-        self.client.get::<ListTldsExtendedAttributesEndpoint>(&*path, None)
+        self.client
+            .get::<ListTldsExtendedAttributesEndpoint>(&*path, None)
     }
 }

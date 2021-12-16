@@ -3,10 +3,14 @@ mod common;
 
 #[test]
 fn test_enable_dnssec() {
-    let setup = setup_mock_for("/1385/domains/example.com/dnssec", "enableDnssec/success", "POST");
+    let setup = setup_mock_for(
+        "/1385/domains/example.com/dnssec",
+        "enableDnssec/success",
+        "POST",
+    );
     let client = setup.0;
     let account_id = 1385 as u64;
-    let domain= "example.com";
+    let domain = "example.com";
 
     let response = client.domains().enable_dnssec(account_id, domain).unwrap();
     let dnssec = response.data.unwrap();
@@ -20,10 +24,14 @@ fn test_enable_dnssec() {
 
 #[test]
 fn test_disable_dnssec() {
-    let setup = setup_mock_for("/1385/domains/example.com/dnssec", "disableDnssec/success", "DELETE");
+    let setup = setup_mock_for(
+        "/1385/domains/example.com/dnssec",
+        "disableDnssec/success",
+        "DELETE",
+    );
     let client = setup.0;
     let account_id = 1385 as u64;
-    let domain= "example.com";
+    let domain = "example.com";
 
     let response = client.domains().disable_dnssec(account_id, domain);
 
@@ -32,10 +40,14 @@ fn test_disable_dnssec() {
 
 #[test]
 fn test_dnssec_status() {
-    let setup = setup_mock_for("/1385/domains/example.com/dnssec", "getDnssec/success", "GET");
+    let setup = setup_mock_for(
+        "/1385/domains/example.com/dnssec",
+        "getDnssec/success",
+        "GET",
+    );
     let client = setup.0;
     let account_id = 1385 as u64;
-    let domain= "example.com";
+    let domain = "example.com";
 
     let response = client.domains().get_dnssec(account_id, domain).unwrap();
     let dnssec = response.data.unwrap();

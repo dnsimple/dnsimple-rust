@@ -74,10 +74,16 @@ impl Domains<'_> {
     /// `options` The `RequestOptions`
     ///           - Sort: `id`, `created_at`
     ///           - Pagination
-    pub fn list_delegation_signer_records(&self, account_id: u64, domain: &str, options: Option<RequestOptions>) -> Result<DNSimpleResponse<Vec<DelegationSignerRecord>>, String> {
+    pub fn list_delegation_signer_records(
+        &self,
+        account_id: u64,
+        domain: &str,
+        options: Option<RequestOptions>,
+    ) -> Result<DNSimpleResponse<Vec<DelegationSignerRecord>>, String> {
         let path = format!("/{}/domains/{}/ds_records", account_id, domain);
 
-        self.client.get::<ListSignerRecordsEndpoint>(&*path, options)
+        self.client
+            .get::<ListSignerRecordsEndpoint>(&*path, options)
     }
 
     /// Creates a delegation signer record
@@ -108,10 +114,16 @@ impl Domains<'_> {
     /// `account_id`: The account ID
     /// `domain`: The ID or name of the domain we want list the signer records from
     /// `payload`: The `SignerRecordPayload` with the data needed to create the delegation signer record
-    pub fn create_delegation_signer_record(&self, account_id: u64, domain: &str, payload: DelegationSignerRecordPayload) -> Result<DNSimpleResponse<DelegationSignerRecord>, String> {
+    pub fn create_delegation_signer_record(
+        &self,
+        account_id: u64,
+        domain: &str,
+        payload: DelegationSignerRecordPayload,
+    ) -> Result<DNSimpleResponse<DelegationSignerRecord>, String> {
         let path = format!("/{}/domains/{}/ds_records", account_id, domain);
 
-        self.client.post::<SignerRecordEndpoint>(&*path, serde_json::to_value(payload).unwrap())
+        self.client
+            .post::<SignerRecordEndpoint>(&*path, serde_json::to_value(payload).unwrap())
     }
 
     /// Get the delegation signer record under the domain for the account
@@ -129,9 +141,13 @@ impl Domains<'_> {
     ///
     /// `account_id`: The account ID
     /// `domain`: The ID or name of the domain we want list the signer records from
-    pub fn get_delegation_signer_record(&self, account_id: u64, domain: &str) -> Result<DNSimpleResponse<DelegationSignerRecord>, String> {
+    pub fn get_delegation_signer_record(
+        &self,
+        account_id: u64,
+        domain: &str,
+    ) -> Result<DNSimpleResponse<DelegationSignerRecord>, String> {
         let path = format!("/{}/domains/{}/ds_records", account_id, domain);
-        
+
         self.client.get::<SignerRecordEndpoint>(&*path, None)
     }
 
@@ -150,11 +166,18 @@ impl Domains<'_> {
     ///
     /// `account_id`: The account ID
     /// `domain`: The ID or name of the domain we want list the signer records from
-    /// `ds_record_id`:	The delegation signer record id
-    pub fn delete_delegation_signer_record(&self, account_id: u64, domain: &str, delegation_signer_record_id: i32) -> DNSimpleEmptyResponse {
-        let path = format!("/{}/domains/{}/ds_records/{}", account_id, domain, delegation_signer_record_id);
+    /// `ds_record_id`: The delegation signer record id
+    pub fn delete_delegation_signer_record(
+        &self,
+        account_id: u64,
+        domain: &str,
+        delegation_signer_record_id: i32,
+    ) -> DNSimpleEmptyResponse {
+        let path = format!(
+            "/{}/domains/{}/ds_records/{}",
+            account_id, domain, delegation_signer_record_id
+        );
 
         self.client.delete(&*path)
     }
 }
-

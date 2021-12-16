@@ -47,7 +47,11 @@ fn test_get_tld() {
 
 #[test]
 fn test_get_tld_extended_attributes() {
-    let setup = setup_mock_for("/tlds/com/extended_attributes", "getTldExtendedAttributes/success", "GET");
+    let setup = setup_mock_for(
+        "/tlds/com/extended_attributes",
+        "getTldExtendedAttributes/success",
+        "GET",
+    );
     let client = setup.0;
     let tld = String::from("com");
 
@@ -58,7 +62,10 @@ fn test_get_tld_extended_attributes() {
 
     let extended_attribute = extended_attributes.first().unwrap();
     assert_eq!("uk_legal_type", extended_attribute.name);
-    assert_eq!("Legal type of registrant contact", extended_attribute.description);
+    assert_eq!(
+        "Legal type of registrant contact",
+        extended_attribute.description
+    );
     assert_eq!(false, extended_attribute.required);
 
     let options = &extended_attribute.options;
@@ -69,5 +76,4 @@ fn test_get_tld_extended_attributes() {
     assert_eq!("UK Individual", option.title);
     assert_eq!("IND", option.value);
     assert_eq!("UK Individual (our default value)", option.description);
-
 }

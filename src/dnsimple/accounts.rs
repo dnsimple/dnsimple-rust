@@ -1,17 +1,17 @@
-use crate::dnsimple::{Client, DNSimpleResponse, Endpoint};
 use crate::dnsimple::identity::Account;
+use crate::dnsimple::{Client, DNSimpleResponse, Endpoint};
 
 struct AccountsEndpoint;
 
 impl Endpoint for AccountsEndpoint {
-    type Output = Vec<Account> ;
+    type Output = Vec<Account>;
 }
 
 /// The Accounts Service handles the accounts endpoint of the DNSimple API.
 ///
 /// See [API Documentation: accounts](https://developer.dnsimple.com/v2/accounts/)
 pub struct Accounts<'a> {
-    pub client: &'a Client
+    pub client: &'a Client,
 }
 
 impl Accounts<'_> {

@@ -1,9 +1,3 @@
-use std::collections::HashMap;
-use serde;
-use serde::{Deserialize, Serialize};
-use serde::de::DeserializeOwned;
-use serde_json::{json, Value};
-use ureq::{Error, Request, Response};
 use crate::dnsimple::accounts::Accounts;
 use crate::dnsimple::certificates::Certificates;
 use crate::dnsimple::contacts::Contacts;
@@ -17,36 +11,42 @@ use crate::dnsimple::tlds::Tlds;
 use crate::dnsimple::vanity_name_servers::VanityNameServers;
 use crate::dnsimple::webhooks::Webhooks;
 use crate::dnsimple::zones::Zones;
+use serde;
+use serde::de::DeserializeOwned;
+use serde::{Deserialize, Serialize};
+use serde_json::{json, Value};
+use std::collections::HashMap;
+use ureq::{Error, Request, Response};
 
-pub mod identity;
 pub mod accounts;
+pub mod certificates;
+pub mod contacts;
 pub mod domains;
 pub mod domains_collaborators;
 pub mod domains_dnssec;
-pub mod domains_signer_records;
 pub mod domains_email_forwards;
 pub mod domains_push;
-pub mod certificates;
-pub mod tlds;
+pub mod domains_signer_records;
+pub mod identity;
+pub mod oauth;
 pub mod registrar;
-pub mod registrar_name_servers;
 pub mod registrar_auto_renewal;
+pub mod registrar_name_servers;
 pub mod registrar_whois_privacy;
-pub mod zones;
-pub mod zones_records;
-pub mod contacts;
 pub mod services;
 pub mod templates;
+pub mod tlds;
 pub mod vanity_name_servers;
 pub mod webhooks;
-pub mod oauth;
+pub mod zones;
+pub mod zones_records;
 
 const VERSION: &str = "0.1.1";
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
 
 const API_VERSION: &str = "v2";
 const DEFAULT_BASE_URL: &str = "https://api.dnsimple.com";
-const DEFAULT_SANDBOX_URL: &str  = "https://api.sandbox.dnsimple.com";
+const DEFAULT_SANDBOX_URL: &str = "https://api.sandbox.dnsimple.com";
 
 /// Represents the Rust client for the DNSimple API V2
 ///
@@ -150,12 +150,12 @@ pub struct DNSimpleEmptyResponse {
 // interesting data.
 #[derive(Debug)]
 pub struct Filters {
-    pub filters: HashMap<String, String>
+    pub filters: HashMap<String, String>,
 }
 
 impl Filters {
     pub fn new(filters: HashMap<String, String>) -> Filters {
-        Filters{ filters }
+        Filters { filters }
     }
 }
 
@@ -169,12 +169,12 @@ impl Filters {
 // The order of fields is relevant, as it will determine the priority of the sorting policies.
 #[derive(Debug)]
 pub struct Sort {
-    pub sort_by: String
+    pub sort_by: String,
 }
 
 impl Sort {
     pub fn new(sort_by: String) -> Sort {
-        Sort{ sort_by }
+        Sort { sort_by }
     }
 }
 
@@ -219,93 +219,67 @@ pub fn new_client(sandbox: bool, token: String) -> Client {
 impl Client {
     ///Returns the `accounts` service attached to this client
     pub fn accounts(&self) -> Accounts {
-        Accounts {
-            client: self
-        }
+        Accounts { client: self }
     }
 
     /// Returns the `contacts` service attached to this client
     pub fn contacts(&self) -> Contacts {
-        Contacts {
-            client: self
-        }
+        Contacts { client: self }
     }
 
     /// Returns the `certificates` service attached to this client
     pub fn certificates(&self) -> Certificates {
-        Certificates {
-            client: self
-        }
+        Certificates { client: self }
     }
 
     /// Returns the `domains` service attached to this client
     pub fn domains(&self) -> Domains {
-        Domains {
-            client: self
-        }
+        Domains { client: self }
     }
 
     /// Returns the `identity` service attached to this client
     pub fn identity(&self) -> Identity {
-        Identity {
-            client: self
-        }
+        Identity { client: self }
     }
 
     /// Returns the `oauth` service attached to this client
     pub fn oauth(&self) -> OAuth {
-        OAuth {
-            client: self
-        }
+        OAuth { client: self }
     }
 
     /// Returns the `registrar` service attached to this client
     pub fn registrar(&self) -> Registrar {
-        Registrar {
-            client: self
-        }
+        Registrar { client: self }
     }
 
     /// Returns the `services` service attached to this client
     pub fn services(&self) -> Services {
-        Services {
-            client: self
-        }
+        Services { client: self }
     }
 
     /// Returns the `templates` service attached to this client
     pub fn templates(&self) -> Templates {
-        Templates {
-            client: self
-        }
+        Templates { client: self }
     }
 
     /// Returns the `tlds` service attached to this endpoint
     pub fn tlds(&self) -> Tlds {
-        Tlds {
-            client: self
-        }
+        Tlds { client: self }
     }
 
     /// Returns the `vanity_name_servers` service attached to this endpoint
     pub fn vanity_name_servers(&self) -> VanityNameServers {
-        VanityNameServers {
-            client: self
-        }
+        VanityNameServers { client: self }
     }
 
     /// Returns the `webhooks` service attached to this endpoint
     pub fn webhooks(&self) -> Webhooks {
-        Webhooks {
-            client: self
-        }
+        Webhooks { client: self }
     }
 
     /// Returns the `zones` service attached to this endpoint
     pub fn zones(&self) -> Zones {
-        Zones {
-            client: self
-        }
+        Zones { client: self }
     }
 
     /// Convenience function to change the base url in runtime (used internally for
@@ -329,7 +303,7 @@ impl Client {
     /// Returns the current url (including the `API_VERSION` as part of the path).
     pub fn versioned_url(&self) -> String {
         let mut url = String::from(&self.base_url);
-        url.push_str("/");
+        url.push('/');
         url.push_str(API_VERSION);
         url
     }
@@ -340,7 +314,11 @@ impl Client {
     ///
     /// `path`: the path to the endpoint
     /// `options`: optionally a `RequestOptions` with things like pagination, filtering and sorting
-    pub fn get<E: Endpoint>(&self, path: &str, options: Option<RequestOptions>) -> Result<DNSimpleResponse<E::Output>, String> {
+    pub fn get<E: Endpoint>(
+        &self,
+        path: &str,
+        options: Option<RequestOptions>,
+    ) -> Result<DNSimpleResponse<E::Output>, String> {
         self.call::<E>(self.build_get_request(&path, options))
     }
 
@@ -350,7 +328,11 @@ impl Client {
     ///
     /// `path`: the path to the endpoint
     /// `data`: the json payload to be sent to the server
-    pub fn post<E: Endpoint>(&self, path: &str, data: Value) -> Result<DNSimpleResponse<E::Output>, String> {
+    pub fn post<E: Endpoint>(
+        &self,
+        path: &str,
+        data: Value,
+    ) -> Result<DNSimpleResponse<E::Output>, String> {
         self.call_with_payload::<E>(self.build_post_request(&path), data)
     }
 
@@ -369,7 +351,11 @@ impl Client {
     ///
     /// `path`: the path to the endpoint
     /// `data`: the json payload to be sent to the server
-    pub fn put<E: Endpoint>(&self, path: &str, data: Value) -> Result<DNSimpleResponse<E::Output>, String> {
+    pub fn put<E: Endpoint>(
+        &self,
+        path: &str,
+        data: Value,
+    ) -> Result<DNSimpleResponse<E::Output>, String> {
         self.call_with_payload::<E>(self.build_put_request(&path), data)
     }
 
@@ -388,7 +374,11 @@ impl Client {
     ///
     /// `path`: the path to the endpoint
     /// `data`: the json payload to be sent to the server
-    pub fn patch<E: Endpoint>(&self, path: &str, data: Value) -> Result<DNSimpleResponse<E::Output>, String> {
+    pub fn patch<E: Endpoint>(
+        &self,
+        path: &str,
+        data: Value,
+    ) -> Result<DNSimpleResponse<E::Output>, String> {
         self.call_with_payload::<E>(self.build_patch_request(&path), data)
     }
 
@@ -406,62 +396,71 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub fn delete_with_response<E: Endpoint>(&self, path: &str) -> Result<DNSimpleResponse<E::Output>, String> {
+    pub fn delete_with_response<E: Endpoint>(
+        &self,
+        path: &str,
+    ) -> Result<DNSimpleResponse<E::Output>, String> {
         self.call::<E>(self.build_delete_request(&path))
     }
 
-    fn call_with_payload<E: Endpoint>(&self, request: Request, data: Value) -> Result<DNSimpleResponse<E::Output>, String> {
+    fn call_with_payload<E: Endpoint>(
+        &self,
+        request: Request,
+        data: Value,
+    ) -> Result<DNSimpleResponse<E::Output>, String> {
         match request.send_json(data) {
-            Ok(response) => {
-                Self::build_dnsimple_response::<E>(response)
-            },
-            Err(Error::Status(_code, response)) => {
-                Self::build_dnsimple_response::<E>(response)
-            },
-            Err(_) => { panic!("Something went really wrong!")}
+            Ok(response) => Self::build_dnsimple_response::<E>(response),
+            Err(Error::Status(_code, response)) => Self::build_dnsimple_response::<E>(response),
+            Err(_) => {
+                panic!("Something went really wrong!")
+            }
         }
     }
 
     fn call<E: Endpoint>(&self, request: Request) -> Result<DNSimpleResponse<E::Output>, String> {
         match request.call() {
-            Ok(response) => {
-                Self::build_dnsimple_response::<E>(response)
-            },
-            Err(Error::Status(_code, response)) => {
-                Self::build_dnsimple_response::<E>(response)
-            },
-            Err(_) => { panic!("Something went really wrong!")}
+            Ok(response) => Self::build_dnsimple_response::<E>(response),
+            Err(Error::Status(_code, response)) => Self::build_dnsimple_response::<E>(response),
+            Err(_) => {
+                panic!("Something went really wrong!")
+            }
         }
     }
 
     fn call_empty(&self, request: Request) -> DNSimpleEmptyResponse {
         match request.call() {
-            Ok(response) => {
-                Self::build_empty_dnsimple_response(response)
-            },
-            Err(Error::Status(_code, response)) => {
-                Self::build_empty_dnsimple_response(response)
-            },
-            Err(_) => { panic!("Something went really wrong!")}
+            Ok(response) => Self::build_empty_dnsimple_response(response),
+            Err(Error::Status(_code, response)) => Self::build_empty_dnsimple_response(response),
+            Err(_) => {
+                panic!("Something went really wrong!")
+            }
         }
     }
 
-    fn build_dnsimple_response<E: Endpoint>(resp: Response) -> Result<DNSimpleResponse<E::Output>, String> {
-        let rate_limit= String::from(resp.header("X-RateLimit-Limit").unwrap());
-        let rate_limit_remaining= String::from(resp.header("X-RateLimit-Remaining").unwrap());
-        let rate_limit_reset= String::from(resp.header("X-RateLimit-Reset").unwrap());
-        let status= resp.status();
+    fn build_dnsimple_response<E: Endpoint>(
+        resp: Response,
+    ) -> Result<DNSimpleResponse<E::Output>, String> {
+        let rate_limit = String::from(resp.header("X-RateLimit-Limit").unwrap());
+        let rate_limit_remaining = String::from(resp.header("X-RateLimit-Remaining").unwrap());
+        let rate_limit_reset = String::from(resp.header("X-RateLimit-Reset").unwrap());
+        let status = resp.status();
 
         let json = resp.into_json::<Value>().unwrap();
         let data = serde_json::from_value(json!(json.get("data"))).map_err(|e| e.to_string())?;
         let errors = serde_json::from_value(json!(json)).map_err(|e| e.to_string())?;
-        let pagination = serde_json::from_value(json!(json.get("pagination"))).map_err(|e| e.to_string())?;
+        let pagination =
+            serde_json::from_value(json!(json.get("pagination"))).map_err(|e| e.to_string())?;
         let body = serde_json::from_value(json).map_err(|e| e.to_string())?;
 
         Ok(DNSimpleResponse {
-            rate_limit, rate_limit_remaining, rate_limit_reset, status,
+            rate_limit,
+            rate_limit_remaining,
+            rate_limit_reset,
+            status,
             data,
-            errors, pagination, body,
+            errors,
+            pagination,
+            body,
         })
     }
 
@@ -475,60 +474,57 @@ impl Client {
     }
 
     fn build_get_request(&self, path: &&str, options: Option<RequestOptions>) -> Request {
-        let mut request = self._agent.get(&*self.url(path))
+        let mut request = self
+            ._agent
+            .get(&*self.url(path))
             .set("User-Agent", &self.user_agent)
             .set("Accept", "application/json");
 
-        match options {
-            Some(options) => {
-                match options.paginate {
-                    Some(pagination) =>  {
-                        request = request.query("page", &*pagination.page.to_string());
-                        request = request.query("per_page", &*pagination.per_page.to_string())
-                    }
-                    _ => {}
-                }
-                match options.filters {
-                    Some(filters) => {
-                        for(key, value) in filters.filters {
-                            request = request.query(&*key, &*value);
-                        }
-                    }
-                    _ => {}
-                }
-                match options.sort {
-                    Some(sort) => {
-                        request = request.query("sort", &*sort.sort_by);
-                    }
-                    _ => {}
+        if let Some(options) = options {
+            if let Some(pagination) = options.paginate {
+                request = request.query("page", &*pagination.page.to_string());
+                request = request.query("per_page", &*pagination.per_page.to_string())
+            }
+
+            if let Some(filters) = options.filters {
+                for (key, value) in filters.filters {
+                    request = request.query(&*key, &*value);
                 }
             }
-            _ => {}
+
+            if let Some(sort) = options.sort {
+                request = request.query("sort", &*sort.sort_by);
+            }
         }
 
-        self.add_headers_to_request(request.to_owned())
+        self.add_headers_to_request(request)
     }
 
     pub fn build_post_request(&self, path: &&str) -> Request {
-        self._agent.post(&self.url(path))
+        self._agent
+            .post(&self.url(path))
             .set("User-Agent", &self.user_agent)
             .set("Accept", "application/json")
     }
 
     pub fn build_put_request(&self, path: &&str) -> Request {
-        self._agent.put(&self.url(path))
+        self._agent
+            .put(&self.url(path))
             .set("User-Agent", &self.user_agent)
             .set("Accept", "application/json")
     }
 
     pub fn build_patch_request(&self, path: &&str) -> Request {
-        self._agent.request("PATCH", &self.url(path))
+        self._agent
+            .request("PATCH", &self.url(path))
             .set("User-Agent", &self.user_agent)
             .set("Accept", "application/json")
     }
 
     fn build_delete_request(&self, path: &&str) -> Request {
-        let request = self._agent.delete(&self.url(path))
+        let request = self
+            ._agent
+            .delete(&self.url(path))
             .set("User-Agent", &self.user_agent)
             .set("Accept", "application/json");
         self.add_headers_to_request(request)
@@ -536,8 +532,7 @@ impl Client {
 
     fn add_headers_to_request(&self, request: Request) -> Request {
         let auth_token = &format!("Bearer {}", self.auth_token);
-        request
-            .set("Authorization", auth_token.as_str())
+        request.set("Authorization", auth_token.as_str())
     }
 
     fn url(&self, path: &str) -> String {
@@ -549,7 +544,7 @@ impl Client {
 
 #[cfg(test)]
 mod tests {
-    use crate::dnsimple::{DEFAULT_SANDBOX_URL, DEFAULT_USER_AGENT, new_client, VERSION};
+    use crate::dnsimple::{new_client, DEFAULT_SANDBOX_URL, DEFAULT_USER_AGENT, VERSION};
 
     #[test]
     fn creates_a_client() {

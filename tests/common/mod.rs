@@ -1,6 +1,6 @@
-use std::fs;
+use dnsimple::dnsimple::{new_client, Client};
 use mockito::{mock, Mock};
-use dnsimple::dnsimple::{Client, new_client};
+use std::fs;
 
 /// Creates a mockserver and a client (changing the url of the client
 /// to that of the mockserver to capture the requests).
@@ -17,8 +17,8 @@ pub fn setup_mock_for(path: &str, fixture: &str, method: &str) -> (Client, Mock)
     let path = format!("/v2{}", path);
     let fixture = format!("./tests/fixtures/v2/api/{}.http", fixture);
 
-    let content = fs::read_to_string(fixture.as_str())
-        .expect("Something went wrong: Couldn't read the file");
+    let content =
+        fs::read_to_string(fixture.as_str()).expect("Something went wrong: Couldn't read the file");
 
     let lines = content.lines();
     let status = &content[9..12];
@@ -29,7 +29,8 @@ pub fn setup_mock_for(path: &str, fixture: &str, method: &str) -> (Client, Mock)
         .with_header("X-RateLimit-Remaining", "2")
         .with_header("X-RateLimit-Reset", "never")
         .with_status(status.parse().unwrap())
-        .with_body(body.unwrap()).create();
+        .with_body(body.unwrap())
+        .create();
 
     let mut client = new_client(true, String::from("some-token"));
     client.set_base_url(&mockito::server_url());

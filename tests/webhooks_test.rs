@@ -7,7 +7,12 @@ fn list_webhooks_test() {
     let client = setup.0;
     let account_id = 1010;
 
-    let webhooks = client.webhooks().list_webhooks(account_id, None).unwrap().data.unwrap();
+    let webhooks = client
+        .webhooks()
+        .list_webhooks(account_id, None)
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(2, webhooks.len());
 }
@@ -18,8 +23,12 @@ fn create_webhook_test() {
     let client = setup.0;
     let account_id = 1010;
 
-
-    let webhook = client.webhooks().create_webhook(account_id, String::from("https://webhook.test")).unwrap().data.unwrap();
+    let webhook = client
+        .webhooks()
+        .create_webhook(account_id, String::from("https://webhook.test"))
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(1, webhook.id);
     assert_eq!("https://webhook.test", webhook.url);
@@ -32,7 +41,12 @@ fn get_webhook_test() {
     let account_id = 1010;
     let webhook_id = String::from("1");
 
-    let webhook = client.webhooks().get_webhook(account_id, webhook_id).unwrap().data.unwrap();
+    let webhook = client
+        .webhooks()
+        .get_webhook(account_id, webhook_id)
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(1, webhook.id);
     assert_eq!("https://webhook.test", webhook.url);

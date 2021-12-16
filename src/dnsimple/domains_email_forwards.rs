@@ -65,7 +65,6 @@ impl Endpoint for EmailForwardEndpoint {
 ///
 /// See [API Documentation: domains/email-forwards](https://developer.dnsimple.com/v2/domains/email-forwards)
 impl Domains<'_> {
-
     /// List email forwards for the domain in the account.
     ///
     /// # Examples
@@ -84,10 +83,16 @@ impl Domains<'_> {
     /// `options`: The `RequestOptions`
     ///            - Sort: `id`, `from`, `to`
     ///            - Pagination
-    pub fn list_email_forwards(&self, account_id: u64, domain: &str, options: Option<RequestOptions>) -> Result<DNSimpleResponse<Vec<EmailForwardsInList>>, String> {
+    pub fn list_email_forwards(
+        &self,
+        account_id: u64,
+        domain: &str,
+        options: Option<RequestOptions>,
+    ) -> Result<DNSimpleResponse<Vec<EmailForwardsInList>>, String> {
         let path = format!("/{}/domains/{}/email_forwards", account_id, domain);
 
-        self.client.get::<EmailForwardsListEndpoint>(&*path, options)
+        self.client
+            .get::<EmailForwardsListEndpoint>(&*path, options)
     }
 
     /// Create an email forward
@@ -111,10 +116,16 @@ impl Domains<'_> {
     /// `account_id`: The account ID
     /// `domain`: The ID or name of the domain we want list the email forwards
     /// `payload`: The `EmailForwardPayload` with the data needed to create the email forward
-    pub fn create_email_forward(&self, account_id: u64, domain: &str, payload: EmailForwardPayload) -> Result<DNSimpleResponse<EmailForward>, String> {
+    pub fn create_email_forward(
+        &self,
+        account_id: u64,
+        domain: &str,
+        payload: EmailForwardPayload,
+    ) -> Result<DNSimpleResponse<EmailForward>, String> {
         let path = format!("/{}/domains/{}/email_forwards", account_id, domain);
 
-        self.client.post::<EmailForwardEndpoint>(&*path, serde_json::to_value(payload).unwrap())
+        self.client
+            .post::<EmailForwardEndpoint>(&*path, serde_json::to_value(payload).unwrap())
     }
 
     /// Retrieve an email forward
@@ -133,8 +144,16 @@ impl Domains<'_> {
     /// `account_id`: The account ID
     /// `domain`: The ID or name of the domain we want list the email forwards
     /// `email_forward`: The email forward id
-    pub fn get_email_forward(&self, account_id: u64, domain: &str, email_forward: u64) -> Result<DNSimpleResponse<EmailForward>, String> {
-        let path = format!("/{}/domains/{}/email_forwards/{}", account_id, domain, email_forward);
+    pub fn get_email_forward(
+        &self,
+        account_id: u64,
+        domain: &str,
+        email_forward: u64,
+    ) -> Result<DNSimpleResponse<EmailForward>, String> {
+        let path = format!(
+            "/{}/domains/{}/email_forwards/{}",
+            account_id, domain, email_forward
+        );
 
         self.client.get::<EmailForwardEndpoint>(&*path, None)
     }
@@ -155,9 +174,17 @@ impl Domains<'_> {
     /// `account_id`: The account ID
     /// `domain`: The ID or name of the domain we want list the email forwards
     /// `email_forward`: The email forward id
-    pub fn delete_email_forward(&self, account_id: u64, domain: &str, email_forward: i32) -> DNSimpleEmptyResponse {
-        let path = format!("/{}/domains/{}/email_forwards/{}", account_id, domain, email_forward);
+    pub fn delete_email_forward(
+        &self,
+        account_id: u64,
+        domain: &str,
+        email_forward: i32,
+    ) -> DNSimpleEmptyResponse {
+        let path = format!(
+            "/{}/domains/{}/email_forwards/{}",
+            account_id, domain, email_forward
+        );
 
         self.client.delete(&*path)
     }
- }
+}

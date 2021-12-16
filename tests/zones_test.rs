@@ -7,7 +7,12 @@ fn list_zones_test() {
     let client = setup.0;
     let account_id = 1010;
 
-    let zones = client.zones().list_zones(account_id, None).unwrap().data.unwrap();
+    let zones = client
+        .zones()
+        .list_zones(account_id, None)
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(2, zones.len());
 
@@ -28,7 +33,12 @@ fn get_zone_test() {
     let account_id = 1010;
     let zone = "example-alpha.com";
 
-    let zone = client.zones().get_zone(account_id, zone).unwrap().data.unwrap();
+    let zone = client
+        .zones()
+        .get_zone(account_id, zone)
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(1, zone.id);
     assert_eq!(1010, zone.account_id);
@@ -45,7 +55,12 @@ fn get_zone_file_test() {
     let account_id = 1010;
     let zone = "example.com";
 
-    let zone_file = client.zones().get_zone_file(account_id, zone).unwrap().data.unwrap();
+    let zone_file = client
+        .zones()
+        .get_zone_file(account_id, zone)
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!("$ORIGIN example.com.\n$TTL 1h\nexample.com. 3600 IN SOA ns1.dnsimple.com. admin.dnsimple.com. 1453132552 86400 7200 604800 300\nexample.com. 3600 IN NS ns1.dnsimple.com.\nexample.com. 3600 IN NS ns2.dnsimple.com.\nexample.com. 3600 IN NS ns3.dnsimple.com.\nexample.com. 3600 IN NS ns4.dnsimple.com.\n",
                zone_file.zone);
@@ -53,36 +68,64 @@ fn get_zone_file_test() {
 
 #[test]
 fn check_zone_distribution() {
-    let setup = setup_mock_for("/1010/zones/example.com/distribution", "checkZoneDistribution/success", "GET");
+    let setup = setup_mock_for(
+        "/1010/zones/example.com/distribution",
+        "checkZoneDistribution/success",
+        "GET",
+    );
     let client = setup.0;
     let account_id = 1010;
     let zone = "example.com";
 
-    let zone_distribution = client.zones().check_zone_distribution(account_id, zone).unwrap().data.unwrap();
+    let zone_distribution = client
+        .zones()
+        .check_zone_distribution(account_id, zone)
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(true, zone_distribution.distributed);
 }
 
 #[test]
 fn check_zone_distribution_failure() {
-    let setup = setup_mock_for("/1010/zones/example.com/distribution", "checkZoneDistribution/failure", "GET");
+    let setup = setup_mock_for(
+        "/1010/zones/example.com/distribution",
+        "checkZoneDistribution/failure",
+        "GET",
+    );
     let client = setup.0;
     let account_id = 1010;
     let zone = "example.com";
 
-    let zone_distribution = client.zones().check_zone_distribution(account_id, zone).unwrap().data.unwrap();
+    let zone_distribution = client
+        .zones()
+        .check_zone_distribution(account_id, zone)
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(false, zone_distribution.distributed);
 }
 
 #[test]
 fn check_zone_distribution_error() {
-    let setup = setup_mock_for("/1010/zones/example.com/distribution", "checkZoneDistribution/error", "GET");
+    let setup = setup_mock_for(
+        "/1010/zones/example.com/distribution",
+        "checkZoneDistribution/error",
+        "GET",
+    );
     let client = setup.0;
     let account_id = 1010;
     let zone = "example.com";
 
-    let response = client.zones().check_zone_distribution(account_id, zone).unwrap();
+    let response = client
+        .zones()
+        .check_zone_distribution(account_id, zone)
+        .unwrap();
 
-    assert_eq!("Could not query zone, connection timed out", response.errors.unwrap().message.unwrap());
+    assert_eq!(
+        "Could not query zone, connection timed out",
+        response.errors.unwrap().message.unwrap()
+    );
 }

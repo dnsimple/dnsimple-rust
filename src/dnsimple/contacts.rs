@@ -89,11 +89,10 @@ impl Endpoint for ContactEndpoint {
 ///
 /// See [API Documentation: contacts](https://developer.dnsimple.com/v2/contacts/)
 pub struct Contacts<'a> {
-    pub client: &'a Client
+    pub client: &'a Client,
 }
 
 impl Contacts<'_> {
-
     /// Lists the contacts in the account.
     ///
     /// # Arguments
@@ -101,7 +100,11 @@ impl Contacts<'_> {
     /// `account_id`: The account ID
     /// `options`: The `RequestOptions`
     ///            - Sort: `id`, `label`, `email`
-    pub fn list_contacts(&self, account_id: u64, options: Option<RequestOptions>) -> Result<DNSimpleResponse<Vec<Contact>>, String> {
+    pub fn list_contacts(
+        &self,
+        account_id: u64,
+        options: Option<RequestOptions>,
+    ) -> Result<DNSimpleResponse<Vec<Contact>>, String> {
         let path = format!("/{}/contacts", account_id);
 
         self.client.get::<ContactsEndpoint>(&*path, options)
@@ -113,10 +116,15 @@ impl Contacts<'_> {
     ///
     /// `account_id`: The account ID
     /// `payload`: The `ContactPayload` with the information needed to create the contact
-    pub fn create_contact(&self, account_id: u64, payload: ContactPayload) -> Result<DNSimpleResponse<Contact>, String> {
+    pub fn create_contact(
+        &self,
+        account_id: u64,
+        payload: ContactPayload,
+    ) -> Result<DNSimpleResponse<Contact>, String> {
         let path = format!("/{}/contacts", account_id);
 
-        self.client.post::<ContactEndpoint>(&*path, serde_json::to_value(payload).unwrap())
+        self.client
+            .post::<ContactEndpoint>(&*path, serde_json::to_value(payload).unwrap())
     }
 
     /// Retrieve a contact
@@ -125,7 +133,11 @@ impl Contacts<'_> {
     ///
     /// `account_id`: The account ID
     /// `contact`: The contact id
-    pub fn get_contact(&self, account_id: u64, contact: u64) -> Result<DNSimpleResponse<Contact>, String> {
+    pub fn get_contact(
+        &self,
+        account_id: u64,
+        contact: u64,
+    ) -> Result<DNSimpleResponse<Contact>, String> {
         let path = format!("/{}/contacts/{}", account_id, contact);
 
         self.client.get::<ContactEndpoint>(&*path, None)
@@ -138,10 +150,16 @@ impl Contacts<'_> {
     /// `account_id`: The account ID
     /// `contact`: The contact id
     /// `payload`: The `ContactPayload` with the information needed to update the contact
-    pub fn update_contact(&self, account_id: u64, contact: u64, payload: ContactPayload) -> Result<DNSimpleResponse<Contact>, String> {
+    pub fn update_contact(
+        &self,
+        account_id: u64,
+        contact: u64,
+        payload: ContactPayload,
+    ) -> Result<DNSimpleResponse<Contact>, String> {
         let path = format!("/{}/contacts/{}", account_id, contact);
 
-        self.client.patch::<ContactEndpoint>(&*path, serde_json::to_value(payload).unwrap())
+        self.client
+            .patch::<ContactEndpoint>(&*path, serde_json::to_value(payload).unwrap())
     }
 
     /// Delete a contact

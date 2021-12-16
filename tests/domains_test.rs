@@ -22,7 +22,10 @@ fn list_domains_test() {
     assert_eq!(false, first_domain.auto_renew);
     assert_eq!(false, first_domain.private_whois);
     assert_eq!("2021-06-05", first_domain.expires_on.as_ref().unwrap());
-    assert_eq!("2021-06-05T02:15:00Z", first_domain.expires_at.as_ref().unwrap());
+    assert_eq!(
+        "2021-06-05T02:15:00Z",
+        first_domain.expires_at.as_ref().unwrap()
+    );
     assert_eq!("2020-06-04T19:15:14Z", first_domain.created_at);
     assert_eq!("2020-06-04T19:15:21Z", first_domain.updated_at);
 }
@@ -34,7 +37,12 @@ fn create_domain_test() {
     let account_id = 1385;
     let domain_name = String::from("example-beta.com");
 
-    let domain = client.domains().create_domain(account_id, domain_name).unwrap().data.unwrap();
+    let domain = client
+        .domains()
+        .create_domain(account_id, domain_name)
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(domain.id, 181985);
     assert_eq!(domain.account_id, account_id);
@@ -57,7 +65,12 @@ fn test_get_domain() {
     let account_id = 1385 as u64;
     let domain_id = 181984 as u64;
 
-    let domain = client.domains().get_domain(account_id, domain_id).unwrap().data.unwrap();
+    let domain = client
+        .domains()
+        .get_domain(account_id, domain_id)
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(domain_id, domain.id);
     assert_eq!(account_id, domain.account_id);
