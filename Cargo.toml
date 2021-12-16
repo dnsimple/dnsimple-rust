@@ -1,7 +1,7 @@
 [package]
 name = "dnsimple"
 version = "0.1.1"
-authors = ["Enrique Comba Riepenhausen <enrique.comba@dnsimple.com>"]
+authors = ["Enrique Comba Riepenhausen <enrique.comba@dnsimple.com>", "Amelia Aronsohn <amelia.aronsohn@dnsimple.com>"]
 edition = "2018"
 description = "Rust DNSimple API client"
 readme = "README.md"
