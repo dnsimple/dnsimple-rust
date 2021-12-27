@@ -27,4 +27,4 @@ let identity_response = client.identity().whoami().unwrap().data.unwrap();
 
 ## License
 
-Copyright (c) 2015-2021 DNSimple Corporation. This is Free Software distributed under the MIT license.
+Copyright (c) 2015-2022 DNSimple Corporation. This is Free Software distributed under the MIT license.
