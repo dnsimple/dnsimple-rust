@@ -116,5 +116,6 @@ fn test_remove_collaborator() {
         .domains()
         .remove_collaborator(account_id, domain_id, 100);
 
-    assert_eq!(response.status, 204);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }

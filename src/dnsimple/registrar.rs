@@ -1,5 +1,6 @@
 use crate::dnsimple::tlds::TldExtendedAttribute;
 use crate::dnsimple::{Client, DNSimpleEmptyResponse, DNSimpleResponse, Endpoint};
+use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
 
 /// Represents the domain check
@@ -212,7 +213,7 @@ impl Registrar<'_> {
         &self,
         account_id: u64,
         domain: &str,
-    ) -> Result<DNSimpleResponse<DomainCheck>, String> {
+    ) -> Result<DNSimpleResponse<DomainCheck>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/check", account_id, domain);
 
         self.client.get::<DomainCheckEndpoint>(&*path, None)
@@ -239,7 +240,7 @@ impl Registrar<'_> {
         account_id: u64,
         domain: &str,
         action: Option<String>,
-    ) -> Result<DNSimpleResponse<DomainPremiumPrice>, String> {
+    ) -> Result<DNSimpleResponse<DomainPremiumPrice>, DNSimpleError> {
         let path = format!(
             "/{}/registrar/domains/{}/premium_price?action={}",
             account_id,
@@ -269,7 +270,7 @@ impl Registrar<'_> {
         &self,
         account_id: u64,
         domain: &str,
-    ) -> Result<DNSimpleResponse<DomainPrice>, String> {
+    ) -> Result<DNSimpleResponse<DomainPrice>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/prices", account_id, domain);
 
         self.client.get::<DomainPricesEndpoint>(&*path, None)
@@ -304,7 +305,7 @@ impl Registrar<'_> {
         account_id: u64,
         domain: &str,
         payload: DomainRegistrationPayload,
-    ) -> Result<DNSimpleResponse<DomainRegistration>, String> {
+    ) -> Result<DNSimpleResponse<DomainRegistration>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/registrations", account_id, domain);
 
         self.client
@@ -341,7 +342,7 @@ impl Registrar<'_> {
         account_id: u64,
         domain: &str,
         payload: DomainTransferPayload,
-    ) -> Result<DNSimpleResponse<DomainTransfer>, String> {
+    ) -> Result<DNSimpleResponse<DomainTransfer>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/transfers", account_id, domain);
 
         self.client
@@ -360,7 +361,7 @@ impl Registrar<'_> {
         account_id: u64,
         domain: String,
         domain_transfer: u64,
-    ) -> Result<DNSimpleResponse<DomainTransfer>, String> {
+    ) -> Result<DNSimpleResponse<DomainTransfer>, DNSimpleError> {
         let path = format!(
             "/{}/registrar/domains/{}/transfers/{}",
             account_id, domain, domain_transfer
@@ -381,7 +382,7 @@ impl Registrar<'_> {
         account_id: u64,
         domain: String,
         domain_transfer: u64,
-    ) -> Result<DNSimpleResponse<DomainTransfer>, String> {
+    ) -> Result<DNSimpleResponse<DomainTransfer>, DNSimpleError> {
         let path = format!(
             "/{}/registrar/domains/{}/transfers/{}",
             account_id, domain, domain_transfer
@@ -403,7 +404,7 @@ impl Registrar<'_> {
         account_id: u64,
         domain: String,
         payload: DomainRenewalPayload,
-    ) -> Result<DNSimpleResponse<DomainRenewal>, String> {
+    ) -> Result<DNSimpleResponse<DomainRenewal>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/renewals", account_id, domain);
 
         self.client
@@ -416,7 +417,11 @@ impl Registrar<'_> {
     ///
     /// `account_id`: The account id
     /// `domain`: The domain name
-    pub fn transfer_domain_out(&self, account_id: u64, domain: String) -> DNSimpleEmptyResponse {
+    pub fn transfer_domain_out(
+        &self,
+        account_id: u64,
+        domain: String,
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!(
             "/{}/registrar/domains/{}/authorize_transfer_out",
             account_id, domain

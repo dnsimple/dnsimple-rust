@@ -1,5 +1,6 @@
 use crate::dnsimple::identity::Account;
 use crate::dnsimple::{Client, DNSimpleResponse, Endpoint};
+use crate::errors::DNSimpleError;
 
 struct AccountsEndpoint;
 
@@ -27,7 +28,7 @@ impl Accounts<'_> {
     /// let accounts = response.data.unwrap();
     /// let first_account = accounts.first().unwrap();
     /// ```
-    pub fn list_accounts(&self) -> Result<DNSimpleResponse<Vec<Account>>, String> {
+    pub fn list_accounts(&self) -> Result<DNSimpleResponse<Vec<Account>>, DNSimpleError> {
         self.client.get::<AccountsEndpoint>("/accounts", None)
     }
 }

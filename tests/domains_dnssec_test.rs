@@ -35,7 +35,8 @@ fn test_disable_dnssec() {
 
     let response = client.domains().disable_dnssec(account_id, domain);
 
-    assert_eq!(response.status, 204);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }
 
 #[test]

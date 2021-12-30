@@ -1,5 +1,6 @@
 use crate::dnsimple::registrar::Registrar;
 use crate::dnsimple::DNSimpleEmptyResponse;
+use crate::errors::DNSimpleError;
 
 impl Registrar<'_> {
     /// Enable domain auto-renewal
@@ -12,7 +13,7 @@ impl Registrar<'_> {
         &self,
         account_id: u64,
         domain: String,
-    ) -> DNSimpleEmptyResponse {
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/auto_renewal", account_id, domain);
 
         self.client.empty_put(&*path)
@@ -28,7 +29,7 @@ impl Registrar<'_> {
         &self,
         account_id: u64,
         domain: String,
-    ) -> DNSimpleEmptyResponse {
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/auto_renewal", account_id, domain);
 
         self.client.delete(&*path)

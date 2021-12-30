@@ -1,4 +1,5 @@
 use crate::dnsimple::{Client, DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, RequestOptions};
+use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -104,7 +105,7 @@ impl Contacts<'_> {
         &self,
         account_id: u64,
         options: Option<RequestOptions>,
-    ) -> Result<DNSimpleResponse<Vec<Contact>>, String> {
+    ) -> Result<DNSimpleResponse<Vec<Contact>>, DNSimpleError> {
         let path = format!("/{}/contacts", account_id);
 
         self.client.get::<ContactsEndpoint>(&*path, options)
@@ -120,7 +121,7 @@ impl Contacts<'_> {
         &self,
         account_id: u64,
         payload: ContactPayload,
-    ) -> Result<DNSimpleResponse<Contact>, String> {
+    ) -> Result<DNSimpleResponse<Contact>, DNSimpleError> {
         let path = format!("/{}/contacts", account_id);
 
         self.client
@@ -137,7 +138,7 @@ impl Contacts<'_> {
         &self,
         account_id: u64,
         contact: u64,
-    ) -> Result<DNSimpleResponse<Contact>, String> {
+    ) -> Result<DNSimpleResponse<Contact>, DNSimpleError> {
         let path = format!("/{}/contacts/{}", account_id, contact);
 
         self.client.get::<ContactEndpoint>(&*path, None)
@@ -155,7 +156,7 @@ impl Contacts<'_> {
         account_id: u64,
         contact: u64,
         payload: ContactPayload,
-    ) -> Result<DNSimpleResponse<Contact>, String> {
+    ) -> Result<DNSimpleResponse<Contact>, DNSimpleError> {
         let path = format!("/{}/contacts/{}", account_id, contact);
 
         self.client
@@ -168,7 +169,11 @@ impl Contacts<'_> {
     ///
     /// `account_id`: The account ID
     /// `contact`: The contact id
-    pub fn delete_contact(&self, account_id: u64, contact: u64) -> DNSimpleEmptyResponse {
+    pub fn delete_contact(
+        &self,
+        account_id: u64,
+        contact: u64,
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/contacts/{}", account_id, contact);
 
         self.client.delete(&*path)

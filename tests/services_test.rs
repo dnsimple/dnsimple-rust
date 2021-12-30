@@ -113,7 +113,8 @@ fn apply_service_test() {
             .services()
             .apply_service(account_id, String::from(domain), String::from(service));
 
-    assert_eq!(204, response.status);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }
 
 #[test]
@@ -133,5 +134,6 @@ fn unapply_service_test() {
             .services()
             .unapply_service(account_id, String::from(domain), String::from(service));
 
-    assert_eq!(204, response.status);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }

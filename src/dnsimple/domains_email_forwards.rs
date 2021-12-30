@@ -1,5 +1,6 @@
 use crate::dnsimple::domains::Domains;
 use crate::dnsimple::{DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, RequestOptions};
+use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
 
 struct EmailForwardsListEndpoint;
@@ -88,7 +89,7 @@ impl Domains<'_> {
         account_id: u64,
         domain: &str,
         options: Option<RequestOptions>,
-    ) -> Result<DNSimpleResponse<Vec<EmailForwardsInList>>, String> {
+    ) -> Result<DNSimpleResponse<Vec<EmailForwardsInList>>, DNSimpleError> {
         let path = format!("/{}/domains/{}/email_forwards", account_id, domain);
 
         self.client
@@ -121,7 +122,7 @@ impl Domains<'_> {
         account_id: u64,
         domain: &str,
         payload: EmailForwardPayload,
-    ) -> Result<DNSimpleResponse<EmailForward>, String> {
+    ) -> Result<DNSimpleResponse<EmailForward>, DNSimpleError> {
         let path = format!("/{}/domains/{}/email_forwards", account_id, domain);
 
         self.client
@@ -149,7 +150,7 @@ impl Domains<'_> {
         account_id: u64,
         domain: &str,
         email_forward: u64,
-    ) -> Result<DNSimpleResponse<EmailForward>, String> {
+    ) -> Result<DNSimpleResponse<EmailForward>, DNSimpleError> {
         let path = format!(
             "/{}/domains/{}/email_forwards/{}",
             account_id, domain, email_forward
@@ -179,7 +180,7 @@ impl Domains<'_> {
         account_id: u64,
         domain: &str,
         email_forward: i32,
-    ) -> DNSimpleEmptyResponse {
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!(
             "/{}/domains/{}/email_forwards/{}",
             account_id, domain, email_forward

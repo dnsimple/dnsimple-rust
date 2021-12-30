@@ -1,4 +1,5 @@
 use crate::dnsimple::{Client, DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, RequestOptions};
+use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
 
 /// Represents a domain
@@ -78,7 +79,7 @@ impl Domains<'_> {
         &self,
         account_id: u64,
         options: Option<RequestOptions>,
-    ) -> Result<DNSimpleResponse<Vec<Domain>>, String> {
+    ) -> Result<DNSimpleResponse<Vec<Domain>>, DNSimpleError> {
         let path = format!("/{}/domains", account_id);
         self.client.get::<DomainsEndpoint>(&*path, options)
     }
@@ -106,7 +107,7 @@ impl Domains<'_> {
         &self,
         account_id: u64,
         name: String,
-    ) -> Result<DNSimpleResponse<Domain>, String> {
+    ) -> Result<DNSimpleResponse<Domain>, DNSimpleError> {
         let path = format!("/{}/domains", account_id);
 
         let payload = DomainCreationPayload { name };
@@ -136,7 +137,7 @@ impl Domains<'_> {
         &self,
         account_id: u64,
         domain_id: u64,
-    ) -> Result<DNSimpleResponse<Domain>, String> {
+    ) -> Result<DNSimpleResponse<Domain>, DNSimpleError> {
         let path = format!("/{}/domains/{}", account_id, domain_id);
         self.client.get::<DomainEndpoint>(&*path, None)
     }
@@ -157,7 +158,11 @@ impl Domains<'_> {
     ///
     /// `account_id`: The account ID
     /// `domain_id`: The ID of the domain we want to permanently delete
-    pub fn delete_domain(&self, account_id: u64, domain_id: u64) -> DNSimpleEmptyResponse {
+    pub fn delete_domain(
+        &self,
+        account_id: u64,
+        domain_id: u64,
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/domains/{}", account_id, domain_id);
 
         self.client.delete(&*path)

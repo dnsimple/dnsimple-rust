@@ -60,5 +60,6 @@ fn delete_webhook_test() {
 
     let response = client.webhooks().delete_webhook(account_id, webhook_id);
 
-    assert_eq!(204, response.status);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }

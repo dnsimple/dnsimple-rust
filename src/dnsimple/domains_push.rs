@@ -1,5 +1,6 @@
 use crate::dnsimple::domains::Domains;
 use crate::dnsimple::{DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, RequestOptions};
+use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
 
 struct DomainPushesListEndpoint;
@@ -69,7 +70,7 @@ impl Domains<'_> {
         account_id: u64,
         domain: &str,
         payload: InitiatePushPayload,
-    ) -> Result<DNSimpleResponse<DomainPush>, String> {
+    ) -> Result<DNSimpleResponse<DomainPush>, DNSimpleError> {
         let path = format!("/{}/domains/{}/pushes", account_id, domain);
 
         self.client
@@ -96,7 +97,7 @@ impl Domains<'_> {
         &self,
         account_id: u64,
         options: Option<RequestOptions>,
-    ) -> Result<DNSimpleResponse<Vec<DomainPush>>, String> {
+    ) -> Result<DNSimpleResponse<Vec<DomainPush>>, DNSimpleError> {
         let path = format!("/{}/domains/pushes", account_id);
 
         self.client.get::<DomainPushesListEndpoint>(&*path, options)
@@ -117,7 +118,11 @@ impl Domains<'_> {
     ///
     /// `account_id`: The account id
     /// `push_id`: The push id
-    pub fn accept_push(&self, account_id: u64, push_id: u64) -> DNSimpleEmptyResponse {
+    pub fn accept_push(
+        &self,
+        account_id: u64,
+        push_id: u64,
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/domains/pushes/{}", account_id, push_id);
 
         self.client.empty_post(&*path)
@@ -138,7 +143,11 @@ impl Domains<'_> {
     ///
     /// `account_id`: The account id
     /// `push_id`: The push id
-    pub fn reject_push(&self, account_id: u64, push_id: u64) -> DNSimpleEmptyResponse {
+    pub fn reject_push(
+        &self,
+        account_id: u64,
+        push_id: u64,
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/domains/pushes/{}", account_id, push_id);
 
         self.client.delete(&*path)
