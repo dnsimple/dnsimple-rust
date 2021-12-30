@@ -108,5 +108,6 @@ fn test_delete_email_forward() {
         .domains()
         .delete_email_forward(account_id, domain, email_forward);
 
-    assert_eq!(response.status, 204);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }

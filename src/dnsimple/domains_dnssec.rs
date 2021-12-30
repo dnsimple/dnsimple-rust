@@ -1,5 +1,6 @@
 use crate::dnsimple::domains::Domains;
 use crate::dnsimple::{DNSimpleEmptyResponse, DNSimpleResponse, Endpoint};
+use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
@@ -44,7 +45,7 @@ impl Domains<'_> {
         &self,
         account_id: u64,
         domain: &str,
-    ) -> Result<DNSimpleResponse<Dnssec>, String> {
+    ) -> Result<DNSimpleResponse<Dnssec>, DNSimpleError> {
         let path = format!("/{}/domains/{}/dnssec", account_id, domain);
 
         self.client
@@ -66,7 +67,11 @@ impl Domains<'_> {
     ///
     /// `account_id`: The account ID
     /// `domain`: The ID or name of the domain we want to disable DNSSEC on
-    pub fn disable_dnssec(&self, account_id: u64, domain: &str) -> DNSimpleEmptyResponse {
+    pub fn disable_dnssec(
+        &self,
+        account_id: u64,
+        domain: &str,
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/domains/{}/dnssec", account_id, domain);
 
         self.client.delete(&*path)
@@ -91,7 +96,7 @@ impl Domains<'_> {
         &self,
         account_id: u64,
         domain: &str,
-    ) -> Result<DNSimpleResponse<Dnssec>, String> {
+    ) -> Result<DNSimpleResponse<Dnssec>, DNSimpleError> {
         let path = format!("/{}/domains/{}/dnssec", account_id, domain);
 
         self.client.get::<DnssecStatusEndpoint>(&*path, None)

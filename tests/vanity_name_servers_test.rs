@@ -42,9 +42,10 @@ fn disable_vanity_name_servers_test() {
     let account_id = 1010;
     let domain = String::from("example.com");
 
-    let request = client
+    let response = client
         .vanity_name_servers()
         .disable_vanity_name_servers(account_id, domain);
 
-    assert_eq!(204, request.status);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }

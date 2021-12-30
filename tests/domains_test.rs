@@ -95,5 +95,6 @@ fn test_delete_domain() {
 
     let response = client.domains().delete_domain(account_id, domain_id);
 
-    assert_eq!(response.status, 204);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }

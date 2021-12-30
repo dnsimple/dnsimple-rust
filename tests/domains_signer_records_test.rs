@@ -1,5 +1,7 @@
 use crate::common::setup_mock_for;
 use dnsimple::dnsimple::domains_signer_records::DelegationSignerRecordPayload;
+use dnsimple::errors::DNSimpleError;
+
 mod common;
 
 #[test]
@@ -98,15 +100,14 @@ fn test_create_delegation_signer_record_validation_error() {
 
     let response = client
         .domains()
-        .create_delegation_signer_record(account_id, domain, payload)
-        .unwrap();
-    let errors = response.errors.unwrap();
+        .create_delegation_signer_record(account_id, domain, payload);
 
-    assert_eq!("Validation failed", errors.message.unwrap());
-    assert_eq!(
-        "can't be blank",
-        errors.errors.unwrap().get("algorithm").unwrap()[0]
-    );
+    assert!(response.is_err());
+    let err = response.unwrap_err();
+    assert_eq!("Message: Validation Failed. errors: ", err.to_string());
+    // assert_eq!(DNSimpleError::BadRequest, err.kind());
+
+    // {"message":"Validation failed","errors":{"algorithm":["can't be blank"],"digest":["can't be blank"],"digest_type":["can't be blank"],"keytag":["can't be blank"]}}
 }
 
 #[test]
@@ -159,5 +160,6 @@ fn test_delete_delegation_signer_record() {
         delegation_signer_record_id,
     );
 
-    assert_eq!(response.status, 204);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }

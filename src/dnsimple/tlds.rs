@@ -1,4 +1,5 @@
 use crate::dnsimple::{Client, DNSimpleResponse, Endpoint, RequestOptions};
+use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
 
 /// Represents a TLD in DNSimple
@@ -80,7 +81,7 @@ impl Tlds<'_> {
     pub fn list_tlds(
         &self,
         options: Option<RequestOptions>,
-    ) -> Result<DNSimpleResponse<Vec<Tld>>, String> {
+    ) -> Result<DNSimpleResponse<Vec<Tld>>, DNSimpleError> {
         let path = "/tlds";
 
         self.client.get::<ListTldsEndpoint>(&*path, options)
@@ -91,7 +92,7 @@ impl Tlds<'_> {
     /// # Attributes
     ///
     /// `tld`: The TLD name
-    pub fn get_tld(&self, tld: String) -> Result<DNSimpleResponse<Tld>, String> {
+    pub fn get_tld(&self, tld: String) -> Result<DNSimpleResponse<Tld>, DNSimpleError> {
         let path = format!("/tlds/{}", tld);
 
         self.client.get::<TldEndpoint>(&*path, None)
@@ -105,7 +106,7 @@ impl Tlds<'_> {
     pub fn get_tld_extended_attributes(
         &self,
         tld: String,
-    ) -> Result<DNSimpleResponse<Vec<TldExtendedAttribute>>, String> {
+    ) -> Result<DNSimpleResponse<Vec<TldExtendedAttribute>>, DNSimpleError> {
         let path = format!("/tlds/{}/extended_attributes", tld);
 
         self.client

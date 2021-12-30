@@ -220,7 +220,8 @@ fn delete_zone_record_test() {
 
     let response = client.zones().delete_zone_record(account_id, zone, record);
 
-    assert_eq!(204, response.status);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }
 
 #[test]

@@ -1,5 +1,6 @@
 use crate::dnsimple::domains::Domains;
 use crate::dnsimple::{DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, RequestOptions};
+use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
 
 /// Represents a collaborator
@@ -71,7 +72,7 @@ impl Domains<'_> {
         account_id: u64,
         domain_id: u64,
         options: Option<RequestOptions>,
-    ) -> Result<DNSimpleResponse<Vec<Collaborator>>, String> {
+    ) -> Result<DNSimpleResponse<Vec<Collaborator>>, DNSimpleError> {
         let path = format!("/{}/domains/{}/collaborators", account_id, domain_id);
 
         self.client
@@ -107,7 +108,7 @@ impl Domains<'_> {
         account_id: u64,
         domain_id: u64,
         email: &str,
-    ) -> Result<DNSimpleResponse<Collaborator>, String> {
+    ) -> Result<DNSimpleResponse<Collaborator>, DNSimpleError> {
         let path = format!("/{}/domains/{}/collaborators", account_id, domain_id);
 
         let payload = AddCollaboratorPayload {
@@ -140,7 +141,7 @@ impl Domains<'_> {
         account_id: u64,
         domain_id: u64,
         collaborator_id: u64,
-    ) -> DNSimpleEmptyResponse {
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!(
             "/{}/domains/{}/collaborators/{}",
             account_id, domain_id, collaborator_id

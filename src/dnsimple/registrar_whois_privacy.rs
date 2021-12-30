@@ -1,5 +1,6 @@
 use crate::dnsimple::registrar::Registrar;
 use crate::dnsimple::{DNSimpleResponse, Endpoint};
+use crate::errors::DNSimpleError;
 use serde::Deserialize;
 use serde_json::Value;
 
@@ -64,7 +65,7 @@ impl Registrar<'_> {
         &self,
         account_id: u64,
         domain: String,
-    ) -> Result<DNSimpleResponse<WhoisPrivacy>, String> {
+    ) -> Result<DNSimpleResponse<WhoisPrivacy>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/whois_privacy", account_id, domain);
 
         self.client.get::<WhoisPrivacyEndpoint>(&*path, None)
@@ -80,7 +81,7 @@ impl Registrar<'_> {
         &self,
         account_id: u64,
         domain: String,
-    ) -> Result<DNSimpleResponse<WhoisPrivacy>, String> {
+    ) -> Result<DNSimpleResponse<WhoisPrivacy>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/whois_privacy", account_id, domain);
 
         self.client.put::<WhoisPrivacyEndpoint>(&*path, Value::Null)
@@ -96,7 +97,7 @@ impl Registrar<'_> {
         &self,
         account_id: u64,
         domain: String,
-    ) -> Result<DNSimpleResponse<WhoisPrivacy>, String> {
+    ) -> Result<DNSimpleResponse<WhoisPrivacy>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/whois_privacy", account_id, domain);
 
         self.client
@@ -113,7 +114,7 @@ impl Registrar<'_> {
         &self,
         account_id: u64,
         domain: String,
-    ) -> Result<DNSimpleResponse<WhoisPrivacyRenewal>, String> {
+    ) -> Result<DNSimpleResponse<WhoisPrivacyRenewal>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/whois_privacy", account_id, domain);
 
         self.client

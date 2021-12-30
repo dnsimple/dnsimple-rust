@@ -53,7 +53,8 @@ fn test_accept_push() {
 
     let response = client.domains().accept_push(account_id, push_id);
 
-    assert_eq!(response.status, 204);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }
 #[test]
 fn test_reject_push() {
@@ -64,5 +65,6 @@ fn test_reject_push() {
 
     let response = client.domains().reject_push(account_id, push_id);
 
-    assert_eq!(response.status, 204);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }

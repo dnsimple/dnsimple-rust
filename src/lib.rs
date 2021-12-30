@@ -9,3 +9,4 @@
 //! your entrypoint to the rest of the API as documented in each
 //! of the endpoints.
 pub mod dnsimple;
+pub mod errors;

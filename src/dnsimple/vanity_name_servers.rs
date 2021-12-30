@@ -1,5 +1,6 @@
 use crate::dnsimple::registrar_name_servers::VanityNameServer;
 use crate::dnsimple::{Client, DNSimpleEmptyResponse, DNSimpleResponse, Endpoint};
+use crate::errors::DNSimpleError;
 use serde_json::Value;
 
 struct VanityNameServersEndpoint;
@@ -25,7 +26,7 @@ impl VanityNameServers<'_> {
         &self,
         account_id: u64,
         domain: String,
-    ) -> Result<DNSimpleResponse<Vec<VanityNameServer>>, String> {
+    ) -> Result<DNSimpleResponse<Vec<VanityNameServer>>, DNSimpleError> {
         let path = format!("/{}/vanity/{}", account_id, domain);
 
         self.client
@@ -41,7 +42,7 @@ impl VanityNameServers<'_> {
         &self,
         account_id: u64,
         domain: String,
-    ) -> DNSimpleEmptyResponse {
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/vanity/{}", account_id, domain);
 
         self.client.delete(&path)

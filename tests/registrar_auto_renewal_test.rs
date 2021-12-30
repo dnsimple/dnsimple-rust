@@ -16,7 +16,8 @@ fn enable_domain_auto_renewal_test() {
         .registrar()
         .enable_domain_auto_renewal(account_id, String::from(domain));
 
-    assert_eq!(204, response.status);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }
 
 #[test]
@@ -34,5 +35,6 @@ fn disable_domain_auto_renewal_test() {
         .registrar()
         .disable_domain_auto_renewal(account_id, String::from(domain));
 
-    assert_eq!(204, response.status);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }

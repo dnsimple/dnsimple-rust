@@ -1,4 +1,5 @@
 use crate::dnsimple::{Client, DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, RequestOptions};
+use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
 
 /// Represents a template in DNSimple
@@ -113,7 +114,7 @@ impl Templates<'_> {
         &self,
         account_id: u64,
         options: Option<RequestOptions>,
-    ) -> Result<DNSimpleResponse<Vec<Template>>, String> {
+    ) -> Result<DNSimpleResponse<Vec<Template>>, DNSimpleError> {
         let path = format!("/{}/templates", account_id);
 
         self.client.get::<TemplatesEndpoint>(&path, options)
@@ -129,7 +130,7 @@ impl Templates<'_> {
         &self,
         account_id: u64,
         payload: TemplatePayload,
-    ) -> Result<DNSimpleResponse<Template>, String> {
+    ) -> Result<DNSimpleResponse<Template>, DNSimpleError> {
         let path = format!("/{}/templates", account_id);
 
         self.client
@@ -146,7 +147,7 @@ impl Templates<'_> {
         &self,
         account_id: u64,
         template: String,
-    ) -> Result<DNSimpleResponse<Template>, String> {
+    ) -> Result<DNSimpleResponse<Template>, DNSimpleError> {
         let path = format!("/{}/templates/{}", account_id, template);
 
         self.client.get::<TemplateEndpoint>(&path, None)
@@ -164,7 +165,7 @@ impl Templates<'_> {
         account_id: u64,
         template: String,
         payload: TemplatePayload,
-    ) -> Result<DNSimpleResponse<Template>, String> {
+    ) -> Result<DNSimpleResponse<Template>, DNSimpleError> {
         let path = format!("/{}/templates/{}", account_id, template);
 
         self.client
@@ -176,7 +177,11 @@ impl Templates<'_> {
     /// # Arguments
     /// `account_id`: The account id
     /// `template`: The template name or id
-    pub fn delete_template(&self, account_id: u64, template: String) -> DNSimpleEmptyResponse {
+    pub fn delete_template(
+        &self,
+        account_id: u64,
+        template: String,
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/templates/{}", account_id, template);
 
         self.client.delete(&path)
@@ -192,7 +197,7 @@ impl Templates<'_> {
         account_id: u64,
         template: String,
         options: Option<RequestOptions>,
-    ) -> Result<DNSimpleResponse<Vec<TemplateRecord>>, String> {
+    ) -> Result<DNSimpleResponse<Vec<TemplateRecord>>, DNSimpleError> {
         let path = format!("/{}/templates/{}/records", account_id, template);
 
         self.client.get::<TemplateRecordsEndpoint>(&path, options)
@@ -209,7 +214,7 @@ impl Templates<'_> {
         account_id: u64,
         template: String,
         payload: TemplateRecordPayload,
-    ) -> Result<DNSimpleResponse<TemplateRecord>, String> {
+    ) -> Result<DNSimpleResponse<TemplateRecord>, DNSimpleError> {
         let path = format!("/{}/templates/{}/records", account_id, template);
 
         self.client
@@ -227,7 +232,7 @@ impl Templates<'_> {
         account_id: u64,
         template: String,
         record: u64,
-    ) -> Result<DNSimpleResponse<TemplateRecord>, String> {
+    ) -> Result<DNSimpleResponse<TemplateRecord>, DNSimpleError> {
         let path = format!("/{}/templates/{}/records/{}", account_id, template, record);
 
         self.client.get::<TemplateRecordEndpoint>(&path, None)
@@ -244,7 +249,7 @@ impl Templates<'_> {
         account_id: u64,
         template: String,
         record: u64,
-    ) -> DNSimpleEmptyResponse {
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/templates/{}/records/{}", account_id, template, record);
 
         self.client.delete(&path)
@@ -261,7 +266,7 @@ impl Templates<'_> {
         account_id: u64,
         domain: String,
         template: String,
-    ) -> DNSimpleEmptyResponse {
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/domains/{}/templates/{}", account_id, domain, template);
 
         self.client.empty_post(&path)

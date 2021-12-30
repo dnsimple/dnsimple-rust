@@ -1,4 +1,5 @@
 use crate::dnsimple::{Client, DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, RequestOptions};
+use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
 
 /// Represents a service in DNSimple
@@ -67,7 +68,7 @@ impl Services<'_> {
     pub fn list_services(
         &self,
         options: Option<RequestOptions>,
-    ) -> Result<DNSimpleResponse<Vec<Service>>, String> {
+    ) -> Result<DNSimpleResponse<Vec<Service>>, DNSimpleError> {
         let path = "/services";
 
         self.client.get::<ServicesEndpoint>(&*path, options)
@@ -77,7 +78,7 @@ impl Services<'_> {
     ///
     /// # Arguments
     /// `service`: The service name or id
-    pub fn get_service(&self, service: String) -> Result<DNSimpleResponse<Service>, String> {
+    pub fn get_service(&self, service: String) -> Result<DNSimpleResponse<Service>, DNSimpleError> {
         let path = format!("/services/{}", service);
 
         self.client.get::<ServiceEndpoint>(&path, None)
@@ -93,7 +94,7 @@ impl Services<'_> {
         account_id: u64,
         domain: String,
         options: Option<RequestOptions>,
-    ) -> Result<DNSimpleResponse<Vec<Service>>, String> {
+    ) -> Result<DNSimpleResponse<Vec<Service>>, DNSimpleError> {
         let path = format!("/{}/domains/{}/services", account_id, domain);
 
         self.client.get::<ServicesEndpoint>(&*path, options)
@@ -110,7 +111,7 @@ impl Services<'_> {
         account_id: u64,
         domain: String,
         service: String,
-    ) -> DNSimpleEmptyResponse {
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/domains/{}/services/{}", account_id, domain, service);
 
         self.client.empty_post(&*path)
@@ -127,7 +128,7 @@ impl Services<'_> {
         account_id: u64,
         domain: String,
         service: String,
-    ) -> DNSimpleEmptyResponse {
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/domains/{}/services/{}", account_id, domain, service);
 
         self.client.delete(&*path)

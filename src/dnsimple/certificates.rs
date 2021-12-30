@@ -1,4 +1,5 @@
 use crate::dnsimple::{Client, DNSimpleResponse, Endpoint, RequestOptions};
+use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
@@ -177,7 +178,7 @@ impl Certificates<'_> {
         account_id: u64,
         domain: &str,
         options: Option<RequestOptions>,
-    ) -> Result<DNSimpleResponse<Vec<Certificate>>, String> {
+    ) -> Result<DNSimpleResponse<Vec<Certificate>>, DNSimpleError> {
         let path = format!("/{}/domains/{}/certificates", account_id, domain);
 
         self.client.get::<ListCertificatesEndpoint>(&*path, options)
@@ -204,7 +205,7 @@ impl Certificates<'_> {
         account_id: u64,
         domain: &str,
         certificate_id: u64,
-    ) -> Result<DNSimpleResponse<Certificate>, String> {
+    ) -> Result<DNSimpleResponse<Certificate>, DNSimpleError> {
         let path = format!(
             "/{}/domains/{}/certificates/{}",
             account_id, domain, certificate_id
@@ -234,7 +235,7 @@ impl Certificates<'_> {
         account_id: u64,
         domain: &str,
         certificate_id: u64,
-    ) -> Result<DNSimpleResponse<CertificateBundle>, String> {
+    ) -> Result<DNSimpleResponse<CertificateBundle>, DNSimpleError> {
         let path = format!(
             "/{}/domains/{}/certificates/{}/download",
             account_id, domain, certificate_id
@@ -264,7 +265,7 @@ impl Certificates<'_> {
         account_id: u64,
         domain: &str,
         certificate_id: u64,
-    ) -> Result<DNSimpleResponse<CertificatePrivateKey>, String> {
+    ) -> Result<DNSimpleResponse<CertificatePrivateKey>, DNSimpleError> {
         let path = format!(
             "/{}/domains/{}/certificates/{}/private_key",
             account_id, domain, certificate_id
@@ -302,7 +303,7 @@ impl Certificates<'_> {
         account_id: u64,
         domain: &str,
         payload: LetsEncryptPurchasePayload,
-    ) -> Result<DNSimpleResponse<LetsEncryptPurchase>, String> {
+    ) -> Result<DNSimpleResponse<LetsEncryptPurchase>, DNSimpleError> {
         let path = format!(
             "/{}/domains/{}/certificates/letsencrypt",
             account_id, domain
@@ -333,7 +334,7 @@ impl Certificates<'_> {
         account_id: u64,
         domain: &str,
         certificate_id: u64,
-    ) -> Result<DNSimpleResponse<Certificate>, String> {
+    ) -> Result<DNSimpleResponse<Certificate>, DNSimpleError> {
         let path = format!(
             "/{}/domains/{}/certificates/letsencrypt/{}/issue",
             account_id, domain, certificate_id
@@ -367,7 +368,7 @@ impl Certificates<'_> {
         domain: &str,
         certificate_id: u64,
         payload: LetsEncryptPurchaseRenewalPayload,
-    ) -> Result<DNSimpleResponse<LetsEncryptPurchaseRenewal>, String> {
+    ) -> Result<DNSimpleResponse<LetsEncryptPurchaseRenewal>, DNSimpleError> {
         let path = format!(
             "/{}/domains/{}/certificates/letsencrypt/{}/renewals",
             account_id, domain, certificate_id
@@ -401,7 +402,7 @@ impl Certificates<'_> {
         domain: &str,
         certificate_id: u64,
         certificate_renewal_id: u64,
-    ) -> Result<DNSimpleResponse<Certificate>, String> {
+    ) -> Result<DNSimpleResponse<Certificate>, DNSimpleError> {
         let path = format!(
             "/{}/domains/{}/certificates/letsencrypt/{}/renewals/{}/issue",
             account_id, domain, certificate_id, certificate_renewal_id
