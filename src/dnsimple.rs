@@ -17,7 +17,7 @@ use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use std::collections::HashMap;
-use ureq::{Error, Request, Response};
+use ureq::{request, Error, Request, Response};
 
 pub mod accounts;
 pub mod certificates;
@@ -505,24 +505,30 @@ impl Client {
     }
 
     pub fn build_post_request(&self, path: &&str) -> Request {
-        self._agent
+        let request = self
+            ._agent
             .post(&self.url(path))
             .set("User-Agent", &self.user_agent)
-            .set("Accept", "application/json")
+            .set("Accept", "application/json");
+        self.add_headers_to_request(request)
     }
 
     pub fn build_put_request(&self, path: &&str) -> Request {
-        self._agent
+        let request = self
+            ._agent
             .put(&self.url(path))
             .set("User-Agent", &self.user_agent)
-            .set("Accept", "application/json")
+            .set("Accept", "application/json");
+        self.add_headers_to_request(request)
     }
 
     pub fn build_patch_request(&self, path: &&str) -> Request {
-        self._agent
+        let request = self
+            ._agent
             .request("PATCH", &self.url(path))
             .set("User-Agent", &self.user_agent)
-            .set("Accept", "application/json")
+            .set("Accept", "application/json");
+        self.add_headers_to_request(request)
     }
 
     fn build_delete_request(&self, path: &&str) -> Request {
