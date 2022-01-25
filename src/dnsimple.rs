@@ -17,7 +17,7 @@ use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use std::collections::HashMap;
-use ureq::{Error, Request, Response};
+use ureq::{request, Error, Request, Response};
 
 pub mod accounts;
 pub mod certificates;
