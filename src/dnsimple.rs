@@ -11,13 +11,13 @@ use crate::dnsimple::tlds::Tlds;
 use crate::dnsimple::vanity_name_servers::VanityNameServers;
 use crate::dnsimple::webhooks::Webhooks;
 use crate::dnsimple::zones::Zones;
-use crate::errors::{APIErrorMessage, DNSimpleError};
+use crate::errors::DNSimpleError;
 use serde;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use std::collections::HashMap;
-use ureq::{request, Error, Request, Response};
+use ureq::{Error, Request, Response};
 
 pub mod accounts;
 pub mod certificates;
@@ -91,8 +91,6 @@ pub struct DNSimpleResponse<T> {
     pub status: u16,
     /// The object or a Vec<T> of objects (the type `T` will depend on the endpoint).
     pub data: Option<T>,
-    /// The error response if any
-    pub errors: Option<APIErrorMessage>,
     /// Any API endpoint that returns a list of items requires pagination.
     pub pagination: Option<Pagination>,
     /// The body as a JSON `Value`
@@ -447,8 +445,6 @@ impl Client {
             .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
         let data = serde_json::from_value(json!(json.get("data")))
             .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
-        let errors = serde_json::from_value(json!(json))
-            .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
         let pagination = serde_json::from_value(json!(json.get("pagination")))
             .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
         let body = serde_json::from_value(json)
@@ -460,7 +456,6 @@ impl Client {
             rate_limit_reset,
             status,
             data,
-            errors,
             pagination,
             body,
         })

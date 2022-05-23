@@ -57,13 +57,14 @@ fn test_check_domain_premium_price_not_a_premium_domain() {
 
     let response = client
         .registrar()
-        .check_domain_premium_price(account_id, domain, None)
-        .unwrap();
-    let error = response.errors.unwrap();
+        .check_domain_premium_price(account_id, domain, None);
+    assert!(response.is_err());
+
+    let error = response.unwrap_err();
 
     assert_eq!(
-        "`cocotero.love` is not a premium domain for registration",
-        error.message.unwrap()
+        "Message: \"`cocotero.love` is not a premium domain for registration\"",
+        error.to_string()
     );
 }
 #[test]
@@ -79,11 +80,10 @@ fn test_check_domain_premium_price_tld_not_supported() {
 
     let response = client
         .registrar()
-        .check_domain_premium_price(account_id, domain, None)
-        .unwrap();
-    let error = response.errors.unwrap();
+        .check_domain_premium_price(account_id, domain, None);
+    let error = response.unwrap_err();
 
-    assert_eq!("TLD .LOVE is not supported", error.message.unwrap());
+    assert_eq!("Message: \"TLD .LOVE is not supported\"", error.to_string());
 }
 
 #[test]
@@ -121,13 +121,13 @@ fn test_get_domain_prices_failure() {
     let account_id = 1010;
     let domain = "bingo.pineapple";
 
-    let response = client
-        .registrar()
-        .get_domain_prices(account_id, domain)
-        .unwrap();
-    let error = response.errors.unwrap();
+    let response = client.registrar().get_domain_prices(account_id, domain);
+    let error = response.unwrap_err();
 
-    assert_eq!("TLD .PINEAPPLE is not supported", error.message.unwrap());
+    assert_eq!(
+        "Message: \"TLD .PINEAPPLE is not supported\"",
+        error.to_string()
+    );
 }
 
 #[test]
@@ -221,13 +221,12 @@ fn test_transfer_domain_error_in_dnsimple() {
 
     let response = client
         .registrar()
-        .transfer_domain(account_id, domain, payload)
-        .unwrap();
-    let error = response.errors.unwrap();
+        .transfer_domain(account_id, domain, payload);
+    let error = response.unwrap_err();
 
     assert_eq!(
-        "The domain google.com is already in DNSimple and cannot be added",
-        error.message.unwrap()
+        "Message: \"The domain google.com is already in DNSimple and cannot be added\"",
+        error.to_string()
     );
 }
 
@@ -252,16 +251,10 @@ fn test_transfer_domain_error_missing_auth_code() {
 
     let response = client
         .registrar()
-        .transfer_domain(account_id, domain, payload)
-        .unwrap();
-    let errors = response.errors.unwrap();
-    let error_details = errors.errors.unwrap();
+        .transfer_domain(account_id, domain, payload);
+    let errors = response.unwrap_err();
 
-    assert_eq!("Validation failed", errors.message.unwrap());
-    assert_eq!(
-        "You must provide an authorization code for the domain",
-        error_details["base"][0]
-    );
+    assert_eq!("Message: \"Validation failed\"", errors.to_string());
 }
 
 #[test]
@@ -369,15 +362,13 @@ fn test_renew_a_domain_to_early() {
         premium_price: None,
     };
 
-    let response = client
-        .registrar()
-        .renew_domain(account_id, domain, payload)
-        .unwrap();
-    let errors = response.errors.unwrap();
+    let response = client.registrar().renew_domain(account_id, domain, payload);
+
+    let errors = response.unwrap_err();
 
     assert_eq!(
-        "example.com may not be renewed at this time",
-        errors.message.unwrap()
+        "Message: \"example.com may not be renewed at this time\"",
+        errors.to_string()
     );
 }
 

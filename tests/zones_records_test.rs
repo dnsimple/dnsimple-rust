@@ -283,12 +283,10 @@ fn check_zone_record_distribution_error() {
     let errors = client
         .zones()
         .check_zone_record_distribution(account_id, zone, record)
-        .unwrap()
-        .errors
-        .unwrap();
+        .unwrap_err();
 
     assert_eq!(
-        "Could not query zone, connection timed out",
-        errors.message.unwrap()
+        "Message: \"Could not query zone, connection timed out\"",
+        errors.to_string()
     );
 }
