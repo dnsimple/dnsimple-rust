@@ -108,10 +108,8 @@ fn test_create_delegation_signer_record_validation_error() {
     // 2 - make the options somehow available (See BadRequest in errors)
     // 3 - know which **kind** or error we are dealing with
     let err = response.unwrap_err();
-    assert_eq!("Message: Validation Failed. errors: ", err.to_string());
-    // assert_eq!(DNSimpleError::BadRequest, err.kind());
 
-    // {"message":"Validation failed","errors":{"algorithm":["can't be blank"],"digest":["can't be blank"],"digest_type":["can't be blank"],"keytag":["can't be blank"]}}
+    assert_eq!("Message: \"Validation failed\"", err.to_string());
 }
 
 #[test]

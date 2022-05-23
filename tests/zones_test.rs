@@ -119,13 +119,10 @@ fn check_zone_distribution_error() {
     let account_id = 1010;
     let zone = "example.com";
 
-    let response = client
-        .zones()
-        .check_zone_distribution(account_id, zone)
-        .unwrap();
+    let response = client.zones().check_zone_distribution(account_id, zone);
 
     assert_eq!(
-        "Could not query zone, connection timed out",
-        response.errors.unwrap().message.unwrap()
+        "Message: \"Could not query zone, connection timed out\"",
+        response.unwrap_err().to_string()
     );
 }
