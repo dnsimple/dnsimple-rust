@@ -400,20 +400,21 @@ impl Client {
         request: Request,
         data: Value,
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
-        match request.send_json(data) {
-            Ok(response) => Self::build_dnsimple_response::<E>(response),
-            Err(Error::Status(code, response)) => {
-                Err(DNSimpleError::parse_response(code, response))
-            }
-            Err(Error::Transport(transport)) => Err(DNSimpleError::parse_transport(transport)),
-        }
+        self.process_response::<E>(request.send_json(data))
     }
 
     fn call<E: Endpoint>(
         &self,
         request: Request,
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
-        match request.call() {
+        self.process_response::<E>(request.call())
+    }
+
+    fn process_response<E: Endpoint>(
+        &self,
+        result: Result<Response, Error>,
+    ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
+        match result {
             Ok(response) => Self::build_dnsimple_response::<E>(response),
             Err(Error::Status(code, response)) => {
                 Err(DNSimpleError::parse_response(code, response))

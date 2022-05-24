@@ -15,13 +15,13 @@ fn test_list_tlds() {
 
     assert_eq!("ac", tld.tld);
     assert_eq!(2, tld.tld_type);
-    assert_eq!(false, tld.whois_privacy);
-    assert_eq!(true, tld.auto_renew_only);
-    assert_eq!(false, tld.idn);
+    assert!(!tld.whois_privacy);
+    assert!(tld.auto_renew_only);
+    assert!(!tld.idn);
     assert_eq!(1, tld.minimum_registration);
-    assert_eq!(true, tld.registration_enabled);
-    assert_eq!(true, tld.renewal_enabled);
-    assert_eq!(false, tld.transfer_enabled);
+    assert!(tld.registration_enabled);
+    assert!(tld.renewal_enabled);
+    assert!(!tld.transfer_enabled);
     assert_eq!("ds", tld.dnssec_interface_type.as_ref().unwrap());
 }
 
@@ -35,13 +35,13 @@ fn test_get_tld() {
 
     assert_eq!("com", tld.tld);
     assert_eq!(1, tld.tld_type);
-    assert_eq!(true, tld.whois_privacy);
-    assert_eq!(false, tld.auto_renew_only);
-    assert_eq!(true, tld.idn);
+    assert!(tld.whois_privacy);
+    assert!(!tld.auto_renew_only);
+    assert!(tld.idn);
     assert_eq!(1, tld.minimum_registration);
-    assert_eq!(true, tld.registration_enabled);
-    assert_eq!(true, tld.renewal_enabled);
-    assert_eq!(true, tld.transfer_enabled);
+    assert!(tld.registration_enabled);
+    assert!(tld.renewal_enabled);
+    assert!(tld.transfer_enabled);
     assert_eq!("ds", tld.dnssec_interface_type.unwrap());
 }
 
@@ -66,7 +66,7 @@ fn test_get_tld_extended_attributes() {
         "Legal type of registrant contact",
         extended_attribute.description
     );
-    assert_eq!(false, extended_attribute.required);
+    assert!(!extended_attribute.required);
 
     let options = &extended_attribute.options;
 
