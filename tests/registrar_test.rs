@@ -19,8 +19,8 @@ fn test_check_domain() {
     let domain_check = response.data.unwrap();
 
     assert_eq!("ruby.codes", domain_check.domain);
-    assert_eq!(true, domain_check.available);
-    assert_eq!(true, domain_check.premium);
+    assert!(domain_check.available);
+    assert!(domain_check.premium);
 }
 
 #[test]
@@ -104,7 +104,7 @@ fn test_get_domain_prices() {
     let domain_prices = response.data.unwrap();
 
     assert_eq!("bingo.pizza", domain_prices.domain);
-    assert_eq!(true, domain_prices.premium);
+    assert!(domain_prices.premium);
     assert_eq!(20.0, domain_prices.registration_price);
     assert_eq!(20.0, domain_prices.renewal_price);
     assert_eq!(20.0, domain_prices.transfer_price);
@@ -159,8 +159,8 @@ fn test_register_domain() {
     assert_eq!(2, domain_registration.registrant_id);
     assert_eq!(1, domain_registration.period);
     assert_eq!("new", domain_registration.state);
-    assert_eq!(false, domain_registration.auto_renew);
-    assert_eq!(false, domain_registration.whois_privacy);
+    assert!(!domain_registration.auto_renew);
+    assert!(!domain_registration.whois_privacy);
     assert_eq!("2016-12-09T19:35:31Z", domain_registration.created_at);
     assert_eq!("2016-12-09T19:35:31Z", domain_registration.updated_at);
 }
@@ -194,8 +194,8 @@ fn test_transfer_domain() {
     assert_eq!(999, domain_transfer.domain_id);
     assert_eq!(2, domain_transfer.registrant_id);
     assert_eq!("transferring", domain_transfer.state);
-    assert_eq!(false, domain_transfer.auto_renew);
-    assert_eq!(false, domain_transfer.whois_privacy);
+    assert!(!domain_transfer.auto_renew);
+    assert!(!domain_transfer.whois_privacy);
     assert_eq!("2016-12-09T19:43:41Z", domain_transfer.created_at);
     assert_eq!("2016-12-09T19:43:43Z", domain_transfer.updated_at);
 }
@@ -279,8 +279,8 @@ fn test_retrieve_domain_transfer() {
     assert_eq!(182245, transfer.domain_id);
     assert_eq!(2715, transfer.registrant_id);
     assert_eq!("cancelled", transfer.state);
-    assert_eq!(false, transfer.auto_renew);
-    assert_eq!(false, transfer.whois_privacy);
+    assert!(!transfer.auto_renew);
+    assert!(!transfer.whois_privacy);
     assert_eq!("Canceled by customer", transfer.status_description.unwrap());
     assert_eq!("2020-06-05T18:08:00Z", transfer.created_at);
     assert_eq!("2020-06-05T18:10:01Z", transfer.updated_at);
@@ -311,8 +311,8 @@ fn test_cancel_domain_transfer() {
     assert_eq!(182245, transfer.domain_id);
     assert_eq!(2715, transfer.registrant_id);
     assert_eq!("transferring", transfer.state);
-    assert_eq!(false, transfer.auto_renew);
-    assert_eq!(false, transfer.whois_privacy);
+    assert!(!transfer.auto_renew);
+    assert!(!transfer.whois_privacy);
     assert_eq!(None, transfer.status_description);
     assert_eq!("2020-06-05T18:08:00Z", transfer.created_at);
     assert_eq!("2020-06-05T18:08:04Z", transfer.updated_at);

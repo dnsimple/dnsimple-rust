@@ -34,7 +34,7 @@ fn test_list_certificates() {
     assert_eq!("-----BEGIN CERTIFICATE REQUEST-----\nMIICYDCCAUgCAQAwGzEZMBcGA1UEAwwQd3d3Mi5kbnNpbXBsZS51czCCASIwDQYJ\nKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMjXrephLTu7OKVQ6F3LhmLkL6NL3ier\n1qaWPtJBbkBuzJIn8gmSG+6xGmywB6GKvP2IVkPQhPBpfc8wsTd26rbSBHnRIQal\ntk+W4aQZyIeXFARY+cRvpjeAtmpX0vwZkDMoEyhFomBfGxVfx6tSqdGlR88/x0By\ny5u7+xwkY+4jMt+wZi+wpXsScumB6DAC1PTYRvNFQy7Gcjqrc3EdzPsn3c9kLCNO\n3GCPJoWmT5Rtyd7FxjJiSIf7BDOi12BnblpSLwGvtu6Wrl+u9LJLj8zeCACwUiQG\nuvnP2lAl2YacNAgpql6C2eEnFjIub7Ul1QMUImQSDVy5dMd/UGQrOb0CAwEAAaAA\nMA0GCSqGSIb3DQEBCwUAA4IBAQA8oVxOrZCGeSFmKpNV4oilzPOepTVSWxXa19T7\nzD/azh6j6RBLZPpG4TFbpvjecum+1V7Y8ypIcwhRtlh5/zSbfJkjJsdCdZU9XZat\nT5YkOaxuCUCDajpRiyyKhHvrloTPKPXe5ygCq/Q23xm//VrXKArLSWVB9qWS6gDV\nk0y3/mIlTQ3mTgfYQySc3MPXvIgUoqmB8Ajfq1n3hSLgb1/OoKNfeVEWsON116cq\nbXvl63+XzPubj6KWZXZH/jhrs53fuLq3xyeeuOaPrn+2VceBVt4DCC9n0JS5wepl\nHDoVxtWTTNeJdP5xFB5V1KI+D4FEFBUGnQABEvajpU3vljh3\n-----END CERTIFICATE REQUEST-----\n",
                                     certificate.csr.to_owned().unwrap());
     assert_eq!("issued", certificate.state);
-    assert_eq!(false, certificate.auto_renew);
+    assert!(!certificate.auto_renew);
     assert!(certificate.alternate_names.is_empty());
     assert_eq!("letsencrypt", certificate.authority_identifier);
     assert_eq!("2020-06-18T20:15:09Z", certificate.created_at);
@@ -74,7 +74,7 @@ fn test_get_certificate() {
     assert_eq!("-----BEGIN CERTIFICATE REQUEST-----\nMIICmTCCAYECAQAwGjEYMBYGA1UEAwwPd3d3LmJpbmdvLnBpenphMIIBIjANBgkq\nhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAw4+KoZ9IDCK2o5qAQpi+Icu5kksmjQzx\n5o5g4B6XhRxhsfHlK/i3iU5hc8CONjyVv8j82835RNsiKrflnxGa9SH68vbQfcn4\nIpbMz9c+Eqv5h0Euqlc3A4DBzp0unEu5QAUhR6Xu1TZIWDPjhrBOGiszRlLQcp4F\nzy6fD6j5/d/ylpzTp5v54j+Ey31Bz86IaBPtSpHI+Qk87Hs8DVoWxZk/6RlAkyur\nXDGWnPu9n3RMfs9ag5anFhggLIhCNtVN4+0vpgPQ59pqwYo8TfdYzK7WSKeL7geu\nCqVE3bHAqU6dLtgHOZfTkLwGycUh4p9aawuc6fsXHHYDpIL8s3vAvwIDAQABoDow\nOAYJKoZIhvcNAQkOMSswKTAnBgNVHREEIDAeggtiaW5nby5waXp6YYIPd3d3LmJp\nbmdvLnBpenphMA0GCSqGSIb3DQEBCwUAA4IBAQBwOLKv+PO5hSJkgqS6wL/wRqLh\nQ1zbcHRHAjRjnpRz06cDvN3X3aPI+lpKSNFCI0A1oKJG7JNtgxX3Est66cuO8ESQ\nPIb6WWN7/xlVlBCe7ZkjAFgN6JurFdclwCp/NI5wBCwj1yb3Ar5QQMFIZOezIgTI\nAWkQSfCmgkB96d6QlDWgidYDDjcsXugQveOQRPlHr0TsElu47GakxZdJCFZU+WPM\nodQQf5SaqiIK2YaH1dWO//4KpTS9QoTy1+mmAa27apHcmz6X6+G5dvpHZ1qH14V0\nJoMWIK+39HRPq6mDo1UMVet/xFUUrG/H7/tFlYIDVbSpVlpVAFITd/eQkaW/\n-----END CERTIFICATE REQUEST-----\n",
                certificate.csr.to_owned().unwrap());
     assert_eq!("issued", certificate.state);
-    assert_eq!(false, certificate.auto_renew);
+    assert!(!certificate.auto_renew);
     assert!(certificate.alternate_names.is_empty());
     assert_eq!("letsencrypt", certificate.authority_identifier);
     assert_eq!("2020-06-18T18:54:17Z", certificate.created_at);
@@ -83,7 +83,7 @@ fn test_get_certificate() {
         "2020-09-16T18:10:13Z",
         certificate.expires_at.to_owned().unwrap()
     );
-    assert_eq!("2020-09-16", certificate.expires_on.to_owned().unwrap());
+    assert_eq!("2020-09-16", certificate.expires_on.unwrap());
 }
 
 #[test]
@@ -164,7 +164,7 @@ fn test_purchase_letsencrypt_certificate() {
     assert_eq!(101967, letsencrypt.id);
     assert_eq!(101967, letsencrypt.certificate_id);
     assert_eq!("new", letsencrypt.state);
-    assert_eq!(false, letsencrypt.auto_renew);
+    assert!(!letsencrypt.auto_renew);
     assert_eq!("2020-06-18T18:54:17Z", letsencrypt.created_at);
     assert_eq!("2020-06-18T18:54:17Z", letsencrypt.updated_at);
 }
@@ -196,7 +196,7 @@ fn test_issue_letsencrypt_certificate() {
     assert_eq!(1, certificate.years);
     assert_eq!(None, certificate.csr);
     assert_eq!("requesting", certificate.state);
-    assert_eq!(false, certificate.auto_renew);
+    assert!(!certificate.auto_renew);
     assert!(certificate.alternate_names.is_empty());
     assert_eq!("letsencrypt", certificate.authority_identifier);
     assert_eq!("2020-06-18T18:54:17Z", certificate.created_at);
@@ -230,7 +230,7 @@ fn test_purchase_letsencrypt_certificate_renewal() {
     assert_eq!(101967, letsencrypt_renewal.old_certificate_id);
     assert_eq!(101972, letsencrypt_renewal.new_certificate_id);
     assert_eq!("new", letsencrypt_renewal.state);
-    assert_eq!(false, letsencrypt_renewal.auto_renew);
+    assert!(!letsencrypt_renewal.auto_renew);
     assert_eq!("2020-06-18T19:56:20Z", letsencrypt_renewal.created_at);
     assert_eq!("2020-06-18T19:56:20Z", letsencrypt_renewal.updated_at);
 }
@@ -268,7 +268,7 @@ fn test_issue_letsencrypt_certificate_renewal() {
     assert_eq!(1, renewal.years);
     assert_eq!(None, renewal.csr);
     assert_eq!("requesting", renewal.state);
-    assert_eq!(false, renewal.auto_renew);
+    assert!(!renewal.auto_renew);
     assert!(renewal.alternate_names.is_empty());
     assert_eq!("letsencrypt", renewal.authority_identifier);
     assert_eq!("2020-06-18T19:56:20Z", renewal.created_at);

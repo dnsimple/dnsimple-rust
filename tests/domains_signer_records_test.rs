@@ -11,7 +11,7 @@ fn test_list_delegation_signer_records() {
         "GET",
     );
     let client = setup.0;
-    let account_id = 1385 as u64;
+    let account_id = 1385_u64;
     let domain = "example.com";
 
     let response = client

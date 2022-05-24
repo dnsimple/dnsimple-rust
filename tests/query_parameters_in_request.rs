@@ -41,7 +41,7 @@ fn can_filter() {
     let mut filters = HashMap::new();
     filters.insert("name_like".to_string(), "example".to_string());
     let options = RequestOptions {
-        filters: Some(Filters { filters: filters }),
+        filters: Some(Filters { filters }),
         sort: None,
         paginate: None,
     };
