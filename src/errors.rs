@@ -21,9 +21,9 @@ pub enum DNSimpleError {
 impl DNSimpleError {
     pub fn parse_response(code: u16, response: Response) -> DNSimpleError {
         if code == 400 {
-            return Self::bad_request(response);
+            Self::bad_request(response)
         } else if code == 504 {
-            return Self::gateway_timeout(response);
+            Self::gateway_timeout(response)
         } else {
             Self::Transport("OOPS".into(), "oops".into())
         }
@@ -41,7 +41,7 @@ impl DNSimpleError {
         let message = &json["message"];
         let errors = Some(json["errors"].borrow().clone());
 
-        return Self::BadRequest(message.to_string(), errors);
+        Self::BadRequest(message.to_string(), errors)
     }
 
     fn gateway_timeout(response: Response) -> DNSimpleError {
@@ -51,6 +51,6 @@ impl DNSimpleError {
             .unwrap();
         let message = &json["message"];
 
-        return Self::GatewayTimeout(message.to_string());
+        Self::GatewayTimeout(message.to_string())
     }
 }
