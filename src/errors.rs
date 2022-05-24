@@ -24,8 +24,9 @@ impl DNSimpleError {
             return Self::bad_request(response);
         } else if code == 504 {
             return Self::gateway_timeout(response);
+        } else {
+            Self::Transport("OOPS".into(), "oops".into())
         }
-        else { Self::Transport("OOPS".into(), "oops".into()) }
     }
 
     pub fn parse_transport(_transport: Transport) -> DNSimpleError {

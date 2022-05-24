@@ -1,6 +1,5 @@
 use crate::common::setup_mock_for;
 use dnsimple::dnsimple::domains_signer_records::DelegationSignerRecordPayload;
-use dnsimple::errors::DNSimpleError;
 
 mod common;
 
