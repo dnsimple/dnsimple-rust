@@ -21,9 +21,9 @@ pub enum DNSimpleError {
 impl DNSimpleError {
     pub fn parse_response(code: u16, response: Response) -> DNSimpleError {
         if code == 400 {
-            return Self::bad_request(response)
+            return Self::bad_request(response);
         } else if code == 504 {
-            return Self::gateway_timeout(response)
+            return Self::gateway_timeout(response);
         }
         else { Self::Transport("OOPS".into(), "oops".into()) }
     }
