@@ -60,7 +60,7 @@ impl Domains<'_> {
     /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// client.domains().disable_dnssec(1234, "example.com");
+    /// let response = client.domains().disable_dnssec(1234, "example.com");
     /// ```
     ///
     /// # Arguments

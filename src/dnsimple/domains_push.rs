@@ -111,7 +111,7 @@ impl Domains<'_> {
     /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// client.domains().accept_push(1234, 42);
+    /// let response = client.domains().accept_push(1234, 42);
     /// ```
     ///
     /// # Arguments
@@ -136,7 +136,7 @@ impl Domains<'_> {
     /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// client.domains().reject_push(1234, 42);
+    /// let response = client.domains().reject_push(1234, 42);
     /// ```
     ///
     /// # Arguments
