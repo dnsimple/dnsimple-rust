@@ -167,7 +167,7 @@ impl Domains<'_> {
     /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// client.domains().delete_email_forward(1234, "example.com", 42);
+    /// let response = client.domains().delete_email_forward(1234, "example.com", 42);
     /// ```
     ///
     /// # Arguments

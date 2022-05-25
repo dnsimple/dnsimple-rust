@@ -4,6 +4,7 @@ use std::borrow::Borrow;
 use thiserror::Error;
 use ureq::{Response, Transport};
 
+/// Represents the possible errors thrown while interacting with the DNSimple API
 #[derive(Error, Deserialize, Serialize, Debug)]
 pub enum DNSimpleError {
     #[error("Authentication failed")]
@@ -45,12 +46,15 @@ impl DNSimpleError {
             502 => Self::BadGateway,
             503 => Self::ServiceUnavailable,
             504 => Self::gateway_timeout(response),
-            _ => Self::Transport("OOPS".into(), "oops".into()),
+            _ => Self::Transport(
+                response.status().to_string(),
+                response.status_text().to_string(),
+            ),
         }
     }
 
-    pub fn parse_transport(_transport: Transport) -> DNSimpleError {
-        Self::Transport("VROOM".into(), "VROOM".into())
+    pub fn parse_transport(transport: Transport) -> DNSimpleError {
+        Self::Transport(transport.to_string(), transport.kind().to_string())
     }
 
     fn bad_request(response: Response) -> DNSimpleError {
@@ -63,21 +67,19 @@ impl DNSimpleError {
     }
 
     fn gateway_timeout(response: Response) -> DNSimpleError {
-        let json = Self::response_to_json(response);
-
-        Self::GatewayTimeout(json["message"].to_string())
+        Self::GatewayTimeout(Self::message_in(Self::response_to_json(response)))
     }
 
     fn not_found(response: Response) -> DNSimpleError {
-        let json = Self::response_to_json(response);
-
-        Self::NotFound(json["message"].to_string())
+        Self::NotFound(Self::message_in(Self::response_to_json(response)))
     }
 
     fn precondition_required(response: Response) -> DNSimpleError {
-        let json = Self::response_to_json(response);
+        Self::PreconditionRequired(Self::message_in(Self::response_to_json(response)))
+    }
 
-        Self::PreconditionRequired(json["message"].to_string())
+    fn message_in(json: Value) -> String {
+        json["message"].to_string()
     }
 
     fn response_to_json(response: Response) -> Value {
