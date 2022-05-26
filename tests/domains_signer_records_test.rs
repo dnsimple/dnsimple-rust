@@ -102,10 +102,7 @@ fn test_create_delegation_signer_record_validation_error() {
         .create_delegation_signer_record(account_id, domain, payload);
 
     assert!(response.is_err());
-    // TODO: We are here! And we are trying to find a way to:
-    // 1 - define the error message properly
-    // 2 - make the options somehow available (See BadRequest in errors)
-    // 3 - know which **kind** or error we are dealing with
+
     let err = response.unwrap_err();
 
     assert_eq!("Message: \"Validation failed\"", err.to_string());
