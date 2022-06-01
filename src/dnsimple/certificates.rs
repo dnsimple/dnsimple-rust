@@ -10,6 +10,7 @@ pub struct Certificate {
     /// The associated domain ID.
     pub domain_id: u64,
     /// The associated contact ID.
+    #[deprecated]
     pub contact_id: u64,
     /// The certificate name.
     pub name: String,
@@ -94,8 +95,6 @@ pub struct LetsEncryptPurchaseRenewal {
 /// The payload for purchasing a Let's Encrypt Certificate
 #[derive(Debug, Deserialize, Serialize)]
 pub struct LetsEncryptPurchasePayload {
-    /// The ID of an existing contact in your account.
-    pub contact_id: u64,
     /// Set to true to enable the auto-renewal of the certificate.
     pub auto_renew: bool,
     /// The certificate name.
@@ -284,7 +283,6 @@ impl Certificates<'_> {
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let payload = LetsEncryptPurchasePayload {
-    ///     contact_id: 42,
     ///     auto_renew: true,
     ///     name: String::from("secret"),
     ///     alternate_names: vec![],
