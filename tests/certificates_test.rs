@@ -148,7 +148,6 @@ fn test_purchase_letsencrypt_certificate() {
     let domain = "example.com";
 
     let payload = LetsEncryptPurchasePayload {
-        contact_id: 1010,
         auto_renew: false,
         name: String::from("test-certificate"),
         alternate_names: vec![],
