@@ -4,6 +4,8 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/).
 
 ## main
 
+- CHANGED: Deprecate Certificate's `contact_id` (dnsimple/dnsimple-rust#23)
+
 ## 0.1.3
 
 - FIX: Bug preventing authorised requests (POST, PUT, PATCH)
