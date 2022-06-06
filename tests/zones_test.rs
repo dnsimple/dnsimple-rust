@@ -122,7 +122,7 @@ fn check_zone_distribution_error() {
     let response = client.zones().check_zone_distribution(account_id, zone);
 
     assert_eq!(
-        "Message: \"Could not query zone, connection timed out\"",
+        "Message: Could not query zone, connection timed out",
         response.unwrap_err().to_string()
     );
 }

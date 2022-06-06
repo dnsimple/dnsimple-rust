@@ -5,7 +5,7 @@ use thiserror::Error;
 use ureq::{Response, Transport};
 
 /// Represents the possible errors thrown while interacting with the DNSimple API
-#[derive(Error, Deserialize, Serialize, Debug)]
+#[derive(Error, Deserialize, Serialize, Debug, PartialEq)]
 pub enum DNSimpleError {
     #[error("Authentication failed")]
     Unauthorized,
@@ -27,7 +27,7 @@ pub enum DNSimpleError {
     ServiceUnavailable,
     #[error("You exceeded the allowed number of requests per hour and your request has temporarily been throttled.")]
     TooManyRequests,
-    #[error("Transport Error – {0}({0})")]
+    #[error("Transport Error – {0}({1})")]
     Transport(String, String),
     #[error("Deserialization Error {0}")]
     Deserialization(String),
@@ -61,7 +61,7 @@ impl DNSimpleError {
         let json = Self::response_to_json(response);
 
         Self::BadRequest(
-            json["message"].to_string(),
+            json["message"].to_string().replace('"', ""),
             Some(json["errors"].borrow().clone()),
         )
     }
@@ -79,7 +79,7 @@ impl DNSimpleError {
     }
 
     fn message_in(json: Value) -> String {
-        json["message"].to_string()
+        json["message"].to_string().replace('"', "")
     }
 
     fn response_to_json(response: Response) -> Value {

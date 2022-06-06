@@ -148,7 +148,7 @@ fn renew_whois_privacy_duplicated_order_test() {
         .renew_whois_privacy(account_id, String::from(domain));
     let errors = response.unwrap_err();
 
-    assert_eq!("Message: \"The whois privacy for example.com has just been renewed, a new renewal cannot be started at this time\"", errors.to_string());
+    assert_eq!("Message: The whois privacy for example.com has just been renewed, a new renewal cannot be started at this time", errors.to_string());
 }
 
 #[test]
@@ -168,7 +168,7 @@ fn renew_whois_privacy_not_found_test() {
     let errors = response.unwrap_err();
 
     assert_eq!(
-        "Message: \"WHOIS privacy not found for example.com\"",
+        "Message: WHOIS privacy not found for example.com",
         errors.to_string()
     );
 }

@@ -286,7 +286,7 @@ fn check_zone_record_distribution_error() {
         .unwrap_err();
 
     assert_eq!(
-        "Message: \"Could not query zone, connection timed out\"",
+        "Message: Could not query zone, connection timed out",
         errors.to_string()
     );
 }
