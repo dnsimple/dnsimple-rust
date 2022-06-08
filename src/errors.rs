@@ -79,7 +79,7 @@ impl DNSimpleError {
     }
 
     fn message_in(json: &Value) -> String {
-        json["message"].as_str().unwrap().parse().unwrap()
+        json["message"].as_str().unwrap().to_string()
     }
 
     fn response_to_json(response: Response) -> Value {
