@@ -61,25 +61,25 @@ impl DNSimpleError {
         let json = Self::response_to_json(response);
 
         Self::BadRequest(
-            json["message"].to_string().replace('"', ""),
+            Self::message_in(&json),
             Some(json["errors"].borrow().clone()),
         )
     }
 
     fn gateway_timeout(response: Response) -> DNSimpleError {
-        Self::GatewayTimeout(Self::message_in(Self::response_to_json(response)))
+        Self::GatewayTimeout(Self::message_in(&Self::response_to_json(response)))
     }
 
     fn not_found(response: Response) -> DNSimpleError {
-        Self::NotFound(Self::message_in(Self::response_to_json(response)))
+        Self::NotFound(Self::message_in(&Self::response_to_json(response)))
     }
 
     fn precondition_required(response: Response) -> DNSimpleError {
-        Self::PreconditionRequired(Self::message_in(Self::response_to_json(response)))
+        Self::PreconditionRequired(Self::message_in(&Self::response_to_json(response)))
     }
 
-    fn message_in(json: Value) -> String {
-        json["message"].to_string().replace('"', "")
+    fn message_in(json: &Value) -> String {
+        json["message"].as_str().unwrap().parse().unwrap()
     }
 
     fn response_to_json(response: Response) -> Value {
