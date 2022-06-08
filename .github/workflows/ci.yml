@@ -23,7 +23,7 @@ jobs:
       - name: rustfmt check
         run: cargo fmt -- --check
       - name: Clippy check
-        run: cargo clippy -- -D warnings
+        run: cargo clippy -- -D warnings cargo -D clippy::expect_used -D clippy::panic  -D clippy::unwrap_used
   slack-workflow-status:
     if: always()
     name: Post Workflow Status To Slack
