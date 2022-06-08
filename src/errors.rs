@@ -79,7 +79,11 @@ impl DNSimpleError {
     }
 
     fn message_in(json: &Value) -> String {
-        json["message"].as_str().unwrap().parse().unwrap()
+        // json["message"].as_str().unwrap().to_string()
+        match json["message"].as_str() {
+            None => String::from("Unable to parse error message"),
+            Some(json_string) => json_string.to_string(),
+        }
     }
 
     fn response_to_json(response: Response) -> Value {
