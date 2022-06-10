@@ -31,6 +31,8 @@ pub enum DNSimpleError {
     Transport(String, String),
     #[error("Deserialization Error {0}")]
     Deserialization(String),
+    #[error("Error {0}")]
+    GenericError(String),
 }
 
 impl DNSimpleError {
@@ -58,24 +60,34 @@ impl DNSimpleError {
     }
 
     fn bad_request(response: Response) -> DNSimpleError {
-        let json = Self::response_to_json(response);
-
-        Self::BadRequest(
-            Self::message_in(&json),
-            Some(json["errors"].borrow().clone()),
-        )
+        match Self::response_to_json(response) {
+            Ok(json) => Self::BadRequest(
+                Self::message_in(&json),
+                Some(json["errors"].borrow().clone()),
+            ),
+            Err(error) => error,
+        }
     }
 
     fn gateway_timeout(response: Response) -> DNSimpleError {
-        Self::GatewayTimeout(Self::message_in(&Self::response_to_json(response)))
+        match Self::response_to_json(response) {
+            Ok(json) => Self::GatewayTimeout(Self::message_in(&json)),
+            Err(error) => error,
+        }
     }
 
     fn not_found(response: Response) -> DNSimpleError {
-        Self::NotFound(Self::message_in(&Self::response_to_json(response)))
+        match Self::response_to_json(response) {
+            Ok(json) => Self::NotFound(Self::message_in(&json)),
+            Err(error) => error,
+        }
     }
 
     fn precondition_required(response: Response) -> DNSimpleError {
-        Self::PreconditionRequired(Self::message_in(&Self::response_to_json(response)))
+        match Self::response_to_json(response) {
+            Ok(json) => Self::PreconditionRequired(Self::message_in(&json)),
+            Err(error) => error,
+        }
     }
 
     fn message_in(json: &Value) -> String {
@@ -85,10 +97,10 @@ impl DNSimpleError {
         }
     }
 
-    fn response_to_json(response: Response) -> Value {
-        response
-            .into_json::<Value>()
-            .map_err(|e| DNSimpleError::Deserialization(e.to_string()))
-            .unwrap()
+    fn response_to_json(response: Response) -> Result<Value, DNSimpleError> {
+        match response.into_json::<Value>() {
+            Ok(value) => Ok(value),
+            Err(error) => Err(DNSimpleError::Deserialization(error.to_string())),
+        }
     }
 }

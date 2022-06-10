@@ -73,8 +73,12 @@ impl Domains<'_> {
     ) -> Result<DNSimpleResponse<DomainPush>, DNSimpleError> {
         let path = format!("/{}/domains/{}/pushes", account_id, domain);
 
-        self.client
-            .post::<DomainPushEndpoint>(&path, serde_json::to_value(payload).unwrap())
+        match serde_json::to_value(payload) {
+            Ok(json) => self.client.post::<DomainPushEndpoint>(&*path, json),
+            Err(_) => Err(DNSimpleError::Deserialization(String::from(
+                "Cannot deserialize json payload",
+            ))),
+        }
     }
 
     /// List pending pushes for the target account.

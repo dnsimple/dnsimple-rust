@@ -1,5 +1,8 @@
+extern crate core;
+
 use crate::common::setup_mock_for;
 use dnsimple::dnsimple::oauth::OAuthTokenPayload;
+
 mod common;
 
 #[test]
@@ -15,7 +18,12 @@ fn exchange_authorization_for_token_test() {
         state: "state".to_string(),
     };
 
-    let access_token = client.oauth().exchange_authorization_for_token(payload);
+    let access_token = match client.oauth().exchange_authorization_for_token(payload) {
+        Ok(token) => token,
+        Err(_) => {
+            panic!("The token wasn't where we expected it to be")
+        }
+    };
 
     assert_eq!(
         "zKQ7OLqF5N1gylcJweA9WodA000BUNJD",

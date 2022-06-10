@@ -133,8 +133,12 @@ impl Templates<'_> {
     ) -> Result<DNSimpleResponse<Template>, DNSimpleError> {
         let path = format!("/{}/templates", account_id);
 
-        self.client
-            .post::<TemplateEndpoint>(&path, serde_json::to_value(payload).unwrap())
+        match serde_json::to_value(payload) {
+            Ok(json) => self.client.post::<TemplateEndpoint>(&*path, json),
+            Err(_) => Err(DNSimpleError::Deserialization(String::from(
+                "Cannot deserialize json payload",
+            ))),
+        }
     }
 
     /// Retrieve a template in the account
@@ -168,8 +172,12 @@ impl Templates<'_> {
     ) -> Result<DNSimpleResponse<Template>, DNSimpleError> {
         let path = format!("/{}/templates/{}", account_id, template);
 
-        self.client
-            .patch::<TemplateEndpoint>(&path, serde_json::to_value(payload).unwrap())
+        match serde_json::to_value(payload) {
+            Ok(json) => self.client.patch::<TemplateEndpoint>(&*path, json),
+            Err(_) => Err(DNSimpleError::Deserialization(String::from(
+                "Cannot deserialize json payload",
+            ))),
+        }
     }
 
     /// Deletes a template from the account
@@ -217,8 +225,12 @@ impl Templates<'_> {
     ) -> Result<DNSimpleResponse<TemplateRecord>, DNSimpleError> {
         let path = format!("/{}/templates/{}/records", account_id, template);
 
-        self.client
-            .post::<TemplateRecordEndpoint>(&path, serde_json::to_value(payload).unwrap())
+        match serde_json::to_value(payload) {
+            Ok(json) => self.client.post::<TemplateRecordEndpoint>(&*path, json),
+            Err(_) => Err(DNSimpleError::Deserialization(String::from(
+                "Cannot deserialize json payload",
+            ))),
+        }
     }
 
     /// Retrieve a template record

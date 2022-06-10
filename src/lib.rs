@@ -8,5 +8,6 @@
 //! At the top level we have the `Client` struct which will be
 //! your entrypoint to the rest of the API as documented in each
 //! of the endpoints.
+#![deny(clippy::expect_used, clippy::panic, clippy::unwrap_used)]
 pub mod dnsimple;
 pub mod errors;

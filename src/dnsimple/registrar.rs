@@ -308,8 +308,12 @@ impl Registrar<'_> {
     ) -> Result<DNSimpleResponse<DomainRegistration>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/registrations", account_id, domain);
 
-        self.client
-            .post::<DomainRegistrationEndpoint>(&*path, serde_json::to_value(payload).unwrap())
+        match serde_json::to_value(payload) {
+            Ok(json) => self.client.post::<DomainRegistrationEndpoint>(&*path, json),
+            Err(_) => Err(DNSimpleError::Deserialization(String::from(
+                "Cannot deserialize json payload",
+            ))),
+        }
     }
 
     /// Transfer a domain name from another domain registrar into DNSimple.
@@ -345,8 +349,12 @@ impl Registrar<'_> {
     ) -> Result<DNSimpleResponse<DomainTransfer>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/transfers", account_id, domain);
 
-        self.client
-            .post::<DomainTransferEndpoint>(&*path, serde_json::to_value(payload).unwrap())
+        match serde_json::to_value(payload) {
+            Ok(json) => self.client.post::<DomainTransferEndpoint>(&*path, json),
+            Err(_) => Err(DNSimpleError::Deserialization(String::from(
+                "Cannot deserialize json payload",
+            ))),
+        }
     }
 
     /// Retrieves the details of an existing domain transfer.
@@ -407,8 +415,12 @@ impl Registrar<'_> {
     ) -> Result<DNSimpleResponse<DomainRenewal>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/renewals", account_id, domain);
 
-        self.client
-            .post::<DomainRenewalEndpoint>(&*path, serde_json::to_value(payload).unwrap())
+        match serde_json::to_value(payload) {
+            Ok(json) => self.client.post::<DomainRenewalEndpoint>(&*path, json),
+            Err(_) => Err(DNSimpleError::Deserialization(String::from(
+                "Cannot deserialize json payload",
+            ))),
+        }
     }
 
     /// Authorize a domain transfer out

@@ -436,9 +436,10 @@ impl Client {
     fn build_dnsimple_response<E: Endpoint>(
         resp: Response,
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
-        let rate_limit = String::from(resp.header("X-RateLimit-Limit").unwrap());
-        let rate_limit_remaining = String::from(resp.header("X-RateLimit-Remaining").unwrap());
-        let rate_limit_reset = String::from(resp.header("X-RateLimit-Reset").unwrap());
+        let rate_limit = Self::extract_rate_limit_limit_header(&resp);
+        let rate_limit_remaining = Self::extract_rate_limit_remaining_header(&resp);
+        let rate_limit_reset = Self::extract_rate_limit_reset_header(&resp);
+
         let status = resp.status();
 
         let json = resp
@@ -462,13 +463,34 @@ impl Client {
         })
     }
 
+    fn extract_rate_limit_reset_header(resp: &Response) -> String {
+        match resp.header("X-RateLimit-Reset") {
+            None => String::from("Cannot parse the X-RateLimit-Reset header"),
+            Some(header) => header.to_string(),
+        }
+    }
+
+    fn extract_rate_limit_remaining_header(resp: &Response) -> String {
+        match resp.header("X-RateLimit-Remaining") {
+            None => String::from("Cannot parse the X-RateLimit-Remaining header"),
+            Some(header) => header.to_string(),
+        }
+    }
+
+    fn extract_rate_limit_limit_header(resp: &Response) -> String {
+        match resp.header("X-RateLimit-Limit") {
+            None => String::from("Cannot parse the X-RateLimit-Limit header"),
+            Some(header) => header.to_string(),
+        }
+    }
+
     fn build_empty_dnsimple_response(
         response: Response,
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         Ok(DNSimpleEmptyResponse {
-            rate_limit: String::from(response.header("X-RateLimit-Limit").unwrap()),
-            rate_limit_remaining: String::from(response.header("X-RateLimit-Remaining").unwrap()),
-            rate_limit_reset: String::from(response.header("X-RateLimit-Reset").unwrap()),
+            rate_limit: Self::extract_rate_limit_limit_header(&response),
+            rate_limit_remaining: Self::extract_rate_limit_remaining_header(&response),
+            rate_limit_reset: Self::extract_rate_limit_reset_header(&response),
             status: response.status(),
         })
     }

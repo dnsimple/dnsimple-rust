@@ -1,5 +1,7 @@
 use crate::dnsimple::Client;
+use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 
 /// Represents the payload used to exchange this information for the
 /// access token (`AccessToken`).
@@ -72,7 +74,10 @@ impl OAuth<'_> {
     /// # Attributes
     ///
     /// `payload`: The `OAuthTokenPayload` with the necessary information to get the access token.
-    pub fn exchange_authorization_for_token(&self, payload: OAuthTokenPayload) -> AccessToken {
+    pub fn exchange_authorization_for_token(
+        &self,
+        payload: OAuthTokenPayload,
+    ) -> Result<AccessToken, DNSimpleError> {
         let path = "/oauth/access_token";
         let params = OAuthTokenParams {
             grant_type: "authorization_code".to_string(),
@@ -83,11 +88,29 @@ impl OAuth<'_> {
             state: payload.state,
         };
 
-        let response = self
+        let value = match serde_json::to_value(params) {
+            Ok(value) => value,
+            Err(_) => Value::Null,
+        };
+
+        let response = match self
             .client
             ._agent
             .post(&*self.client.url(path))
-            .send_json(serde_json::to_value(params).unwrap());
-        response.unwrap().into_json::<AccessToken>().unwrap()
+            .send_json(value)
+        {
+            Ok(response) => Ok(response),
+            Err(error) => Err(error),
+        };
+
+        match response {
+            Ok(response) => match response.into_json::<AccessToken>() {
+                Ok(token) => Ok(token),
+                Err(error) => Err(DNSimpleError::GenericError(error.to_string())),
+            },
+            _ => Err(DNSimpleError::GenericError(String::from(
+                "getting the access token",
+            ))),
+        }
     }
 }

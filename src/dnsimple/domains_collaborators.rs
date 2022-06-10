@@ -114,9 +114,12 @@ impl Domains<'_> {
         let payload = AddCollaboratorPayload {
             email: email.into(),
         };
-
-        self.client
-            .post::<CollaboratorEndpoint>(&*path, serde_json::to_value(payload).unwrap())
+        match serde_json::to_value(payload) {
+            Ok(json) => self.client.post::<CollaboratorEndpoint>(&*path, json),
+            Err(_) => Err(DNSimpleError::Deserialization(String::from(
+                "Cannot deserialize json payload",
+            ))),
+        }
     }
 
     /// Removes a collaborator from a domain
