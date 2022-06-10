@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use std::borrow::Borrow;
 use thiserror::Error;
 use ureq::{Response, Transport};
 
@@ -59,10 +58,7 @@ impl DNSimpleError {
 
     fn bad_request(response: Response) -> DNSimpleError {
         match Self::response_to_json(response) {
-            Ok(json) => Self::BadRequest(
-                Self::message_in(&json),
-                Some(json["errors"].borrow().clone()),
-            ),
+            Ok(json) => Self::BadRequest(Self::message_in(&json), Some(json["errors"].clone())),
             Err(error) => error,
         }
     }
