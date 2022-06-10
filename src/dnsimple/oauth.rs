@@ -1,7 +1,6 @@
 use crate::dnsimple::Client;
 use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
 
 /// Represents the payload used to exchange this information for the
 /// access token (`AccessToken`).
@@ -88,29 +87,18 @@ impl OAuth<'_> {
             state: payload.state,
         };
 
-        let value = match serde_json::to_value(params) {
-            Ok(value) => value,
-            Err(_) => Value::Null,
-        };
+        let value = serde_json::to_value(params)
+            .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
 
-        let response = match self
+        let response = self
             .client
             ._agent
             .post(&*self.client.url(path))
             .send_json(value)
-        {
-            Ok(response) => Ok(response),
-            Err(error) => Err(error),
-        };
+            .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
 
-        match response {
-            Ok(response) => match response.into_json::<AccessToken>() {
-                Ok(token) => Ok(token),
-                Err(error) => Err(DNSimpleError::GenericError(error.to_string())),
-            },
-            _ => Err(DNSimpleError::GenericError(String::from(
-                "getting the access token",
-            ))),
-        }
+        response
+            .into_json::<AccessToken>()
+            .map_err(|e| DNSimpleError::Deserialization(e.to_string()))
     }
 }
