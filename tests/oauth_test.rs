@@ -1,5 +1,3 @@
-extern crate core;
-
 use crate::common::setup_mock_for;
 use dnsimple::dnsimple::oauth::OAuthTokenPayload;
 
