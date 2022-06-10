@@ -31,8 +31,6 @@ pub enum DNSimpleError {
     Transport(String, String),
     #[error("Deserialization Error {0}")]
     Deserialization(String),
-    #[error("Error {0}")]
-    GenericError(String),
 }
 
 impl DNSimpleError {
