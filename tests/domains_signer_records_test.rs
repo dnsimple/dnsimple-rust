@@ -105,7 +105,7 @@ fn test_create_delegation_signer_record_validation_error() {
 
     let err = response.unwrap_err();
 
-    assert_eq!("Message: Validation failed", err.to_string());
+    assert_eq!("Validation failed", err.to_string());
 }
 
 #[test]

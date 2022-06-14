@@ -10,7 +10,7 @@ fn validation_error() {
     let response = client.identity().whoami();
     let error = response.unwrap_err();
 
-    assert_eq!("Message: Validation failed", error.to_string());
+    assert_eq!("Validation failed", error.to_string());
 }
 
 #[test]
@@ -21,7 +21,7 @@ fn not_found() {
     let response = client.identity().whoami();
     let error = response.unwrap_err();
 
-    assert_eq!("Message: Certificate `0` not found", error.to_string());
+    assert_eq!("Certificate `0` not found", error.to_string());
 }
 
 #[test]

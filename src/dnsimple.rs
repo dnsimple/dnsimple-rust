@@ -436,9 +436,10 @@ impl Client {
     fn build_dnsimple_response<E: Endpoint>(
         resp: Response,
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
-        let rate_limit = Self::extract_rate_limit_limit_header(&resp);
-        let rate_limit_remaining = Self::extract_rate_limit_remaining_header(&resp);
-        let rate_limit_reset = Self::extract_rate_limit_reset_header(&resp);
+        let rate_limit = Self::extract_rate_limit_limit_header(&resp).map_err(|e| e)?;
+        let rate_limit_remaining =
+            Self::extract_rate_limit_remaining_header(&resp).map_err(|e| e)?;
+        let rate_limit_reset = Self::extract_rate_limit_reset_header(&resp).map_err(|e| e)?;
 
         let status = resp.status();
 
@@ -463,24 +464,30 @@ impl Client {
         })
     }
 
-    fn extract_rate_limit_reset_header(resp: &Response) -> String {
+    fn extract_rate_limit_reset_header(resp: &Response) -> Result<String, DNSimpleError> {
         match resp.header("X-RateLimit-Reset") {
-            None => String::from("Cannot parse the X-RateLimit-Reset header"),
-            Some(header) => header.to_string(),
+            Some(header) => Ok(header.to_string()),
+            None => Err(DNSimpleError::Deserialization(String::from(
+                "Cannot parse the X-RateLimit-Reset header",
+            ))),
         }
     }
 
-    fn extract_rate_limit_remaining_header(resp: &Response) -> String {
+    fn extract_rate_limit_remaining_header(resp: &Response) -> Result<String, DNSimpleError> {
         match resp.header("X-RateLimit-Remaining") {
-            None => String::from("Cannot parse the X-RateLimit-Remaining header"),
-            Some(header) => header.to_string(),
+            Some(header) => Ok(header.to_string()),
+            None => Err(DNSimpleError::Deserialization(String::from(
+                "Cannot parse the X-RateLimit-Remaining header",
+            ))),
         }
     }
 
-    fn extract_rate_limit_limit_header(resp: &Response) -> String {
+    fn extract_rate_limit_limit_header(resp: &Response) -> Result<String, DNSimpleError> {
         match resp.header("X-RateLimit-Limit") {
-            None => String::from("Cannot parse the X-RateLimit-Limit header"),
-            Some(header) => header.to_string(),
+            Some(header) => Ok(header.to_string()),
+            None => Err(DNSimpleError::Deserialization(String::from(
+                "Cannot parse the X-RateLimit-Limit header",
+            ))),
         }
     }
 
@@ -488,9 +495,10 @@ impl Client {
         response: Response,
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         Ok(DNSimpleEmptyResponse {
-            rate_limit: Self::extract_rate_limit_limit_header(&response),
-            rate_limit_remaining: Self::extract_rate_limit_remaining_header(&response),
-            rate_limit_reset: Self::extract_rate_limit_reset_header(&response),
+            rate_limit: Self::extract_rate_limit_limit_header(&response).map_err(|e| e)?,
+            rate_limit_remaining: Self::extract_rate_limit_remaining_header(&response)
+                .map_err(|e| e)?,
+            rate_limit_reset: Self::extract_rate_limit_reset_header(&response).map_err(|e| e)?,
             status: response.status(),
         })
     }

@@ -63,7 +63,7 @@ fn test_check_domain_premium_price_not_a_premium_domain() {
     let error = response.unwrap_err();
 
     assert_eq!(
-        "Message: `cocotero.love` is not a premium domain for registration",
+        "`cocotero.love` is not a premium domain for registration",
         error.to_string()
     );
 }
@@ -83,7 +83,7 @@ fn test_check_domain_premium_price_tld_not_supported() {
         .check_domain_premium_price(account_id, domain, None);
     let error = response.unwrap_err();
 
-    assert_eq!("Message: TLD .LOVE is not supported", error.to_string());
+    assert_eq!("TLD .LOVE is not supported", error.to_string());
 }
 
 #[test]
@@ -124,10 +124,7 @@ fn test_get_domain_prices_failure() {
     let response = client.registrar().get_domain_prices(account_id, domain);
     let error = response.unwrap_err();
 
-    assert_eq!(
-        "Message: TLD .PINEAPPLE is not supported",
-        error.to_string()
-    );
+    assert_eq!("TLD .PINEAPPLE is not supported", error.to_string());
 }
 
 #[test]
@@ -225,7 +222,7 @@ fn test_transfer_domain_error_in_dnsimple() {
     let error = response.unwrap_err();
 
     assert_eq!(
-        "Message: The domain google.com is already in DNSimple and cannot be added",
+        "The domain google.com is already in DNSimple and cannot be added",
         error.to_string()
     );
 }
@@ -254,7 +251,7 @@ fn test_transfer_domain_error_missing_auth_code() {
         .transfer_domain(account_id, domain, payload);
     let errors = response.unwrap_err();
 
-    assert_eq!("Message: Validation failed", errors.to_string());
+    assert_eq!("Validation failed", errors.to_string());
 }
 
 #[test]
@@ -367,7 +364,7 @@ fn test_renew_a_domain_to_early() {
     let errors = response.unwrap_err();
 
     assert_eq!(
-        "Message: example.com may not be renewed at this time",
+        "example.com may not be renewed at this time",
         errors.to_string()
     );
 }

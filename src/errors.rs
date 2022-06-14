@@ -10,17 +10,17 @@ pub enum DNSimpleError {
     Unauthorized,
     #[error("Bad Gateway")]
     BadGateway,
-    #[error("Message: {0}")]
+    #[error("{0}")]
     BadRequest(String, Option<Value>),
-    #[error("Message: {0}")]
+    #[error("{0}")]
     GatewayTimeout(String),
     #[error("Method not Allowed")]
     MethodNotAllowed,
-    #[error("Message: {0}")]
+    #[error("{0}")]
     NotFound(String),
     #[error("Your account is not subscribed or not in good standing")]
     PaymentRequired,
-    #[error("Message: {0}")]
+    #[error("{0}")]
     PreconditionRequired(String),
     #[error("Service Unavailable")]
     ServiceUnavailable,
