@@ -436,10 +436,9 @@ impl Client {
     fn build_dnsimple_response<E: Endpoint>(
         resp: Response,
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
-        let rate_limit = Self::extract_rate_limit_limit_header(&resp).map_err(|e| e)?;
-        let rate_limit_remaining =
-            Self::extract_rate_limit_remaining_header(&resp).map_err(|e| e)?;
-        let rate_limit_reset = Self::extract_rate_limit_reset_header(&resp).map_err(|e| e)?;
+        let rate_limit = Self::extract_rate_limit_limit_header(&resp)?;
+        let rate_limit_remaining = Self::extract_rate_limit_remaining_header(&resp)?;
+        let rate_limit_reset = Self::extract_rate_limit_reset_header(&resp)?;
 
         let status = resp.status();
 
@@ -495,10 +494,9 @@ impl Client {
         response: Response,
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         Ok(DNSimpleEmptyResponse {
-            rate_limit: Self::extract_rate_limit_limit_header(&response).map_err(|e| e)?,
-            rate_limit_remaining: Self::extract_rate_limit_remaining_header(&response)
-                .map_err(|e| e)?,
-            rate_limit_reset: Self::extract_rate_limit_reset_header(&response).map_err(|e| e)?,
+            rate_limit: Self::extract_rate_limit_limit_header(&response)?,
+            rate_limit_remaining: Self::extract_rate_limit_remaining_header(&response)?,
+            rate_limit_reset: Self::extract_rate_limit_reset_header(&response)?,
             status: response.status(),
         })
     }
