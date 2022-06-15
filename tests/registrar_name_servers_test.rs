@@ -126,5 +126,6 @@ fn change_domain_delegation_from_vanity() {
         .registrar()
         .change_domain_delegation_from_vanity(account_id, String::from(domain));
 
-    assert_eq!(204, response.status);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }

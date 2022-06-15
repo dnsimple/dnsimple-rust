@@ -1,5 +1,6 @@
 use crate::dnsimple::domains::Domains;
 use crate::dnsimple::{DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, RequestOptions};
+use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
 
 struct EmailForwardsListEndpoint;
@@ -88,7 +89,7 @@ impl Domains<'_> {
         account_id: u64,
         domain: &str,
         options: Option<RequestOptions>,
-    ) -> Result<DNSimpleResponse<Vec<EmailForwardsInList>>, String> {
+    ) -> Result<DNSimpleResponse<Vec<EmailForwardsInList>>, DNSimpleError> {
         let path = format!("/{}/domains/{}/email_forwards", account_id, domain);
 
         self.client
@@ -121,11 +122,15 @@ impl Domains<'_> {
         account_id: u64,
         domain: &str,
         payload: EmailForwardPayload,
-    ) -> Result<DNSimpleResponse<EmailForward>, String> {
+    ) -> Result<DNSimpleResponse<EmailForward>, DNSimpleError> {
         let path = format!("/{}/domains/{}/email_forwards", account_id, domain);
 
-        self.client
-            .post::<EmailForwardEndpoint>(&*path, serde_json::to_value(payload).unwrap())
+        match serde_json::to_value(payload) {
+            Ok(json) => self.client.post::<EmailForwardEndpoint>(&*path, json),
+            Err(_) => Err(DNSimpleError::Deserialization(String::from(
+                "Cannot deserialize json payload",
+            ))),
+        }
     }
 
     /// Retrieve an email forward
@@ -149,7 +154,7 @@ impl Domains<'_> {
         account_id: u64,
         domain: &str,
         email_forward: u64,
-    ) -> Result<DNSimpleResponse<EmailForward>, String> {
+    ) -> Result<DNSimpleResponse<EmailForward>, DNSimpleError> {
         let path = format!(
             "/{}/domains/{}/email_forwards/{}",
             account_id, domain, email_forward
@@ -166,7 +171,7 @@ impl Domains<'_> {
     /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// client.domains().delete_email_forward(1234, "example.com", 42);
+    /// let response = client.domains().delete_email_forward(1234, "example.com", 42);
     /// ```
     ///
     /// # Arguments
@@ -179,7 +184,7 @@ impl Domains<'_> {
         account_id: u64,
         domain: &str,
         email_forward: i32,
-    ) -> DNSimpleEmptyResponse {
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!(
             "/{}/domains/{}/email_forwards/{}",
             account_id, domain, email_forward

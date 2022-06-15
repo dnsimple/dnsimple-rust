@@ -106,7 +106,8 @@ fn delete_template() {
 
     let response = client.templates().delete_template(account_id, template_id);
 
-    assert_eq!(204, response.status);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }
 
 #[test]
@@ -212,7 +213,8 @@ fn delete_template_record() {
         .templates()
         .delete_template_record(account_id, template, record_id);
 
-    assert_eq!(204, response.status);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }
 
 #[test]
@@ -231,5 +233,6 @@ fn apply_template() {
         .templates()
         .apply_template(account_id, domain, template);
 
-    assert_eq!(204, response.status);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }

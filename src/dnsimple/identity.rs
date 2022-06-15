@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::dnsimple::{Client, DNSimpleResponse, Endpoint};
+use crate::errors::DNSimpleError;
 
 /// Represents a User
 #[derive(Debug, Deserialize, Serialize)]
@@ -65,7 +66,7 @@ impl Identity<'_> {
     /// let account = response.account.unwrap();
     ///
     /// ```
-    pub fn whoami(&self) -> Result<DNSimpleResponse<WhoamiData>, String> {
+    pub fn whoami(&self) -> Result<DNSimpleResponse<WhoamiData>, DNSimpleError> {
         self.client.get::<IdentityEndpoint>("/whoami", None)
     }
 }

@@ -10,7 +10,7 @@ fn test_list_email_forwards() {
         "GET",
     );
     let client = setup.0;
-    let account_id = 1385 as u64;
+    let account_id = 1385_u64;
     let domain = "example.com";
 
     let response = client
@@ -39,7 +39,7 @@ fn test_create_email_forward() {
         "POST",
     );
     let client = setup.0;
-    let account_id = 1385 as u64;
+    let account_id = 1385_u64;
     let domain = "example.com";
     let payload = EmailForwardPayload {
         alias_name: String::from("example@dnsimple.xyz"),
@@ -71,7 +71,7 @@ fn test_get_email_forward() {
         "GET",
     );
     let client = setup.0;
-    let account_id = 1385 as u64;
+    let account_id = 1385_u64;
     let domain = "example.com";
     let email_forward = 41872;
 
@@ -100,7 +100,7 @@ fn test_delete_email_forward() {
         "DELETE",
     );
     let client = setup.0;
-    let account_id = 1385 as u64;
+    let account_id = 1385_u64;
     let domain = "example.com";
     let email_forward = 41872;
 
@@ -108,5 +108,6 @@ fn test_delete_email_forward() {
         .domains()
         .delete_email_forward(account_id, domain, email_forward);
 
-    assert_eq!(response.status, 204);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }

@@ -1,5 +1,6 @@
 use crate::dnsimple::registrar::Registrar;
 use crate::dnsimple::{DNSimpleEmptyResponse, DNSimpleResponse, Endpoint};
+use crate::errors::DNSimpleError;
 use serde::Deserialize;
 use serde_json::Value;
 
@@ -43,7 +44,7 @@ impl Registrar<'_> {
         &self,
         account_id: u64,
         domain: String,
-    ) -> Result<DNSimpleResponse<Vec<String>>, String> {
+    ) -> Result<DNSimpleResponse<Vec<String>>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/delegation", account_id, domain);
 
         self.client.get::<DomainDelegationEndpoint>(&*path, None)
@@ -61,7 +62,7 @@ impl Registrar<'_> {
         account_id: u64,
         domain: String,
         server_names: Vec<&str>,
-    ) -> Result<DNSimpleResponse<Vec<String>>, String> {
+    ) -> Result<DNSimpleResponse<Vec<String>>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/delegation", account_id, domain);
 
         self.client
@@ -80,7 +81,7 @@ impl Registrar<'_> {
         account_id: u64,
         domain: String,
         server_names: Vec<&str>,
-    ) -> Result<DNSimpleResponse<Vec<VanityNameServer>>, String> {
+    ) -> Result<DNSimpleResponse<Vec<VanityNameServer>>, DNSimpleError> {
         let path = format!(
             "/{}/registrar/domains/{}/delegation/vanity",
             account_id, domain
@@ -100,7 +101,7 @@ impl Registrar<'_> {
         &self,
         account_id: u64,
         domain: String,
-    ) -> DNSimpleEmptyResponse {
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!(
             "/{}/registrar/domains/{}/delegation/vanity",
             account_id, domain

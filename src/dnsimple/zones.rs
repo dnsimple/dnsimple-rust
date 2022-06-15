@@ -1,4 +1,5 @@
 use crate::dnsimple::{Client, DNSimpleResponse, Endpoint, RequestOptions};
+use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
 
 /// Represents a zone in DNSimple
@@ -73,7 +74,7 @@ impl Zones<'_> {
         &self,
         account_id: u64,
         options: Option<RequestOptions>,
-    ) -> Result<DNSimpleResponse<Vec<Zone>>, String> {
+    ) -> Result<DNSimpleResponse<Vec<Zone>>, DNSimpleError> {
         let path = format!("/{}/zones", account_id);
 
         self.client.get::<ListZonesEndpoint>(&*path, options)
@@ -85,7 +86,11 @@ impl Zones<'_> {
     ///
     /// `account_id`: The account ID
     /// `zone`: The zone name
-    pub fn get_zone(&self, account_id: u64, zone: &str) -> Result<DNSimpleResponse<Zone>, String> {
+    pub fn get_zone(
+        &self,
+        account_id: u64,
+        zone: &str,
+    ) -> Result<DNSimpleResponse<Zone>, DNSimpleError> {
         let path = format!("/{}/zones/{}", account_id, zone);
 
         self.client.get::<ZoneEndpoint>(&*path, None)
@@ -101,7 +106,7 @@ impl Zones<'_> {
         &self,
         account_id: u64,
         zone: &str,
-    ) -> Result<DNSimpleResponse<ZoneFile>, String> {
+    ) -> Result<DNSimpleResponse<ZoneFile>, DNSimpleError> {
         let path = format!("/{}/zones/{}/file", account_id, zone);
 
         self.client.get::<ZoneFileEndpoint>(&*path, None)
@@ -117,7 +122,7 @@ impl Zones<'_> {
         &self,
         account_id: u64,
         zone: &str,
-    ) -> Result<DNSimpleResponse<ZoneDistribution>, String> {
+    ) -> Result<DNSimpleResponse<ZoneDistribution>, DNSimpleError> {
         let path = format!("/{}/zones/{}/distribution", account_id, zone);
 
         self.client.get::<DistributionEndpoint>(&*path, None)

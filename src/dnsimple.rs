@@ -11,6 +11,7 @@ use crate::dnsimple::tlds::Tlds;
 use crate::dnsimple::vanity_name_servers::VanityNameServers;
 use crate::dnsimple::webhooks::Webhooks;
 use crate::dnsimple::zones::Zones;
+use crate::errors::DNSimpleError;
 use serde;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
@@ -72,13 +73,6 @@ pub struct Client {
     pub _agent: ureq::Agent,
 }
 
-/// Represents the Error message payload returned by the DNSimple API
-#[derive(Debug, Deserialize, Serialize)]
-pub struct APIErrorMessage {
-    pub message: Option<String>,
-    pub errors: Option<Value>,
-}
-
 /// Defines the Endpoint trait for the different API endpoints
 pub trait Endpoint {
     type Output: DeserializeOwned;
@@ -97,8 +91,6 @@ pub struct DNSimpleResponse<T> {
     pub status: u16,
     /// The object or a Vec<T> of objects (the type `T` will depend on the endpoint).
     pub data: Option<T>,
-    /// The error response if any
-    pub errors: Option<APIErrorMessage>,
     /// Any API endpoint that returns a list of items requires pagination.
     pub pagination: Option<Pagination>,
     /// The body as a JSON `Value`
@@ -318,7 +310,7 @@ impl Client {
         &self,
         path: &str,
         options: Option<RequestOptions>,
-    ) -> Result<DNSimpleResponse<E::Output>, String> {
+    ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
         self.call::<E>(self.build_get_request(&path, options))
     }
 
@@ -332,7 +324,7 @@ impl Client {
         &self,
         path: &str,
         data: Value,
-    ) -> Result<DNSimpleResponse<E::Output>, String> {
+    ) -> Result<DNSimpleResponse<<E as Endpoint>::Output>, DNSimpleError> {
         self.call_with_payload::<E>(self.build_post_request(&path), data)
     }
 
@@ -341,7 +333,7 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub fn empty_post(&self, path: &str) -> DNSimpleEmptyResponse {
+    pub fn empty_post(&self, path: &str) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         self.call_empty(self.build_post_request(&path))
     }
 
@@ -355,7 +347,7 @@ impl Client {
         &self,
         path: &str,
         data: Value,
-    ) -> Result<DNSimpleResponse<E::Output>, String> {
+    ) -> Result<DNSimpleResponse<<E as Endpoint>::Output>, DNSimpleError> {
         self.call_with_payload::<E>(self.build_put_request(&path), data)
     }
 
@@ -364,7 +356,7 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub fn empty_put(&self, path: &str) -> DNSimpleEmptyResponse {
+    pub fn empty_put(&self, path: &str) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         self.call_empty(self.build_put_request(&path))
     }
 
@@ -378,7 +370,7 @@ impl Client {
         &self,
         path: &str,
         data: Value,
-    ) -> Result<DNSimpleResponse<E::Output>, String> {
+    ) -> Result<DNSimpleResponse<<E as Endpoint>::Output>, DNSimpleError> {
         self.call_with_payload::<E>(self.build_patch_request(&path), data)
     }
 
@@ -387,7 +379,7 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub fn delete(&self, path: &str) -> DNSimpleEmptyResponse {
+    pub fn delete(&self, path: &str) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         self.call_empty(self.build_delete_request(&path))
     }
 
@@ -399,7 +391,7 @@ impl Client {
     pub fn delete_with_response<E: Endpoint>(
         &self,
         path: &str,
-    ) -> Result<DNSimpleResponse<E::Output>, String> {
+    ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
         self.call::<E>(self.build_delete_request(&path))
     }
 
@@ -407,50 +399,58 @@ impl Client {
         &self,
         request: Request,
         data: Value,
-    ) -> Result<DNSimpleResponse<E::Output>, String> {
-        match request.send_json(data) {
+    ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
+        self.process_response::<E>(request.send_json(data))
+    }
+
+    fn call<E: Endpoint>(
+        &self,
+        request: Request,
+    ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
+        self.process_response::<E>(request.call())
+    }
+
+    fn process_response<E: Endpoint>(
+        &self,
+        result: Result<Response, Error>,
+    ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
+        match result {
             Ok(response) => Self::build_dnsimple_response::<E>(response),
-            Err(Error::Status(_code, response)) => Self::build_dnsimple_response::<E>(response),
-            Err(_) => {
-                panic!("Something went really wrong!")
+            Err(Error::Status(code, response)) => {
+                Err(DNSimpleError::parse_response(code, response))
             }
+            Err(Error::Transport(transport)) => Err(DNSimpleError::parse_transport(transport)),
         }
     }
 
-    fn call<E: Endpoint>(&self, request: Request) -> Result<DNSimpleResponse<E::Output>, String> {
-        match request.call() {
-            Ok(response) => Self::build_dnsimple_response::<E>(response),
-            Err(Error::Status(_code, response)) => Self::build_dnsimple_response::<E>(response),
-            Err(_) => {
-                panic!("Something went really wrong!")
-            }
-        }
-    }
-
-    fn call_empty(&self, request: Request) -> DNSimpleEmptyResponse {
+    fn call_empty(&self, request: Request) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         match request.call() {
             Ok(response) => Self::build_empty_dnsimple_response(response),
-            Err(Error::Status(_code, response)) => Self::build_empty_dnsimple_response(response),
-            Err(_) => {
-                panic!("Something went really wrong!")
+            Err(Error::Status(code, response)) => {
+                Err(DNSimpleError::parse_response(code, response))
             }
+            Err(Error::Transport(transport)) => Err(DNSimpleError::parse_transport(transport)),
         }
     }
 
     fn build_dnsimple_response<E: Endpoint>(
         resp: Response,
-    ) -> Result<DNSimpleResponse<E::Output>, String> {
-        let rate_limit = String::from(resp.header("X-RateLimit-Limit").unwrap());
-        let rate_limit_remaining = String::from(resp.header("X-RateLimit-Remaining").unwrap());
-        let rate_limit_reset = String::from(resp.header("X-RateLimit-Reset").unwrap());
+    ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
+        let rate_limit = Self::extract_rate_limit_limit_header(&resp)?;
+        let rate_limit_remaining = Self::extract_rate_limit_remaining_header(&resp)?;
+        let rate_limit_reset = Self::extract_rate_limit_reset_header(&resp)?;
+
         let status = resp.status();
 
-        let json = resp.into_json::<Value>().unwrap();
-        let data = serde_json::from_value(json!(json.get("data"))).map_err(|e| e.to_string())?;
-        let errors = serde_json::from_value(json!(json)).map_err(|e| e.to_string())?;
-        let pagination =
-            serde_json::from_value(json!(json.get("pagination"))).map_err(|e| e.to_string())?;
-        let body = serde_json::from_value(json).map_err(|e| e.to_string())?;
+        let json = resp
+            .into_json::<Value>()
+            .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
+        let data = serde_json::from_value(json!(json.get("data")))
+            .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
+        let pagination = serde_json::from_value(json!(json.get("pagination")))
+            .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
+        let body = serde_json::from_value(json)
+            .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
 
         Ok(DNSimpleResponse {
             rate_limit,
@@ -458,19 +458,47 @@ impl Client {
             rate_limit_reset,
             status,
             data,
-            errors,
             pagination,
             body,
         })
     }
 
-    fn build_empty_dnsimple_response(response: Response) -> DNSimpleEmptyResponse {
-        DNSimpleEmptyResponse {
-            rate_limit: String::from(response.header("X-RateLimit-Limit").unwrap()),
-            rate_limit_remaining: String::from(response.header("X-RateLimit-Remaining").unwrap()),
-            rate_limit_reset: String::from(response.header("X-RateLimit-Reset").unwrap()),
-            status: response.status(),
+    fn extract_rate_limit_reset_header(resp: &Response) -> Result<String, DNSimpleError> {
+        match resp.header("X-RateLimit-Reset") {
+            Some(header) => Ok(header.to_string()),
+            None => Err(DNSimpleError::Deserialization(String::from(
+                "Cannot parse the X-RateLimit-Reset header",
+            ))),
         }
+    }
+
+    fn extract_rate_limit_remaining_header(resp: &Response) -> Result<String, DNSimpleError> {
+        match resp.header("X-RateLimit-Remaining") {
+            Some(header) => Ok(header.to_string()),
+            None => Err(DNSimpleError::Deserialization(String::from(
+                "Cannot parse the X-RateLimit-Remaining header",
+            ))),
+        }
+    }
+
+    fn extract_rate_limit_limit_header(resp: &Response) -> Result<String, DNSimpleError> {
+        match resp.header("X-RateLimit-Limit") {
+            Some(header) => Ok(header.to_string()),
+            None => Err(DNSimpleError::Deserialization(String::from(
+                "Cannot parse the X-RateLimit-Limit header",
+            ))),
+        }
+    }
+
+    fn build_empty_dnsimple_response(
+        response: Response,
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
+        Ok(DNSimpleEmptyResponse {
+            rate_limit: Self::extract_rate_limit_limit_header(&response)?,
+            rate_limit_remaining: Self::extract_rate_limit_remaining_header(&response)?,
+            rate_limit_reset: Self::extract_rate_limit_reset_header(&response)?,
+            status: response.status(),
+        })
     }
 
     fn build_get_request(&self, path: &&str, options: Option<RequestOptions>) -> Request {

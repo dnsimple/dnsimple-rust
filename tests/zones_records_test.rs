@@ -40,7 +40,7 @@ fn list_zone_records_test() {
         "global",
         zone_record.regions.as_ref().unwrap().first().unwrap()
     );
-    assert_eq!(true, zone_record.system_record);
+    assert!(zone_record.system_record);
     assert_eq!("2016-03-22T10:20:53Z", zone_record.created_at);
     assert_eq!("2016-10-05T09:26:38Z", zone_record.updated_at);
 }
@@ -79,7 +79,7 @@ fn create_zone_record_test() {
     assert_eq!(600, zone_record.ttl);
     assert_eq!(None, zone_record.priority);
     assert_eq!("A", zone_record.record_type);
-    assert_eq!(false, zone_record.system_record);
+    assert!(!zone_record.system_record);
     let regions = zone_record.regions.unwrap();
     assert_eq!(1, regions.len());
     assert_eq!("global", regions.first().unwrap());
@@ -120,7 +120,7 @@ fn create_apex_zone_record_test() {
     assert_eq!(600, zone_record.ttl);
     assert_eq!(None, zone_record.priority);
     assert_eq!("A", zone_record.record_type);
-    assert_eq!(false, zone_record.system_record);
+    assert!(!zone_record.system_record);
     let regions = zone_record.regions.unwrap();
     assert_eq!(1, regions.len());
     assert_eq!("global", regions.first().unwrap());
@@ -155,7 +155,7 @@ fn get_zone_record_test() {
     assert_eq!(600, zone_record.ttl);
     assert_eq!(10, zone_record.priority.unwrap());
     assert_eq!("MX", zone_record.record_type);
-    assert_eq!(false, zone_record.system_record);
+    assert!(!zone_record.system_record);
     let regions = zone_record.regions.unwrap();
     assert_eq!(2, regions.len());
     assert_eq!("SV1", regions[0]);
@@ -198,7 +198,7 @@ fn update_zone_record_test() {
     assert_eq!(3600, zone_record.ttl);
     assert_eq!(20, zone_record.priority.unwrap());
     assert_eq!("MX", zone_record.record_type);
-    assert_eq!(false, zone_record.system_record);
+    assert!(!zone_record.system_record);
     let regions = zone_record.regions.unwrap();
     assert_eq!(1, regions.len());
     assert_eq!("global", regions.first().unwrap());
@@ -220,7 +220,8 @@ fn delete_zone_record_test() {
 
     let response = client.zones().delete_zone_record(account_id, zone, record);
 
-    assert_eq!(204, response.status);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }
 
 #[test]
@@ -242,7 +243,7 @@ fn check_zone_record_distribution() {
         .data
         .unwrap();
 
-    assert_eq!(true, distribution.distributed);
+    assert!(distribution.distributed);
 }
 
 #[test]
@@ -264,7 +265,7 @@ fn check_zone_record_distribution_failure() {
         .data
         .unwrap();
 
-    assert_eq!(false, distribution.distributed);
+    assert!(!distribution.distributed);
 }
 
 #[test]
@@ -282,12 +283,10 @@ fn check_zone_record_distribution_error() {
     let errors = client
         .zones()
         .check_zone_record_distribution(account_id, zone, record)
-        .unwrap()
-        .errors
-        .unwrap();
+        .unwrap_err();
 
     assert_eq!(
         "Could not query zone, connection timed out",
-        errors.message.unwrap()
+        errors.to_string()
     );
 }

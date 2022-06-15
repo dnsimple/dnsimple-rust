@@ -1,4 +1,5 @@
 use crate::dnsimple::{Client, DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, RequestOptions};
+use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
 
 /// Represents a webhook
@@ -46,7 +47,7 @@ impl Webhooks<'_> {
         &self,
         account_id: u64,
         options: Option<RequestOptions>,
-    ) -> Result<DNSimpleResponse<Vec<Webhook>>, String> {
+    ) -> Result<DNSimpleResponse<Vec<Webhook>>, DNSimpleError> {
         let path = format!("/{}/webhooks", account_id);
 
         self.client.get::<WebhooksEndpoint>(&path, options)
@@ -62,12 +63,16 @@ impl Webhooks<'_> {
         &self,
         account_id: u64,
         url: String,
-    ) -> Result<DNSimpleResponse<Webhook>, String> {
+    ) -> Result<DNSimpleResponse<Webhook>, DNSimpleError> {
         let path = format!("/{}/webhooks", account_id);
         let payload = WebhookPayload { url };
 
-        self.client
-            .post::<WebhookEndpoint>(&path, serde_json::to_value(payload).unwrap())
+        match serde_json::to_value(payload) {
+            Ok(json) => self.client.post::<WebhookEndpoint>(&*path, json),
+            Err(_) => Err(DNSimpleError::Deserialization(String::from(
+                "Cannot deserialize json payload",
+            ))),
+        }
     }
 
     /// Retrieve a webhook
@@ -79,7 +84,7 @@ impl Webhooks<'_> {
         &self,
         account_id: u64,
         webhook: String,
-    ) -> Result<DNSimpleResponse<Webhook>, String> {
+    ) -> Result<DNSimpleResponse<Webhook>, DNSimpleError> {
         let path = format!("/{}/webhooks/{}", account_id, webhook);
 
         self.client.get::<WebhookEndpoint>(&path, None)
@@ -90,7 +95,11 @@ impl Webhooks<'_> {
     /// # Arguments
     /// `account_id`: The account id
     /// `webhook`: The webhook id
-    pub fn delete_webhook(&self, account_id: u64, webhook: String) -> DNSimpleEmptyResponse {
+    pub fn delete_webhook(
+        &self,
+        account_id: u64,
+        webhook: String,
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/webhooks/{}", account_id, webhook);
 
         self.client.delete(&path)

@@ -177,5 +177,6 @@ fn delete_contact_test() {
 
     let response = client.contacts().delete_contact(account_id, contact_id);
 
-    assert_eq!(204, response.status);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }

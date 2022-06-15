@@ -1,5 +1,6 @@
 use crate::common::setup_mock_for;
 use dnsimple::dnsimple::domains_signer_records::DelegationSignerRecordPayload;
+
 mod common;
 
 #[test]
@@ -10,7 +11,7 @@ fn test_list_delegation_signer_records() {
         "GET",
     );
     let client = setup.0;
-    let account_id = 1385 as u64;
+    let account_id = 1385_u64;
     let domain = "example.com";
 
     let response = client
@@ -98,15 +99,13 @@ fn test_create_delegation_signer_record_validation_error() {
 
     let response = client
         .domains()
-        .create_delegation_signer_record(account_id, domain, payload)
-        .unwrap();
-    let errors = response.errors.unwrap();
+        .create_delegation_signer_record(account_id, domain, payload);
 
-    assert_eq!("Validation failed", errors.message.unwrap());
-    assert_eq!(
-        "can't be blank",
-        errors.errors.unwrap().get("algorithm").unwrap()[0]
-    );
+    assert!(response.is_err());
+
+    let err = response.unwrap_err();
+
+    assert_eq!("Validation failed", err.to_string());
 }
 
 #[test]
@@ -159,5 +158,6 @@ fn test_delete_delegation_signer_record() {
         delegation_signer_record_id,
     );
 
-    assert_eq!(response.status, 204);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }

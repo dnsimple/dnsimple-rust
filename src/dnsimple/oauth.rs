@@ -1,4 +1,5 @@
 use crate::dnsimple::Client;
+use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
 
 /// Represents the payload used to exchange this information for the
@@ -72,7 +73,10 @@ impl OAuth<'_> {
     /// # Attributes
     ///
     /// `payload`: The `OAuthTokenPayload` with the necessary information to get the access token.
-    pub fn exchange_authorization_for_token(&self, payload: OAuthTokenPayload) -> AccessToken {
+    pub fn exchange_authorization_for_token(
+        &self,
+        payload: OAuthTokenPayload,
+    ) -> Result<AccessToken, DNSimpleError> {
         let path = "/oauth/access_token";
         let params = OAuthTokenParams {
             grant_type: "authorization_code".to_string(),
@@ -83,11 +87,18 @@ impl OAuth<'_> {
             state: payload.state,
         };
 
+        let value = serde_json::to_value(params)
+            .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
+
         let response = self
             .client
             ._agent
             .post(&*self.client.url(path))
-            .send_json(serde_json::to_value(params).unwrap());
-        response.unwrap().into_json::<AccessToken>().unwrap()
+            .send_json(value)
+            .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
+
+        response
+            .into_json::<AccessToken>()
+            .map_err(|e| DNSimpleError::Deserialization(e.to_string()))
     }
 }

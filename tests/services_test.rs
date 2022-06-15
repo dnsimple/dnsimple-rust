@@ -18,7 +18,7 @@ fn list_services_test() {
     assert_eq!("service2", service.sid);
     assert_eq!("Second service example.", service.description);
     assert_eq!(None, service.setup_description);
-    assert_eq!(true, service.requires_setup);
+    assert!(service.requires_setup);
     assert_eq!(None, service.default_subdomain);
     assert_eq!("2014-02-14T19:15:19Z", service.created_at);
     assert_eq!("2016-03-04T09:23:27Z", service.updated_at);
@@ -30,7 +30,7 @@ fn list_services_test() {
         settings.description
     );
     assert_eq!(Some("username".to_string()), settings.example);
-    assert_eq!(false, settings.password);
+    assert!(!settings.password);
 }
 
 #[test]
@@ -51,7 +51,7 @@ fn get_service_test() {
     assert_eq!("service1", service.sid);
     assert_eq!("First service example.", service.description);
     assert_eq!(None, service.setup_description);
-    assert_eq!(true, service.requires_setup);
+    assert!(service.requires_setup);
     assert_eq!(None, service.default_subdomain);
     assert_eq!("2014-02-14T19:15:19Z", service.created_at);
     assert_eq!("2016-03-04T09:23:27Z", service.updated_at);
@@ -72,7 +72,7 @@ fn get_service_test() {
         Some("username".to_string()),
         service.settings.first().unwrap().example
     );
-    assert_eq!(false, service.settings.first().unwrap().password);
+    assert!(!service.settings.first().unwrap().password);
 }
 
 #[test]
@@ -113,7 +113,8 @@ fn apply_service_test() {
             .services()
             .apply_service(account_id, String::from(domain), String::from(service));
 
-    assert_eq!(204, response.status);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }
 
 #[test]
@@ -133,5 +134,6 @@ fn unapply_service_test() {
             .services()
             .unapply_service(account_id, String::from(domain), String::from(service));
 
-    assert_eq!(204, response.status);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }

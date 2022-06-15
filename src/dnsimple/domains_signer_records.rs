@@ -1,5 +1,6 @@
 use crate::dnsimple::domains::Domains;
 use crate::dnsimple::{DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, RequestOptions};
+use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
 
 /// Represents a delegation signer record
@@ -79,7 +80,7 @@ impl Domains<'_> {
         account_id: u64,
         domain: &str,
         options: Option<RequestOptions>,
-    ) -> Result<DNSimpleResponse<Vec<DelegationSignerRecord>>, String> {
+    ) -> Result<DNSimpleResponse<Vec<DelegationSignerRecord>>, DNSimpleError> {
         let path = format!("/{}/domains/{}/ds_records", account_id, domain);
 
         self.client
@@ -119,11 +120,15 @@ impl Domains<'_> {
         account_id: u64,
         domain: &str,
         payload: DelegationSignerRecordPayload,
-    ) -> Result<DNSimpleResponse<DelegationSignerRecord>, String> {
+    ) -> Result<DNSimpleResponse<DelegationSignerRecord>, DNSimpleError> {
         let path = format!("/{}/domains/{}/ds_records", account_id, domain);
 
-        self.client
-            .post::<SignerRecordEndpoint>(&*path, serde_json::to_value(payload).unwrap())
+        match serde_json::to_value(payload) {
+            Ok(json) => self.client.post::<SignerRecordEndpoint>(&*path, json),
+            Err(_) => Err(DNSimpleError::Deserialization(String::from(
+                "Cannot deserialize json payload",
+            ))),
+        }
     }
 
     /// Get the delegation signer record under the domain for the account
@@ -145,7 +150,7 @@ impl Domains<'_> {
         &self,
         account_id: u64,
         domain: &str,
-    ) -> Result<DNSimpleResponse<DelegationSignerRecord>, String> {
+    ) -> Result<DNSimpleResponse<DelegationSignerRecord>, DNSimpleError> {
         let path = format!("/{}/domains/{}/ds_records", account_id, domain);
 
         self.client.get::<SignerRecordEndpoint>(&*path, None)
@@ -159,7 +164,7 @@ impl Domains<'_> {
     /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// client.domains().delete_delegation_signer_record(1234, "example.com", 42);
+    /// let response = client.domains().delete_delegation_signer_record(1234, "example.com", 42);
     /// ```
     ///
     /// # Arguments
@@ -172,7 +177,7 @@ impl Domains<'_> {
         account_id: u64,
         domain: &str,
         delegation_signer_record_id: i32,
-    ) -> DNSimpleEmptyResponse {
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!(
             "/{}/domains/{}/ds_records/{}",
             account_id, domain, delegation_signer_record_id

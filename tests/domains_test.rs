@@ -19,8 +19,8 @@ fn list_domains_test() {
     assert_eq!("example-alpha.com", first_domain.name);
     assert_eq!("example-alpha.com", first_domain.unicode_name);
     assert_eq!("registered", first_domain.state);
-    assert_eq!(false, first_domain.auto_renew);
-    assert_eq!(false, first_domain.private_whois);
+    assert!(!first_domain.auto_renew);
+    assert!(!first_domain.private_whois);
     assert_eq!("2021-06-05", first_domain.expires_on.as_ref().unwrap());
     assert_eq!(
         "2021-06-05T02:15:00Z",
@@ -50,8 +50,8 @@ fn create_domain_test() {
     assert_eq!(domain.name, "example-beta.com");
     assert_eq!(domain.unicode_name, "example-beta.com");
     assert_eq!(domain.state, "hosted");
-    assert_eq!(domain.auto_renew, false);
-    assert_eq!(domain.private_whois, false);
+    assert!(!domain.auto_renew);
+    assert!(!domain.private_whois);
     assert_eq!(domain.expires_on, None);
     assert_eq!(domain.expires_at, None);
     assert_eq!(domain.created_at, "2020-06-04T19:47:05Z");
@@ -62,8 +62,8 @@ fn create_domain_test() {
 fn test_get_domain() {
     let setup = setup_mock_for("/1385/domains/181984", "getDomain/success", "GET");
     let client = setup.0;
-    let account_id = 1385 as u64;
-    let domain_id = 181984 as u64;
+    let account_id = 1385_u64;
+    let domain_id = 181984_u64;
 
     let domain = client
         .domains()
@@ -78,8 +78,8 @@ fn test_get_domain() {
     assert_eq!("example-alpha.com", domain.name);
     assert_eq!("example-alpha.com", domain.unicode_name);
     assert_eq!("registered", domain.state);
-    assert_eq!(false, domain.auto_renew);
-    assert_eq!(false, domain.private_whois);
+    assert!(!domain.auto_renew);
+    assert!(!domain.private_whois);
     assert_eq!("2021-06-05", domain.expires_on.unwrap());
     assert_eq!("2021-06-05T02:15:00Z", domain.expires_at.unwrap());
     assert_eq!("2020-06-04T19:15:14Z", domain.created_at);
@@ -90,10 +90,11 @@ fn test_get_domain() {
 fn test_delete_domain() {
     let setup = setup_mock_for("/1385/domains/181984", "deleteDomain/success", "DELETE");
     let client = setup.0;
-    let account_id = 1385 as u64;
-    let domain_id = 181984 as u64;
+    let account_id = 1385_u64;
+    let domain_id = 181984_u64;
 
     let response = client.domains().delete_domain(account_id, domain_id);
 
-    assert_eq!(response.status, 204);
+    assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
 }

@@ -1,5 +1,6 @@
 use crate::dnsimple::domains::Domains;
 use crate::dnsimple::{DNSimpleEmptyResponse, DNSimpleResponse, Endpoint, RequestOptions};
+use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
 
 struct DomainPushesListEndpoint;
@@ -69,11 +70,15 @@ impl Domains<'_> {
         account_id: u64,
         domain: &str,
         payload: InitiatePushPayload,
-    ) -> Result<DNSimpleResponse<DomainPush>, String> {
+    ) -> Result<DNSimpleResponse<DomainPush>, DNSimpleError> {
         let path = format!("/{}/domains/{}/pushes", account_id, domain);
 
-        self.client
-            .post::<DomainPushEndpoint>(&path, serde_json::to_value(payload).unwrap())
+        match serde_json::to_value(payload) {
+            Ok(json) => self.client.post::<DomainPushEndpoint>(&*path, json),
+            Err(_) => Err(DNSimpleError::Deserialization(String::from(
+                "Cannot deserialize json payload",
+            ))),
+        }
     }
 
     /// List pending pushes for the target account.
@@ -96,7 +101,7 @@ impl Domains<'_> {
         &self,
         account_id: u64,
         options: Option<RequestOptions>,
-    ) -> Result<DNSimpleResponse<Vec<DomainPush>>, String> {
+    ) -> Result<DNSimpleResponse<Vec<DomainPush>>, DNSimpleError> {
         let path = format!("/{}/domains/pushes", account_id);
 
         self.client.get::<DomainPushesListEndpoint>(&*path, options)
@@ -110,14 +115,18 @@ impl Domains<'_> {
     /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// client.domains().accept_push(1234, 42);
+    /// let response = client.domains().accept_push(1234, 42);
     /// ```
     ///
     /// # Arguments
     ///
     /// `account_id`: The account id
     /// `push_id`: The push id
-    pub fn accept_push(&self, account_id: u64, push_id: u64) -> DNSimpleEmptyResponse {
+    pub fn accept_push(
+        &self,
+        account_id: u64,
+        push_id: u64,
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/domains/pushes/{}", account_id, push_id);
 
         self.client.empty_post(&*path)
@@ -131,14 +140,18 @@ impl Domains<'_> {
     /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// client.domains().reject_push(1234, 42);
+    /// let response = client.domains().reject_push(1234, 42);
     /// ```
     ///
     /// # Arguments
     ///
     /// `account_id`: The account id
     /// `push_id`: The push id
-    pub fn reject_push(&self, account_id: u64, push_id: u64) -> DNSimpleEmptyResponse {
+    pub fn reject_push(
+        &self,
+        account_id: u64,
+        push_id: u64,
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/domains/pushes/{}", account_id, push_id);
 
         self.client.delete(&*path)
