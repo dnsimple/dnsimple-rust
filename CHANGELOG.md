@@ -4,6 +4,8 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/).
 
 ## main
 
+## 0.2.0
+
 - CHANGED: removed unwrap() from the codebase
 - CHANGED: functions return Result<T,DNSimpleError> now
 - CHANGED: Deprecate Certificate's `contact_id` (dnsimple/dnsimple-rust#23)
