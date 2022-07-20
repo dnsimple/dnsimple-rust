@@ -1,17 +1,20 @@
----
-name: ci
+name: CI
 
 on:
   push:
+    branches: [ main ]
   pull_request:
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     name: Rust
     steps:
@@ -28,7 +31,7 @@ jobs:
     if: always()
     name: Post Workflow Status To Slack
     needs:
-      - build
+      - test
     runs-on: ubuntu-latest
     steps:
       - name: Slack Workflow Notification
