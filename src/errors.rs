@@ -4,7 +4,7 @@ use thiserror::Error;
 use ureq::{Response, Transport};
 
 /// Represents the possible errors thrown while interacting with the DNSimple API
-#[derive(Error, Deserialize, Serialize, Debug, PartialEq)]
+#[derive(Error, Deserialize, Serialize, Debug, PartialEq, Eq)]
 pub enum DNSimpleError {
     #[error("Authentication failed")]
     Unauthorized,
