@@ -26,7 +26,7 @@ pub enum DNSimpleError {
     ServiceUnavailable,
     #[error("You exceeded the allowed number of requests per hour and your request has temporarily been throttled.")]
     TooManyRequests,
-    #[error("Transport Error – {0}({1})")]
+    #[error("Transport Error - {0}({1})")]
     Transport(String, String),
     #[error("Deserialization Error {0}")]
     Deserialization(String),
