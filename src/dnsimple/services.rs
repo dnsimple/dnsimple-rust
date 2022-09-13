@@ -71,7 +71,7 @@ impl Services<'_> {
     ) -> Result<DNSimpleResponse<Vec<Service>>, DNSimpleError> {
         let path = "/services";
 
-        self.client.get::<ServicesEndpoint>(&*path, options)
+        self.client.get::<ServicesEndpoint>(path, options)
     }
 
     /// Retrieve a service

@@ -84,7 +84,7 @@ impl Tlds<'_> {
     ) -> Result<DNSimpleResponse<Vec<Tld>>, DNSimpleError> {
         let path = "/tlds";
 
-        self.client.get::<ListTldsEndpoint>(&*path, options)
+        self.client.get::<ListTldsEndpoint>(path, options)
     }
 
     /// Retrieves the details of a supported TLD.

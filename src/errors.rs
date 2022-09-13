@@ -4,7 +4,7 @@ use thiserror::Error;
 use ureq::{Response, Transport};
 
 /// Represents the possible errors thrown while interacting with the DNSimple API
-#[derive(Error, Deserialize, Serialize, Debug, PartialEq)]
+#[derive(Error, Deserialize, Serialize, Debug, PartialEq, Eq)]
 pub enum DNSimpleError {
     #[error("Authentication failed")]
     Unauthorized,
@@ -26,7 +26,7 @@ pub enum DNSimpleError {
     ServiceUnavailable,
     #[error("You exceeded the allowed number of requests per hour and your request has temporarily been throttled.")]
     TooManyRequests,
-    #[error("Transport Error – {0}({1})")]
+    #[error("Transport Error - {0}({1})")]
     Transport(String, String),
     #[error("Deserialization Error {0}")]
     Deserialization(String),
