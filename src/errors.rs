@@ -10,8 +10,11 @@ pub enum DNSimpleError {
     Unauthorized,
     #[error("Bad Gateway")]
     BadGateway,
-    #[error("{0}")]
-    BadRequest(String, Option<Value>),
+    #[error("{message}")]
+    BadRequest {
+        message: String,
+        attribute_errors: Option<Value>,
+    },
     #[error("{0}")]
     GatewayTimeout(String),
     #[error("Method not Allowed")]
@@ -58,7 +61,10 @@ impl DNSimpleError {
 
     fn bad_request(response: Response) -> DNSimpleError {
         match Self::response_to_json(response) {
-            Ok(json) => Self::BadRequest(Self::message_in(&json), Some(json["errors"].clone())),
+            Ok(json) => Self::BadRequest {
+                message: Self::message_in(&json),
+                attribute_errors: Some(json["errors"].clone()),
+            },
             Err(error) => error,
         }
     }
