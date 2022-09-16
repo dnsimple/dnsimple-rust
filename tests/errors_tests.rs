@@ -1,9 +1,7 @@
-use crate::assert_matches::assert_matches;
 use crate::common::setup_mock_for;
+use assert_matches::assert_matches;
 use dnsimple::errors::DNSimpleError;
 use serde_json::json;
-#[macro_use]
-extern crate assert_matches;
 
 mod common;
 
