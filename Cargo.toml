@@ -21,3 +21,4 @@ thiserror = "1.0"
 
 [dev-dependencies]
 mockito = "0.31"
+assert_matches = "1.5"
