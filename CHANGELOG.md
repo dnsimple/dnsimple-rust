@@ -4,6 +4,10 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/).
 
 ## main
 
+## 0.2.1
+
+- CHANGED: Expose specific model errors on validation error (dnsimple/dnsimple-rust#27)
+
 ## 0.2.0
 
 - CHANGED: removed unwrap() from the codebase
@@ -21,7 +25,7 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/).
 ## 0.1.1
 
 - FIX: Renames the project from `dnsimple_rust` to `dnsimple`
- 
+
 ## 0.1.0
 
 - ADDS: Automatic releasing when tagging a release
