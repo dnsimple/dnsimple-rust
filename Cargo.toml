@@ -2,7 +2,7 @@
 name = "dnsimple"
 version = "0.2.1"
 authors = ["Enrique Comba Riepenhausen <enrique.comba@dnsimple.com>", "Amelia Aronsohn <amelia.aronsohn@dnsimple.com>"]
-edition = "2018"
+edition = "2021"
 description = "Rust DNSimple API client"
 readme = "README.md"
 license = "MIT"
@@ -14,7 +14,7 @@ include = ["src/**/*.rs", "README.md", "LICENSE.txt", "CHANGELOG.md"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ureq = { version = "2.4.0", features = ["json"] }
+ureq = { version = "2.6", features = ["json"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = { version = "1.0", features = ["raw_value"] }
 thiserror = "1.0"
