@@ -40,6 +40,7 @@ pub struct ZoneRecordPayload {
     /// The record name (without the domain name).
     pub name: String,
     /// The type of record, in uppercase.
+    #[serde(rename = "type")]
     pub record_type: String,
     /// The plain-text record content.
     pub content: String,
