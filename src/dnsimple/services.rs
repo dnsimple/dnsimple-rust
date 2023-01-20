@@ -97,7 +97,7 @@ impl Services<'_> {
     ) -> Result<DNSimpleResponse<Vec<Service>>, DNSimpleError> {
         let path = format!("/{}/domains/{}/services", account_id, domain);
 
-        self.client.get::<ServicesEndpoint>(&*path, options)
+        self.client.get::<ServicesEndpoint>(&path, options)
     }
 
     /// Applies a service to a domain.
@@ -114,7 +114,7 @@ impl Services<'_> {
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/domains/{}/services/{}", account_id, domain, service);
 
-        self.client.empty_post(&*path)
+        self.client.empty_post(&path)
     }
 
     /// Unapplies a service to a domain.
@@ -131,6 +131,6 @@ impl Services<'_> {
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/domains/{}/services/{}", account_id, domain, service);
 
-        self.client.delete(&*path)
+        self.client.delete(&path)
     }
 }

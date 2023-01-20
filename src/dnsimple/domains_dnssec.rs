@@ -48,8 +48,7 @@ impl Domains<'_> {
     ) -> Result<DNSimpleResponse<Dnssec>, DNSimpleError> {
         let path = format!("/{}/domains/{}/dnssec", account_id, domain);
 
-        self.client
-            .post::<DnssecStatusEndpoint>(&*path, Value::Null)
+        self.client.post::<DnssecStatusEndpoint>(&path, Value::Null)
     }
 
     /// Disable DNSSEC for the domain in the account.
@@ -74,7 +73,7 @@ impl Domains<'_> {
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/domains/{}/dnssec", account_id, domain);
 
-        self.client.delete(&*path)
+        self.client.delete(&path)
     }
 
     /// Get the status of DNSSEC, indicating whether it is currently enabled or disabled.
@@ -99,6 +98,6 @@ impl Domains<'_> {
     ) -> Result<DNSimpleResponse<Dnssec>, DNSimpleError> {
         let path = format!("/{}/domains/{}/dnssec", account_id, domain);
 
-        self.client.get::<DnssecStatusEndpoint>(&*path, None)
+        self.client.get::<DnssecStatusEndpoint>(&path, None)
     }
 }

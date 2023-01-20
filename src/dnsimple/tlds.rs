@@ -95,7 +95,7 @@ impl Tlds<'_> {
     pub fn get_tld(&self, tld: String) -> Result<DNSimpleResponse<Tld>, DNSimpleError> {
         let path = format!("/tlds/{}", tld);
 
-        self.client.get::<TldEndpoint>(&*path, None)
+        self.client.get::<TldEndpoint>(&path, None)
     }
 
     /// Lists the TLD Extended Attributes
@@ -110,6 +110,6 @@ impl Tlds<'_> {
         let path = format!("/tlds/{}/extended_attributes", tld);
 
         self.client
-            .get::<ListTldsExtendedAttributesEndpoint>(&*path, None)
+            .get::<ListTldsExtendedAttributesEndpoint>(&path, None)
     }
 }

@@ -47,7 +47,7 @@ impl Registrar<'_> {
     ) -> Result<DNSimpleResponse<Vec<String>>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/delegation", account_id, domain);
 
-        self.client.get::<DomainDelegationEndpoint>(&*path, None)
+        self.client.get::<DomainDelegationEndpoint>(&path, None)
     }
 
     /// Change domain name servers
@@ -66,7 +66,7 @@ impl Registrar<'_> {
         let path = format!("/{}/registrar/domains/{}/delegation", account_id, domain);
 
         self.client
-            .put::<DomainDelegationEndpoint>(&*path, Value::from(server_names))
+            .put::<DomainDelegationEndpoint>(&path, Value::from(server_names))
     }
 
     /// Delegate to vanity name servers
@@ -88,7 +88,7 @@ impl Registrar<'_> {
         );
 
         self.client
-            .put::<DomainDelegationVanityEndpoint>(&*path, Value::from(server_names))
+            .put::<DomainDelegationVanityEndpoint>(&path, Value::from(server_names))
     }
 
     /// De-delegate from vanity name servers
@@ -107,6 +107,6 @@ impl Registrar<'_> {
             account_id, domain
         );
 
-        self.client.delete(&*path)
+        self.client.delete(&path)
     }
 }

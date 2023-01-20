@@ -92,8 +92,7 @@ impl Domains<'_> {
     ) -> Result<DNSimpleResponse<Vec<EmailForwardsInList>>, DNSimpleError> {
         let path = format!("/{}/domains/{}/email_forwards", account_id, domain);
 
-        self.client
-            .get::<EmailForwardsListEndpoint>(&*path, options)
+        self.client.get::<EmailForwardsListEndpoint>(&path, options)
     }
 
     /// Create an email forward
@@ -126,7 +125,7 @@ impl Domains<'_> {
         let path = format!("/{}/domains/{}/email_forwards", account_id, domain);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<EmailForwardEndpoint>(&*path, json),
+            Ok(json) => self.client.post::<EmailForwardEndpoint>(&path, json),
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -160,7 +159,7 @@ impl Domains<'_> {
             account_id, domain, email_forward
         );
 
-        self.client.get::<EmailForwardEndpoint>(&*path, None)
+        self.client.get::<EmailForwardEndpoint>(&path, None)
     }
 
     /// Delete the email forward from the domain.
@@ -190,6 +189,6 @@ impl Domains<'_> {
             account_id, domain, email_forward
         );
 
-        self.client.delete(&*path)
+        self.client.delete(&path)
     }
 }

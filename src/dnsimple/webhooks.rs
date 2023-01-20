@@ -68,7 +68,7 @@ impl Webhooks<'_> {
         let payload = WebhookPayload { url };
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<WebhookEndpoint>(&*path, json),
+            Ok(json) => self.client.post::<WebhookEndpoint>(&path, json),
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),

@@ -134,7 +134,7 @@ impl Templates<'_> {
         let path = format!("/{}/templates", account_id);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<TemplateEndpoint>(&*path, json),
+            Ok(json) => self.client.post::<TemplateEndpoint>(&path, json),
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -173,7 +173,7 @@ impl Templates<'_> {
         let path = format!("/{}/templates/{}", account_id, template);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.patch::<TemplateEndpoint>(&*path, json),
+            Ok(json) => self.client.patch::<TemplateEndpoint>(&path, json),
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -226,7 +226,7 @@ impl Templates<'_> {
         let path = format!("/{}/templates/{}/records", account_id, template);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<TemplateRecordEndpoint>(&*path, json),
+            Ok(json) => self.client.post::<TemplateRecordEndpoint>(&path, json),
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),

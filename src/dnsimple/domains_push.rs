@@ -74,7 +74,7 @@ impl Domains<'_> {
         let path = format!("/{}/domains/{}/pushes", account_id, domain);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<DomainPushEndpoint>(&*path, json),
+            Ok(json) => self.client.post::<DomainPushEndpoint>(&path, json),
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -104,7 +104,7 @@ impl Domains<'_> {
     ) -> Result<DNSimpleResponse<Vec<DomainPush>>, DNSimpleError> {
         let path = format!("/{}/domains/pushes", account_id);
 
-        self.client.get::<DomainPushesListEndpoint>(&*path, options)
+        self.client.get::<DomainPushesListEndpoint>(&path, options)
     }
 
     /// Accept a push
@@ -129,7 +129,7 @@ impl Domains<'_> {
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/domains/pushes/{}", account_id, push_id);
 
-        self.client.empty_post(&*path)
+        self.client.empty_post(&path)
     }
 
     /// Reject a push
@@ -154,6 +154,6 @@ impl Domains<'_> {
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/domains/pushes/{}", account_id, push_id);
 
-        self.client.delete(&*path)
+        self.client.delete(&path)
     }
 }

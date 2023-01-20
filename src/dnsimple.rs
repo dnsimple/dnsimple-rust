@@ -504,24 +504,24 @@ impl Client {
     fn build_get_request(&self, path: &&str, options: Option<RequestOptions>) -> Request {
         let mut request = self
             ._agent
-            .get(&*self.url(path))
+            .get(&self.url(path))
             .set("User-Agent", &self.user_agent)
             .set("Accept", "application/json");
 
         if let Some(options) = options {
             if let Some(pagination) = options.paginate {
-                request = request.query("page", &*pagination.page.to_string());
-                request = request.query("per_page", &*pagination.per_page.to_string())
+                request = request.query("page", &pagination.page.to_string());
+                request = request.query("per_page", &pagination.per_page.to_string())
             }
 
             if let Some(filters) = options.filters {
                 for (key, value) in filters.filters {
-                    request = request.query(&*key, &*value);
+                    request = request.query(&key, &value);
                 }
             }
 
             if let Some(sort) = options.sort {
-                request = request.query("sort", &*sort.sort_by);
+                request = request.query("sort", &sort.sort_by);
             }
         }
 

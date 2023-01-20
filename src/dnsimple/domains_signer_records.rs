@@ -83,8 +83,7 @@ impl Domains<'_> {
     ) -> Result<DNSimpleResponse<Vec<DelegationSignerRecord>>, DNSimpleError> {
         let path = format!("/{}/domains/{}/ds_records", account_id, domain);
 
-        self.client
-            .get::<ListSignerRecordsEndpoint>(&*path, options)
+        self.client.get::<ListSignerRecordsEndpoint>(&path, options)
     }
 
     /// Creates a delegation signer record
@@ -124,7 +123,7 @@ impl Domains<'_> {
         let path = format!("/{}/domains/{}/ds_records", account_id, domain);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<SignerRecordEndpoint>(&*path, json),
+            Ok(json) => self.client.post::<SignerRecordEndpoint>(&path, json),
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -153,7 +152,7 @@ impl Domains<'_> {
     ) -> Result<DNSimpleResponse<DelegationSignerRecord>, DNSimpleError> {
         let path = format!("/{}/domains/{}/ds_records", account_id, domain);
 
-        self.client.get::<SignerRecordEndpoint>(&*path, None)
+        self.client.get::<SignerRecordEndpoint>(&path, None)
     }
 
     /// Delete a Delegation Signer record
@@ -183,6 +182,6 @@ impl Domains<'_> {
             account_id, domain, delegation_signer_record_id
         );
 
-        self.client.delete(&*path)
+        self.client.delete(&path)
     }
 }
