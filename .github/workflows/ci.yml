@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
@@ -26,7 +26,13 @@ jobs:
       - name: rustfmt check
         run: cargo fmt -- --check
       - name: Clippy check
-        run: cargo clippy -- -D warnings -D clippy::expect_used -D clippy::panic -D clippy::unwrap_used
+        run: >
+          cargo clippy --
+          -D warnings
+          -D clippy::expect_used
+          -D clippy::panic
+          -D clippy::unwrap_used
+
   slack-workflow-status:
     if: always()
     name: Post Workflow Status To Slack
