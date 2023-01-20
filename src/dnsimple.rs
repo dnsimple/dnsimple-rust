@@ -42,7 +42,7 @@ pub mod webhooks;
 pub mod zones;
 pub mod zones_records;
 
-const VERSION: &str = "0.2.1";
+const VERSION: &str = "0.3.0";
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
 
 const API_VERSION: &str = "v2";

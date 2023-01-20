@@ -4,6 +4,13 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/).
 
 ## main
 
+## 0.3.0
+
+- FIX: Fix serialized name of ZoneRecordPayload::record_type (dnsimple/dnsimple-rust#32)
+- FIX: Fix Clippy Lint explicit_auto_deref (dnsimple/dnsimple-rust#33)
+- CHANGED: Sets Edition to 2021 (dnsimple/dnsimple-rust#34)
+- CHANGED: Update Ureq dependency to 2.6 (dnsimple/dnsimple-rust#34)
+
 ## 0.2.1
 
 - CHANGED: Expose specific model errors on validation error (dnsimple/dnsimple-rust#27)
@@ -16,7 +23,7 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/).
 
 ## 0.1.3
 
-- FIX: Bug preventing authorised requests (POST, PUT, PATCH)
+- FIX: Bug preventing authorized requests (POST, PUT, PATCH)
 
 ## 0.1.2
 
