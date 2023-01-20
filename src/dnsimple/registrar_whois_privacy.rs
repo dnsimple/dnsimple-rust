@@ -68,7 +68,7 @@ impl Registrar<'_> {
     ) -> Result<DNSimpleResponse<WhoisPrivacy>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/whois_privacy", account_id, domain);
 
-        self.client.get::<WhoisPrivacyEndpoint>(&*path, None)
+        self.client.get::<WhoisPrivacyEndpoint>(&path, None)
     }
 
     /// Enable WHOIS privacy
@@ -84,7 +84,7 @@ impl Registrar<'_> {
     ) -> Result<DNSimpleResponse<WhoisPrivacy>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/whois_privacy", account_id, domain);
 
-        self.client.put::<WhoisPrivacyEndpoint>(&*path, Value::Null)
+        self.client.put::<WhoisPrivacyEndpoint>(&path, Value::Null)
     }
 
     /// Enable WHOIS privacy
@@ -101,7 +101,7 @@ impl Registrar<'_> {
         let path = format!("/{}/registrar/domains/{}/whois_privacy", account_id, domain);
 
         self.client
-            .delete_with_response::<WhoisPrivacyEndpoint>(&*path)
+            .delete_with_response::<WhoisPrivacyEndpoint>(&path)
     }
 
     /// Renew WHOIS privacy
@@ -118,6 +118,6 @@ impl Registrar<'_> {
         let path = format!("/{}/registrar/domains/{}/whois_privacy", account_id, domain);
 
         self.client
-            .post::<WhoisPrivacyRenewalEndpoint>(&*path, Value::Null)
+            .post::<WhoisPrivacyRenewalEndpoint>(&path, Value::Null)
     }
 }

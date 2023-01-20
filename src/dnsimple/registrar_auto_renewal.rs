@@ -16,7 +16,7 @@ impl Registrar<'_> {
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/auto_renewal", account_id, domain);
 
-        self.client.empty_put(&*path)
+        self.client.empty_put(&path)
     }
 
     /// Disable domain auto-renewal
@@ -32,6 +32,6 @@ impl Registrar<'_> {
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/auto_renewal", account_id, domain);
 
-        self.client.delete(&*path)
+        self.client.delete(&path)
     }
 }

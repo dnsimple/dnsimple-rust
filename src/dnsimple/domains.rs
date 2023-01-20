@@ -81,7 +81,7 @@ impl Domains<'_> {
         options: Option<RequestOptions>,
     ) -> Result<DNSimpleResponse<Vec<Domain>>, DNSimpleError> {
         let path = format!("/{}/domains", account_id);
-        self.client.get::<DomainsEndpoint>(&*path, options)
+        self.client.get::<DomainsEndpoint>(&path, options)
     }
 
     /// Adds a domain to the account.
@@ -113,7 +113,7 @@ impl Domains<'_> {
         let payload = DomainCreationPayload { name };
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<DomainEndpoint>(&*path, json),
+            Ok(json) => self.client.post::<DomainEndpoint>(&path, json),
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -143,7 +143,7 @@ impl Domains<'_> {
         domain_id: u64,
     ) -> Result<DNSimpleResponse<Domain>, DNSimpleError> {
         let path = format!("/{}/domains/{}", account_id, domain_id);
-        self.client.get::<DomainEndpoint>(&*path, None)
+        self.client.get::<DomainEndpoint>(&path, None)
     }
 
     /// Permanently deletes a domain from the account. It cannot be undone.
@@ -169,6 +169,6 @@ impl Domains<'_> {
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/domains/{}", account_id, domain_id);
 
-        self.client.delete(&*path)
+        self.client.delete(&path)
     }
 }

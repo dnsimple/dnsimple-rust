@@ -216,7 +216,7 @@ impl Registrar<'_> {
     ) -> Result<DNSimpleResponse<DomainCheck>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/check", account_id, domain);
 
-        self.client.get::<DomainCheckEndpoint>(&*path, None)
+        self.client.get::<DomainCheckEndpoint>(&path, None)
     }
 
     /// Get the premium price for a domain.
@@ -248,7 +248,7 @@ impl Registrar<'_> {
             action.unwrap_or_else(|| "registration".into())
         );
 
-        self.client.get::<DomainPremiumPriceEndpoint>(&*path, None)
+        self.client.get::<DomainPremiumPriceEndpoint>(&path, None)
     }
 
     /// Get a domain’s price for registration, renewal, and transfer.
@@ -273,7 +273,7 @@ impl Registrar<'_> {
     ) -> Result<DNSimpleResponse<DomainPrice>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/prices", account_id, domain);
 
-        self.client.get::<DomainPricesEndpoint>(&*path, None)
+        self.client.get::<DomainPricesEndpoint>(&path, None)
     }
 
     /// Get a domain’s price for registration, renewal, and transfer.
@@ -309,7 +309,7 @@ impl Registrar<'_> {
         let path = format!("/{}/registrar/domains/{}/registrations", account_id, domain);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<DomainRegistrationEndpoint>(&*path, json),
+            Ok(json) => self.client.post::<DomainRegistrationEndpoint>(&path, json),
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -350,7 +350,7 @@ impl Registrar<'_> {
         let path = format!("/{}/registrar/domains/{}/transfers", account_id, domain);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<DomainTransferEndpoint>(&*path, json),
+            Ok(json) => self.client.post::<DomainTransferEndpoint>(&path, json),
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -375,7 +375,7 @@ impl Registrar<'_> {
             account_id, domain, domain_transfer
         );
 
-        self.client.get::<DomainTransferEndpoint>(&*path, None)
+        self.client.get::<DomainTransferEndpoint>(&path, None)
     }
 
     /// Cancels an in progress domain transfer.
@@ -397,7 +397,7 @@ impl Registrar<'_> {
         );
 
         self.client
-            .delete_with_response::<DomainTransferEndpoint>(&*path)
+            .delete_with_response::<DomainTransferEndpoint>(&path)
     }
 
     /// Get a domain’s price for registration, renewal, and transfer.
@@ -416,7 +416,7 @@ impl Registrar<'_> {
         let path = format!("/{}/registrar/domains/{}/renewals", account_id, domain);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<DomainRenewalEndpoint>(&*path, json),
+            Ok(json) => self.client.post::<DomainRenewalEndpoint>(&path, json),
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -439,6 +439,6 @@ impl Registrar<'_> {
             account_id, domain
         );
 
-        self.client.empty_post(&*path)
+        self.client.empty_post(&path)
     }
 }

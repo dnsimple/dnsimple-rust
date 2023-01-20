@@ -94,7 +94,7 @@ impl Zones<'_> {
     ) -> Result<DNSimpleResponse<Vec<ZoneRecord>>, DNSimpleError> {
         let path = format!("/{}/zones/{}/records", account_id, zone);
 
-        self.client.get::<ZoneRecordsEndpoint>(&*path, options)
+        self.client.get::<ZoneRecordsEndpoint>(&path, options)
     }
 
     /// Create a zone record
@@ -113,7 +113,7 @@ impl Zones<'_> {
         let path = format!("/{}/zones/{}/records", account_id, zone);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<ZoneRecordEndpoint>(&*path, json),
+            Ok(json) => self.client.post::<ZoneRecordEndpoint>(&path, json),
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -135,7 +135,7 @@ impl Zones<'_> {
     ) -> Result<DNSimpleResponse<ZoneRecord>, DNSimpleError> {
         let path = format!("/{}/zones/{}/records/{}", account_id, zone, record);
 
-        self.client.get::<ZoneRecordEndpoint>(&*path, None)
+        self.client.get::<ZoneRecordEndpoint>(&path, None)
     }
 
     /// Update a zone record
@@ -156,7 +156,7 @@ impl Zones<'_> {
         let path = format!("/{}/zones/{}/records/{}", account_id, zone, record);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.patch::<ZoneRecordEndpoint>(&*path, json),
+            Ok(json) => self.client.patch::<ZoneRecordEndpoint>(&path, json),
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -178,7 +178,7 @@ impl Zones<'_> {
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/zones/{}/records/{}", account_id, zone, record);
 
-        self.client.delete(&*path)
+        self.client.delete(&path)
     }
 
     /// Check zone record distribution
@@ -199,6 +199,6 @@ impl Zones<'_> {
             account_id, zone, record
         );
 
-        self.client.get::<DistributionEndpoint>(&*path, None)
+        self.client.get::<DistributionEndpoint>(&path, None)
     }
 }

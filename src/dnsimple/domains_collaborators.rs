@@ -75,8 +75,7 @@ impl Domains<'_> {
     ) -> Result<DNSimpleResponse<Vec<Collaborator>>, DNSimpleError> {
         let path = format!("/{}/domains/{}/collaborators", account_id, domain_id);
 
-        self.client
-            .get::<ListCollaboratorsEndpoint>(&*path, options)
+        self.client.get::<ListCollaboratorsEndpoint>(&path, options)
     }
 
     /// At the time of the add, a collaborator may or may not have a DNSimple account.
@@ -115,7 +114,7 @@ impl Domains<'_> {
             email: email.into(),
         };
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<CollaboratorEndpoint>(&*path, json),
+            Ok(json) => self.client.post::<CollaboratorEndpoint>(&path, json),
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -149,6 +148,6 @@ impl Domains<'_> {
             "/{}/domains/{}/collaborators/{}",
             account_id, domain_id, collaborator_id
         );
-        self.client.delete(&*path)
+        self.client.delete(&path)
     }
 }

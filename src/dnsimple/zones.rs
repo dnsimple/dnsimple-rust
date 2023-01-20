@@ -77,7 +77,7 @@ impl Zones<'_> {
     ) -> Result<DNSimpleResponse<Vec<Zone>>, DNSimpleError> {
         let path = format!("/{}/zones", account_id);
 
-        self.client.get::<ListZonesEndpoint>(&*path, options)
+        self.client.get::<ListZonesEndpoint>(&path, options)
     }
 
     /// Retrieve a zone
@@ -93,7 +93,7 @@ impl Zones<'_> {
     ) -> Result<DNSimpleResponse<Zone>, DNSimpleError> {
         let path = format!("/{}/zones/{}", account_id, zone);
 
-        self.client.get::<ZoneEndpoint>(&*path, None)
+        self.client.get::<ZoneEndpoint>(&path, None)
     }
 
     /// Download a zone file
@@ -109,7 +109,7 @@ impl Zones<'_> {
     ) -> Result<DNSimpleResponse<ZoneFile>, DNSimpleError> {
         let path = format!("/{}/zones/{}/file", account_id, zone);
 
-        self.client.get::<ZoneFileEndpoint>(&*path, None)
+        self.client.get::<ZoneFileEndpoint>(&path, None)
     }
 
     /// Check zone distribution
@@ -125,6 +125,6 @@ impl Zones<'_> {
     ) -> Result<DNSimpleResponse<ZoneDistribution>, DNSimpleError> {
         let path = format!("/{}/zones/{}/distribution", account_id, zone);
 
-        self.client.get::<DistributionEndpoint>(&*path, None)
+        self.client.get::<DistributionEndpoint>(&path, None)
     }
 }

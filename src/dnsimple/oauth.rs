@@ -93,7 +93,7 @@ impl OAuth<'_> {
         let response = self
             .client
             ._agent
-            .post(&*self.client.url(path))
+            .post(&self.client.url(path))
             .send_json(value)
             .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
 
