@@ -1,5 +1,5 @@
 use dnsimple::dnsimple::{new_client, Client};
-use mockito::{mock, Mock};
+use mockito::{Mock, Server};
 use std::fs;
 
 /// Creates a mockserver and a client (changing the url of the client
@@ -24,7 +24,9 @@ pub fn setup_mock_for(path: &str, fixture: &str, method: &str) -> (Client, Mock)
     let status = &content[9..12];
     let body = lines.last();
 
-    let mock = mock(method, path.as_str())
+    let mut server = Server::new();
+    let mock = server
+        .mock(method, path.as_str())
         .with_header("X-RateLimit-Limit", "2")
         .with_header("X-RateLimit-Remaining", "2")
         .with_header("X-RateLimit-Reset", "never")
@@ -33,6 +35,6 @@ pub fn setup_mock_for(path: &str, fixture: &str, method: &str) -> (Client, Mock)
         .create();
 
     let mut client = new_client(true, String::from("some-token"));
-    client.set_base_url(&mockito::server_url());
+    client.set_base_url(&server.url());
     (client, mock)
 }

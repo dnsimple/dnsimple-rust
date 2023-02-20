@@ -60,5 +60,5 @@ fn transport() {
     let response = client.identity().whoami();
     let error = response.unwrap_err();
 
-    assert_eq!("Transport Error - 501(Mock Not Found)", error.to_string());
+    assert_eq!("Transport Error - 501(Not Implemented)", error.to_string());
 }
