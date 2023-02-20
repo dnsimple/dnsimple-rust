@@ -32,7 +32,6 @@ jobs:
           -D clippy::expect_used
           -D clippy::panic
           -D clippy::unwrap_used
-          -A clippy::uninlined_format_args
 
   slack-workflow-status:
     if: always()
