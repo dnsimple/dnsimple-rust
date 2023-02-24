@@ -1,6 +1,6 @@
 use crate::common::setup_mock_for;
 use dnsimple::dnsimple::certificates::{
-    LetsEncryptPurchasePayload, LetsEncryptPurchaseRenewalPayload,
+    LetsEncryptPurchasePayload, LetsEncryptPurchaseRenewalPayload, LetsEncryptSignatureAlgorithm,
 };
 mod common;
 
@@ -151,6 +151,7 @@ fn test_purchase_letsencrypt_certificate() {
         auto_renew: false,
         name: String::from("test-certificate"),
         alternate_names: vec![],
+        signature_algorithm: LetsEncryptSignatureAlgorithm::ECDSA,
     };
 
     let letsencrypt = client
@@ -216,7 +217,7 @@ fn test_purchase_letsencrypt_certificate_renewal() {
     let domain = "example.com";
     let certificate_id = 101967;
 
-    let payload = LetsEncryptPurchaseRenewalPayload { auto_renew: false };
+    let payload = LetsEncryptPurchaseRenewalPayload { auto_renew: false, signature_algorithm: LetsEncryptSignatureAlgorithm::ECDSA };
 
     let letsencrypt_renewal = client
         .certificates()

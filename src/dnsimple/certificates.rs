@@ -93,6 +93,12 @@ pub struct LetsEncryptPurchaseRenewal {
     pub updated_at: String,
 }
 
+#[derive(Debug, Deserialize, Serialize)]
+pub enum LetsEncryptSignatureAlgorithm {
+  ECDSA,
+  RSA,
+}
+
 /// The payload for purchasing a Let's Encrypt Certificate
 #[derive(Debug, Deserialize, Serialize)]
 pub struct LetsEncryptPurchasePayload {
@@ -102,6 +108,8 @@ pub struct LetsEncryptPurchasePayload {
     pub name: String,
     /// The certificate alternate names (i.e. ["docs.example.com", "status.example.com"])
     pub alternate_names: Vec<String>,
+    /// Signature algorithm to be used.
+    pub signature_algorithm: LetsEncryptSignatureAlgorithm,
 }
 
 /// The payload for renewing a Let's Encrypt Certificate
@@ -109,6 +117,8 @@ pub struct LetsEncryptPurchasePayload {
 pub struct LetsEncryptPurchaseRenewalPayload {
     /// Set to true to enable auto-renewal of the certificate
     pub auto_renew: bool,
+    /// Signature algorithm to be used.
+    pub signature_algorithm: LetsEncryptSignatureAlgorithm,
 }
 
 struct ListCertificatesEndpoint;
@@ -281,12 +291,14 @@ impl Certificates<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::{Client, new_client};
     /// use dnsimple::dnsimple::certificates::LetsEncryptPurchasePayload;
+    /// use dnsimple::dnsimple::certificates::LetsEncryptSignatureAlgorithm;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let payload = LetsEncryptPurchasePayload {
     ///     auto_renew: true,
     ///     name: String::from("secret"),
     ///     alternate_names: vec![],
+    ///     signature_algorithm: LetsEncryptSignatureAlgorithm::ECDSA,
     /// };
     /// let purchase = client.certificates().purchase_letsencrypt_certificate(1010, "example.com", payload).unwrap().data.unwrap();
     /// ```
@@ -352,10 +364,12 @@ impl Certificates<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::{Client, new_client};
     /// use dnsimple::dnsimple::certificates::LetsEncryptPurchaseRenewalPayload;
+    /// use dnsimple::dnsimple::certificates::LetsEncryptSignatureAlgorithm;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let payload = LetsEncryptPurchaseRenewalPayload {
     ///     auto_renew: false,
+    ///     signature_algorithm: LetsEncryptSignatureAlgorithm::ECDSA,
     /// };
     /// let issued = client.certificates().purchase_letsencrypt_certificate_renewal(1010, "example.com", 42, payload).unwrap().data.unwrap();
     /// ```
