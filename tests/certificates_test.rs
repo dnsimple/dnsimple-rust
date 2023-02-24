@@ -217,7 +217,10 @@ fn test_purchase_letsencrypt_certificate_renewal() {
     let domain = "example.com";
     let certificate_id = 101967;
 
-    let payload = LetsEncryptPurchaseRenewalPayload { auto_renew: false, signature_algorithm: LetsEncryptSignatureAlgorithm::ECDSA };
+    let payload = LetsEncryptPurchaseRenewalPayload {
+        auto_renew: false,
+        signature_algorithm: LetsEncryptSignatureAlgorithm::ECDSA,
+    };
 
     let letsencrypt_renewal = client
         .certificates()

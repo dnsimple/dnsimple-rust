@@ -95,8 +95,8 @@ pub struct LetsEncryptPurchaseRenewal {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub enum LetsEncryptSignatureAlgorithm {
-  ECDSA,
-  RSA,
+    ECDSA,
+    RSA,
 }
 
 /// The payload for purchasing a Let's Encrypt Certificate
