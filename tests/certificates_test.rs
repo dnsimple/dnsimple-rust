@@ -151,7 +151,7 @@ fn test_purchase_letsencrypt_certificate() {
         auto_renew: false,
         name: String::from("test-certificate"),
         alternate_names: vec![],
-        signature_algorithm: LetsEncryptSignatureAlgorithm::ECDSA,
+        signature_algorithm: Some(LetsEncryptSignatureAlgorithm::ECDSA),
     };
 
     let letsencrypt = client
@@ -219,7 +219,7 @@ fn test_purchase_letsencrypt_certificate_renewal() {
 
     let payload = LetsEncryptPurchaseRenewalPayload {
         auto_renew: false,
-        signature_algorithm: LetsEncryptSignatureAlgorithm::ECDSA,
+        signature_algorithm: Some(LetsEncryptSignatureAlgorithm::ECDSA),
     };
 
     let letsencrypt_renewal = client

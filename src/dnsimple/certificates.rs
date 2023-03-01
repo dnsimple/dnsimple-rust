@@ -109,7 +109,9 @@ pub struct LetsEncryptPurchasePayload {
     /// The certificate alternate names (i.e. ["docs.example.com", "status.example.com"])
     pub alternate_names: Vec<String>,
     /// Signature algorithm to be used.
-    pub signature_algorithm: LetsEncryptSignatureAlgorithm,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
+    pub signature_algorithm: Option<LetsEncryptSignatureAlgorithm>,
 }
 
 /// The payload for renewing a Let's Encrypt Certificate
@@ -118,7 +120,9 @@ pub struct LetsEncryptPurchaseRenewalPayload {
     /// Set to true to enable auto-renewal of the certificate
     pub auto_renew: bool,
     /// Signature algorithm to be used.
-    pub signature_algorithm: LetsEncryptSignatureAlgorithm,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
+    pub signature_algorithm: Option<LetsEncryptSignatureAlgorithm>,
 }
 
 struct ListCertificatesEndpoint;
@@ -298,7 +302,7 @@ impl Certificates<'_> {
     ///     auto_renew: true,
     ///     name: String::from("secret"),
     ///     alternate_names: vec![],
-    ///     signature_algorithm: LetsEncryptSignatureAlgorithm::ECDSA,
+    ///     signature_algorithm: None,
     /// };
     /// let purchase = client.certificates().purchase_letsencrypt_certificate(1010, "example.com", payload).unwrap().data.unwrap();
     /// ```
@@ -369,7 +373,7 @@ impl Certificates<'_> {
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let payload = LetsEncryptPurchaseRenewalPayload {
     ///     auto_renew: false,
-    ///     signature_algorithm: LetsEncryptSignatureAlgorithm::ECDSA,
+    ///     signature_algorithm: None,
     /// };
     /// let issued = client.certificates().purchase_letsencrypt_certificate_renewal(1010, "example.com", 42, payload).unwrap().data.unwrap();
     /// ```
