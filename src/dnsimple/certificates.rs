@@ -295,7 +295,6 @@ impl Certificates<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::{Client, new_client};
     /// use dnsimple::dnsimple::certificates::LetsEncryptPurchasePayload;
-    /// use dnsimple::dnsimple::certificates::LetsEncryptSignatureAlgorithm;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let payload = LetsEncryptPurchasePayload {
@@ -368,7 +367,6 @@ impl Certificates<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::{Client, new_client};
     /// use dnsimple::dnsimple::certificates::LetsEncryptPurchaseRenewalPayload;
-    /// use dnsimple::dnsimple::certificates::LetsEncryptSignatureAlgorithm;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let payload = LetsEncryptPurchaseRenewalPayload {
