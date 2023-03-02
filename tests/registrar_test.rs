@@ -130,14 +130,14 @@ fn test_get_domain_prices_failure() {
 #[test]
 fn test_get_domain_registration() {
     let setup = setup_mock_for(
-        "/1010/registrar/domains/bingo.pizza/registrations/1535",
+        "/1010/registrar/domains/bingo.pizza/registrations/361",
         "getDomainRegistration/success",
         "GET",
     );
     let client = setup.0;
     let account_id = 1010;
     let domain = "bingo.pizza";
-    let domain_registration_id = 1535;
+    let domain_registration_id = 361;
 
     let response = client
         .registrar()
@@ -159,14 +159,14 @@ fn test_get_domain_registration() {
 #[test]
 fn test_get_domain_renewal() {
     let setup = setup_mock_for(
-        "/1010/registrar/domains/bingo.pizza/renewals/1535",
+        "/1010/registrar/domains/bingo.pizza/renewals/1",
         "getDomainRenewal/success",
         "GET",
     );
     let client = setup.0;
     let account_id = 1010;
     let domain = "bingo.pizza";
-    let domain_renewal_id = 1535;
+    let domain_renewal_id = 1;
 
     let response = client
         .registrar()
