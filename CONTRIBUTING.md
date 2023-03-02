@@ -4,10 +4,10 @@
 
 ### 1. Clone the repository
 
-Clone the repository and move into it:
+Clone the repository with submodules and move into it:
 
 ```shell
-git clone git@github.com:dnsimple/dnsimple-rust.git
+git clone --recurse-submodules git@github.com:dnsimple/dnsimple-rust.git
 cd dnsimple-rust
 ```
 
@@ -24,9 +24,9 @@ The following instructions uses `$VERSION` as a placeholder, where `$VERSION` is
     ```rust
     const VERSION: &str = "0.1.0";
     ```
-   
+
 2. Set the version in `Cargo.toml`
- 
+
     ```yaml
     version = "0.1.0"
     ```
@@ -50,9 +50,9 @@ The following instructions uses `$VERSION` as a placeholder, where `$VERSION` is
     git tag -a v$VERSION -s -m "Release $VERSION"
     git push origin --tags
     ```
-   
+
 9. The `release` GitHub action should take it from here and release the package to crates.io
-   
+
 ## Testing
 
 To run the test suite:
