@@ -4,10 +4,10 @@
 
 ### 1. Clone the repository
 
-Clone the repository with submodules and move into it:
+Clone the repository and move into it:
 
 ```shell
-git clone --recurse-submodules git@github.com:dnsimple/dnsimple-rust.git
+git clone git@github.com:dnsimple/dnsimple-rust.git
 cd dnsimple-rust
 ```
 
