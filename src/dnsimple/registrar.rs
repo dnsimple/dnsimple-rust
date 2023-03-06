@@ -276,6 +276,66 @@ impl Registrar<'_> {
         self.client.get::<DomainPricesEndpoint>(&path, None)
     }
 
+    /// Get the details of an existing domain registration.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use dnsimple::dnsimple::new_client;
+    ///
+    /// let client = new_client(true, String::from("AUTH_TOKEN"));
+    /// let domain_check = client.registrar().get_domain_registration(1234, "example.com", 1556).unwrap().data.unwrap();
+    /// ```
+    ///
+    /// # Attributes
+    ///
+    /// `account_id`: The account id
+    /// `domain`: The domain name
+    /// `domain_registration_id`: The domain registration id
+    pub fn get_domain_registration(
+        &self,
+        account_id: u64,
+        domain: &str,
+        domain_registration_id: u64,
+    ) -> Result<DNSimpleResponse<DomainRegistration>, DNSimpleError> {
+        let path = format!(
+            "/{}/registrar/domains/{}/registrations/{}",
+            account_id, domain, domain_registration_id
+        );
+
+        self.client.get::<DomainRegistrationEndpoint>(&path, None)
+    }
+
+    /// Get the details of an existing domain transfer.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use dnsimple::dnsimple::new_client;
+    ///
+    /// let client = new_client(true, String::from("AUTH_TOKEN"));
+    /// let domain_check = client.registrar().get_domain_renewal(1234, "example.com", 1556).unwrap().data.unwrap();
+    /// ```
+    ///
+    /// # Attributes
+    ///
+    /// `account_id`: The account id
+    /// `domain`: The domain name
+    /// `domain_renewal_id`: The domain renewal id
+    pub fn get_domain_renewal(
+        &self,
+        account_id: u64,
+        domain: &str,
+        domain_renewal_id: u64,
+    ) -> Result<DNSimpleResponse<DomainRenewal>, DNSimpleError> {
+        let path = format!(
+            "/{}/registrar/domains/{}/renewals/{}",
+            account_id, domain, domain_renewal_id
+        );
+
+        self.client.get::<DomainRenewalEndpoint>(&path, None)
+    }
+
     /// Get a domain’s price for registration, renewal, and transfer.
     ///
     /// # Examples

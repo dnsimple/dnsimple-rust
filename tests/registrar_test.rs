@@ -128,6 +128,61 @@ fn test_get_domain_prices_failure() {
 }
 
 #[test]
+fn test_get_domain_registration() {
+    let setup = setup_mock_for(
+        "/1010/registrar/domains/bingo.pizza/registrations/361",
+        "getDomainRegistration/success",
+        "GET",
+    );
+    let client = setup.0;
+    let account_id = 1010;
+    let domain = "bingo.pizza";
+    let domain_registration_id = 361;
+
+    let response = client
+        .registrar()
+        .get_domain_registration(account_id, domain, domain_registration_id)
+        .unwrap();
+    let domain_registration = response.data.unwrap();
+
+    assert_eq!(domain_registration.id, 361);
+    assert_eq!(domain_registration.domain_id, 104040);
+    assert_eq!(domain_registration.registrant_id, 2715);
+    assert_eq!(domain_registration.period, 1);
+    assert_eq!(domain_registration.state, "registering");
+    assert_eq!(domain_registration.auto_renew, false);
+    assert_eq!(domain_registration.whois_privacy, false);
+    assert_eq!(domain_registration.created_at, "2023-01-27T17:44:32Z");
+    assert_eq!(domain_registration.updated_at, "2023-01-27T17:44:40Z");
+}
+
+#[test]
+fn test_get_domain_renewal() {
+    let setup = setup_mock_for(
+        "/1010/registrar/domains/bingo.pizza/renewals/1",
+        "getDomainRenewal/success",
+        "GET",
+    );
+    let client = setup.0;
+    let account_id = 1010;
+    let domain = "bingo.pizza";
+    let domain_renewal_id = 1;
+
+    let response = client
+        .registrar()
+        .get_domain_renewal(account_id, domain, domain_renewal_id)
+        .unwrap();
+    let domain_renewal = response.data.unwrap();
+
+    assert_eq!(domain_renewal.id, 1);
+    assert_eq!(domain_renewal.domain_id, 999);
+    assert_eq!(domain_renewal.period, 1);
+    assert_eq!(domain_renewal.state, "renewed");
+    assert_eq!(domain_renewal.created_at, "2016-12-09T19:46:45Z");
+    assert_eq!(domain_renewal.updated_at, "2016-12-12T19:46:45Z");
+}
+
+#[test]
 fn test_register_domain() {
     let setup = setup_mock_for(
         "/1010/registrar/domains/example.com/registrations",
