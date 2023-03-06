@@ -2,10 +2,11 @@
 
 This project uses [Semantic Versioning 2.0.0](http://semver.org/).
 
-## main
+## 0.4.0
 
 - CHANGED: Depedency updates
 - NEW: Support the `signature_algorithm` parameter in Let's Encrypt APIs
+- NEW: Support the `get_domain_registration` and `get_domain_renewal` Registrar APIs
 
 ## 0.3.0
 
