@@ -20,5 +20,5 @@ serde_json = { version = "1.0", features = ["raw_value"] }
 thiserror = "1.0"
 
 [dev-dependencies]
-mockito = "0.32"
+mockito = "1.0"
 assert_matches = "1.5"
