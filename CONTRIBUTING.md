@@ -19,39 +19,33 @@ cd dnsimple-rust
 
 The following instructions uses `$VERSION` as a placeholder, where `$VERSION` is a `MAJOR.MINOR.BUGFIX` release such as `1.2.0`.
 
-1. Set the version in `dnsimple.rs`:
-
-    ```rust
-    const VERSION: &str = "0.1.0";
-    ```
-
-2. Set the version in `Cargo.toml`
+1. Set the version in `Cargo.toml`
 
     ```yaml
     version = "0.1.0"
     ```
 
-4. Run the test suite and ensure all the tests pass.
+1. Run the test suite and ensure all the tests pass.
 
-5. Finalize the `## main` section in `CHANGELOG.md` assigning the version.
+1. Finalize the `## main` section in `CHANGELOG.md` assigning the version.
 
-6. Commit and push the changes
+1. Commit and push the changes
 
     ```shell
     git commit -a -m "Release $VERSION"
     git push origin main
     ```
 
-7. Wait for CI to complete.
+1. Wait for CI to complete.
 
-8. Create a signed tag.
+1. Create a signed tag.
 
     ```shell
     git tag -a v$VERSION -s -m "Release $VERSION"
     git push origin --tags
     ```
 
-9. The `release` GitHub action should take it from here and release the package to crates.io
+1. The `release` GitHub action should take it from here and release the package to crates.io
 
 ## Testing
 

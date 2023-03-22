@@ -42,7 +42,7 @@ pub mod webhooks;
 pub mod zones;
 pub mod zones_records;
 
-const VERSION: &str = "0.4.0";
+const VERSION: &str = env!("CARGO_PKG_VERSION");
 const DEFAULT_USER_AGENT: &str = "dnsimple-rust/";
 
 const API_VERSION: &str = "v2";

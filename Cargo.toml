@@ -10,6 +10,7 @@ repository = "https://github.com/dnsimple/dnsimple-rust"
 keywords = ["DNS", "domain", "management", "automation"]
 categories = ["api-bindings"]
 include = ["src/**/*.rs", "README.md", "LICENSE.txt", "CHANGELOG.md"]
+rust-version = "1.65.0" # We use deps that use let-else statements.
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -20,5 +21,5 @@ serde_json = { version = "1.0", features = ["raw_value"] }
 thiserror = "1.0"
 
 [dev-dependencies]
-mockito = "0.32"
 assert_matches = "1.5"
+mockito = "1.0"
