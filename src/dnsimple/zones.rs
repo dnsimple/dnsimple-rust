@@ -107,7 +107,8 @@ impl Zones<'_> {
     ) -> Result<DNSimpleResponse<Zone>, DNSimpleError> {
         let path = format!("/{}/zones/{}/activation", account_id, zone_name);
 
-        self.client.delete_with_response::<ActivateDnsEndpoint>(&path)
+        self.client
+            .delete_with_response::<ActivateDnsEndpoint>(&path)
     }
 
     /// Lists the zones in the account.

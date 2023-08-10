@@ -3,7 +3,11 @@ mod common;
 
 #[test]
 fn activate_zone_dns_test() {
-    let setup = setup_mock_for("/1010/zones/example.com/activation", "activateZoneService/success", "PUT");
+    let setup = setup_mock_for(
+        "/1010/zones/example.com/activation",
+        "activateZoneService/success",
+        "PUT",
+    );
     let client = setup.0;
     let account_id = 1010;
     let zone = "example.com";
@@ -25,7 +29,11 @@ fn activate_zone_dns_test() {
 
 #[test]
 fn deactivate_zone_dns_test() {
-    let setup = setup_mock_for("/1010/zones/example.com/activation", "deactivateZoneService/success", "DELETE");
+    let setup = setup_mock_for(
+        "/1010/zones/example.com/activation",
+        "deactivateZoneService/success",
+        "DELETE",
+    );
     let client = setup.0;
     let account_id = 1010;
     let zone = "example.com";
