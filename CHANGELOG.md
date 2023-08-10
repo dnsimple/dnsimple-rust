@@ -2,7 +2,9 @@
 
 This project uses [Semantic Versioning 2.0.0](http://semver.org/).
 
-## 0.5.0 (Unreleased)
+## main
+
+## 0.5.0
 
 FEATURES:
 
