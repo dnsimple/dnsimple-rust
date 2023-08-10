@@ -2,6 +2,13 @@
 
 This project uses [Semantic Versioning 2.0.0](http://semver.org/).
 
+## 0.5.0 (Unreleased)
+
+FEATURES:
+
+- NEW: Added `Zones::activate_dns` to activate DNS services (resolution) for a zone. (dnsimple/dnsimple-rust#44)
+- NEW: Added `Zones::deactivate_dns` to deactivate DNS services (resolution) for a zone. (dnsimple/dnsimple-rust#44)
+
 ## 0.4.0
 
 - CHANGED: Depedency updates

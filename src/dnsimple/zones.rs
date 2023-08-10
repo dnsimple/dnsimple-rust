@@ -1,6 +1,7 @@
 use crate::dnsimple::{Client, DNSimpleResponse, Endpoint, RequestOptions};
 use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 
 /// Represents a zone in DNSimple
 #[derive(Debug, Deserialize, Serialize)]
@@ -39,6 +40,18 @@ impl Endpoint for ListZonesEndpoint {
     type Output = Vec<Zone>;
 }
 
+struct ActivateDnsEndpoint;
+
+impl Endpoint for ActivateDnsEndpoint {
+    type Output = Zone;
+}
+
+struct DeactivateDnsEndpoint;
+
+impl Endpoint for DeactivateDnsEndpoint {
+    type Output = Zone;
+}
+
 struct ZoneEndpoint;
 
 impl Endpoint for ZoneEndpoint {
@@ -65,6 +78,39 @@ pub struct Zones<'a> {
 }
 
 impl Zones<'_> {
+    /// Activates DNS resolution for the zone in the account.
+    ///
+    /// # Arguments
+    ///
+    /// `account_id`: The account ID
+    /// `zone_name`: The zone name
+    pub fn activate_dns(
+        &self,
+        account_id: u64,
+        zone_name: &str,
+    ) -> Result<DNSimpleResponse<Zone>, DNSimpleError> {
+        let path = format!("/{}/zones/{}/activation", account_id, zone_name);
+
+        self.client.put::<ActivateDnsEndpoint>(&path, Value::Null)
+    }
+
+    /// Deactivates DNS resolution for the zone in the account.
+    ///
+    /// # Arguments
+    ///
+    /// `account_id`: The account ID
+    /// `zone_name`: The zone name
+    pub fn deactivate_dns(
+        &self,
+        account_id: u64,
+        zone_name: &str,
+    ) -> Result<DNSimpleResponse<Zone>, DNSimpleError> {
+        let path = format!("/{}/zones/{}/activation", account_id, zone_name);
+
+        self.client
+            .delete_with_response::<ActivateDnsEndpoint>(&path)
+    }
+
     /// Lists the zones in the account.
     ///
     /// # Arguments

@@ -2,6 +2,58 @@ use crate::common::setup_mock_for;
 mod common;
 
 #[test]
+fn activate_zone_dns_test() {
+    let setup = setup_mock_for(
+        "/1010/zones/example.com/activation",
+        "activateZoneService/success",
+        "PUT",
+    );
+    let client = setup.0;
+    let account_id = 1010;
+    let zone = "example.com";
+
+    let zone = client
+        .zones()
+        .activate_dns(account_id, zone)
+        .unwrap()
+        .data
+        .unwrap();
+
+    assert_eq!(1, zone.id);
+    assert_eq!(1010, zone.account_id);
+    assert_eq!("example.com", zone.name);
+    assert!(!zone.reverse);
+    assert_eq!("2015-04-23T07:40:03Z", zone.created_at);
+    assert_eq!("2015-04-23T07:40:03Z", zone.updated_at);
+}
+
+#[test]
+fn deactivate_zone_dns_test() {
+    let setup = setup_mock_for(
+        "/1010/zones/example.com/activation",
+        "deactivateZoneService/success",
+        "DELETE",
+    );
+    let client = setup.0;
+    let account_id = 1010;
+    let zone = "example.com";
+
+    let zone = client
+        .zones()
+        .deactivate_dns(account_id, zone)
+        .unwrap()
+        .data
+        .unwrap();
+
+    assert_eq!(1, zone.id);
+    assert_eq!(1010, zone.account_id);
+    assert_eq!("example.com", zone.name);
+    assert!(!zone.reverse);
+    assert_eq!("2015-04-23T07:40:03Z", zone.created_at);
+    assert_eq!("2015-04-23T07:40:03Z", zone.updated_at);
+}
+
+#[test]
 fn list_zones_test() {
     let setup = setup_mock_for("/1010/zones", "listZones/success", "GET");
     let client = setup.0;
