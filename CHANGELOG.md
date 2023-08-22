@@ -4,6 +4,12 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/).
 
 ## main
 
+## 0.5.1 (Unreleased)
+
+FEATURES:
+
+- NEW: Added `Registrar::create_registrant_change` to start a registrant change. (dnsimple/dnsimple-rust#45)
+
 ## 0.5.0
 
 FEATURES:
