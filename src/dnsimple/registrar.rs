@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::dnsimple::tlds::TldExtendedAttribute;
 use crate::dnsimple::{Client, DNSimpleEmptyResponse, DNSimpleResponse, Endpoint};
 use crate::errors::DNSimpleError;
@@ -150,6 +152,31 @@ pub struct DomainRenewal {
     pub updated_at: String,
 }
 
+/// Payload to create a registrant change
+#[derive(Debug, Deserialize, Serialize)]
+pub struct CreateRegistrantChangePayload {
+    pub domain_id: u64,
+    pub contact_id: u64,
+    pub extended_attributes: HashMap<String, String>,
+}
+
+/// Represents a registrant change
+#[derive(Debug, Deserialize, Serialize)]
+pub struct RegistrantChange {
+    pub id: u64,
+    #[serde(rename = "type")]
+    pub typ: String,
+    pub account_id: u64,
+    pub contact_id: u64,
+    pub domain_id: u64,
+    pub state: String,
+    pub extended_attributes: HashMap<String, String>,
+    pub registry_owner_change: bool,
+    pub irt_lock_lifted_by: String,
+    pub created_at: String,
+    pub updated_at: String,
+}
+
 struct DomainCheckEndpoint;
 
 impl Endpoint for DomainCheckEndpoint {
@@ -184,6 +211,12 @@ struct DomainRenewalEndpoint;
 
 impl Endpoint for DomainRenewalEndpoint {
     type Output = DomainRenewal;
+}
+
+struct CreateRegistrantChangeEndpoint;
+
+impl Endpoint for CreateRegistrantChangeEndpoint {
+    type Output = RegistrantChange;
 }
 
 /// The Registrar Service handles the domains registrations of the DNSimple API.
@@ -500,5 +533,22 @@ impl Registrar<'_> {
         );
 
         self.client.empty_post(&path)
+    }
+
+    pub fn create_registrant_change(
+        &self,
+        account_id: u64,
+        payload: CreateRegistrantChangePayload,
+    ) -> Result<DNSimpleResponse<RegistrantChange>, DNSimpleError> {
+        let path = format!("/{}/registrar/registrant_changes", account_id);
+
+        match serde_json::to_value(payload) {
+            Ok(json) => self
+                .client
+                .post::<CreateRegistrantChangeEndpoint>(&path, json),
+            Err(_) => Err(DNSimpleError::Deserialization(String::from(
+                "Cannot deserialize json payload",
+            ))),
+        }
     }
 }
