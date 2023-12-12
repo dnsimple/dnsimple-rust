@@ -14,6 +14,13 @@ pub struct Zone {
     pub name: String,
     /// True if the zone is a reverse zone.
     pub reverse: bool,
+    /// True if the zone is a secondary zone.
+    pub secondary: bool,
+    /// Last time the zone was transferred.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last_transferred_at: Option<String>,
+    /// True if the zone is active.
+    pub active: bool,
     ///  When the zone was created in DNSimple.
     pub created_at: String,
     ///  When the zone was created in DNSimple.
