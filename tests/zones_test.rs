@@ -74,6 +74,9 @@ fn list_zones_test() {
     assert_eq!(1010, zone.account_id);
     assert_eq!("example-alpha.com", zone.name);
     assert!(!zone.reverse);
+    assert!(!zone.secondary);
+    assert!(zone.last_transferred_at.is_none());
+    assert!(zone.active);
     assert_eq!("2015-04-23T07:40:03Z", zone.created_at);
     assert_eq!("2015-04-23T07:40:03Z", zone.updated_at);
 }
@@ -96,6 +99,9 @@ fn get_zone_test() {
     assert_eq!(1010, zone.account_id);
     assert_eq!("example-alpha.com", zone.name);
     assert!(!zone.reverse);
+    assert!(!zone.secondary);
+    assert!(zone.last_transferred_at.is_none());
+    assert!(zone.active);
     assert_eq!("2015-04-23T07:40:03Z", zone.created_at);
     assert_eq!("2015-04-23T07:40:03Z", zone.updated_at);
 }
