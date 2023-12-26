@@ -49,7 +49,7 @@ jobs:
         rust:
           - stable
           - beta
-          - ${{ env.MSRV }}
+          - "${{ env.MSRV }}"
     steps:
     - uses: actions/checkout@v4
     - uses: taiki-e/install-action@protoc
