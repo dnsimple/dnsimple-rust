@@ -4,6 +4,12 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/).
 
 ## main
 
+FEATURES:
+
+- NEW: Added `Registrar::enable_domain_transfer_lock` to enable the domain transfer lock for a domain. (#50)
+- NEW: Added `Registrar::disable_domain_transfer_lock` to disable the domain transfer lock for a domain. (#50)
+- NEW: Added `Registrar::get_domain_transfer_lock` to get the domain transfer lock status for a domain. (#50)
+
 ## 0.6.0
 
 ENHANCEMENTS:
