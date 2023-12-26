@@ -24,6 +24,7 @@ fn test_check_domain() {
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_check_domain_premium_price() {
     let setup = setup_mock_for(
         "/1010/registrar/domains/ruby.codes/premium_price?action=registration",
@@ -45,6 +46,7 @@ fn test_check_domain_premium_price() {
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_check_domain_premium_price_not_a_premium_domain() {
     let setup = setup_mock_for(
         "/1010/registrar/domains/cocotero.love/premium_price?action=registration",
@@ -68,6 +70,7 @@ fn test_check_domain_premium_price_not_a_premium_domain() {
     );
 }
 #[test]
+#[allow(deprecated)]
 fn test_check_domain_premium_price_tld_not_supported() {
     let setup = setup_mock_for(
         "/1010/registrar/domains/.love/premium_price?action=registration",
@@ -150,8 +153,8 @@ fn test_get_domain_registration() {
     assert_eq!(domain_registration.registrant_id, 2715);
     assert_eq!(domain_registration.period, 1);
     assert_eq!(domain_registration.state, "registering");
-    assert_eq!(domain_registration.auto_renew, false);
-    assert_eq!(domain_registration.whois_privacy, false);
+    assert!(!domain_registration.auto_renew);
+    assert!(!domain_registration.whois_privacy);
     assert_eq!(domain_registration.created_at, "2023-01-27T17:44:32Z");
     assert_eq!(domain_registration.updated_at, "2023-01-27T17:44:40Z");
 }

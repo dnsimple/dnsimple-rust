@@ -5,6 +5,7 @@ use dnsimple::dnsimple::certificates::{
 mod common;
 
 #[test]
+#[allow(deprecated)]
 fn test_list_certificates() {
     let setup = setup_mock_for(
         "/1385/domains/example.com/certificates",
@@ -47,6 +48,7 @@ fn test_list_certificates() {
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_get_certificate() {
     let setup = setup_mock_for(
         "/1385/domains/example.com/certificates/101967",
@@ -170,6 +172,7 @@ fn test_purchase_letsencrypt_certificate() {
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_issue_letsencrypt_certificate() {
     let setup = setup_mock_for(
         "/1385/domains/example.com/certificates/letsencrypt/101967/issue",
@@ -239,6 +242,7 @@ fn test_purchase_letsencrypt_certificate_renewal() {
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_issue_letsencrypt_certificate_renewal() {
     let setup = setup_mock_for(
         "/1385/domains/example.com/certificates/letsencrypt/101967/renewals/12121/issue",
