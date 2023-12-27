@@ -33,6 +33,7 @@ pub mod oauth;
 pub mod registrar;
 pub mod registrar_auto_renewal;
 pub mod registrar_name_servers;
+pub mod registrar_registrant_changes;
 pub mod registrar_whois_privacy;
 pub mod services;
 pub mod templates;
@@ -441,6 +442,19 @@ impl Client {
         let rate_limit_reset = Self::extract_rate_limit_reset_header(&resp)?;
 
         let status = resp.status();
+
+        // if the response is empty, we return empty data
+        if resp.status() == 204 {
+            return Ok(DNSimpleResponse {
+                rate_limit,
+                rate_limit_remaining,
+                rate_limit_reset,
+                status,
+                data: None,
+                pagination: None,
+                body: None,
+            });
+        }
 
         let json = resp
             .into_json::<Value>()
