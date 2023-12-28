@@ -33,6 +33,7 @@ pub mod oauth;
 pub mod registrar;
 pub mod registrar_auto_renewal;
 pub mod registrar_name_servers;
+pub mod registrar_transfer_lock;
 pub mod registrar_whois_privacy;
 pub mod services;
 pub mod templates;
