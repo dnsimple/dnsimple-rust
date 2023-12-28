@@ -89,7 +89,7 @@ pub struct DNSimpleResponse<T> {
     pub rate_limit_reset: String,
     /// The HTTP Status Code
     pub status: u16,
-    /// The object or a Vec<T> of objects (the type `T` will depend on the endpoint).
+    /// The object or a `Vec<T>` of objects (the type `T` will depend on the endpoint).
     pub data: Option<T>,
     /// Any API endpoint that returns a list of items requires pagination.
     pub pagination: Option<Pagination>,

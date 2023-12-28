@@ -1,7 +1,7 @@
 [package]
 name = "dnsimple"
 version = "0.6.0"
-authors = ["Enrique Comba Riepenhausen <enrique.comba@dnsimple.com>", "Amelia Aronsohn <amelia.aronsohn@dnsimple.com>"]
+authors = ["DNSimple External Integrations Team <support@dnsimple.com>"]
 edition = "2021"
 description = "The DNSimple API client for Rust."
 readme = "README.md"
@@ -10,7 +10,7 @@ repository = "https://github.com/dnsimple/dnsimple-rust"
 keywords = ["DNS", "domain", "management", "automation"]
 categories = ["api-bindings"]
 include = ["src/**/*.rs", "README.md", "LICENSE.txt", "CHANGELOG.md"]
-rust-version = "1.65.0" # We use deps that use let-else statements.
+rust-version = "1.65.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
