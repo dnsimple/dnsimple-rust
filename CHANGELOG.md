@@ -4,7 +4,6 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/).
 
 ## main
 
-
 FEATURES:
 
 - NEW: Added `Registrar::check_registrant_change` to retrieves the requirements of a registrant change. (#51)
@@ -12,6 +11,10 @@ FEATURES:
 - NEW: Added `Registrar::create_registrant_change` to start registrant change. (#51)
 - NEW: Added `Registrar::list_registrant_changes` to lists the registrant changes for a domain. (#51)
 - NEW: Added `Registrar::delete_registrant_change` to cancel an ongoing registrant change from the account. (#51)
+
+- NEW: Added `Registrar::enable_domain_transfer_lock` to enable the domain transfer lock for a domain. (#50)
+- NEW: Added `Registrar::disable_domain_transfer_lock` to disable the domain transfer lock for a domain. (#50)
+- NEW: Added `Registrar::get_domain_transfer_lock` to get the domain transfer lock status for a domain. (#50)
 
 ## 0.6.0
 
