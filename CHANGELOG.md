@@ -4,6 +4,8 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/).
 
 ## main
 
+## 0.7.0
+
 FEATURES:
 
 - NEW: Added `Registrar::check_registrant_change` to retrieves the requirements of a registrant change. (#51)
