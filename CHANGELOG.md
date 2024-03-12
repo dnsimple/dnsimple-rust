@@ -4,6 +4,9 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/).
 
 ## main
 
+- CHANGED: Drop support for Rust < 1.76
+- CHANGED: Add support for Rust 1.76
+
 ## 0.7.0
 
 FEATURES:
