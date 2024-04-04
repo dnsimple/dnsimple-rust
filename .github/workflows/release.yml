@@ -14,7 +14,7 @@ jobs:
     name: Publish Client
     steps:
       - name: Wait for tests to succeed
-        uses: lewagon/wait-on-check-action@v1.3.3
+        uses: lewagon/wait-on-check-action@v1.3.4
         with:
           ref: 'refs/heads/main'
           running-workflow-name: 'Publish Client'
