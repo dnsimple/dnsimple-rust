@@ -21,8 +21,10 @@ pub struct EmailForward {
     /// The destination email
     pub destination_email: String,
     /// The "local part" of the originating email address. Anything to the left of the @ symbol.
+    #[deprecated]
     pub from: String,
     /// The full email address to forward to.
+    #[deprecated]
     pub to: String,
     ///  When the email forward was created in DNSimple.
     pub created_at: String,
