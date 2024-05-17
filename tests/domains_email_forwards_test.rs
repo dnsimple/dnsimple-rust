@@ -19,16 +19,16 @@ fn test_list_email_forwards() {
         .unwrap();
     let email_forwards_list = response.data.unwrap();
 
-    assert_eq!(2, email_forwards_list.len());
+    assert_eq!(1, email_forwards_list.len());
 
     let email_forwards = email_forwards_list.first().unwrap();
 
-    assert_eq!(17702, email_forwards.id);
-    assert_eq!(228963, email_forwards.domain_id);
+    assert_eq!(24809, email_forwards.id);
+    assert_eq!(235146, email_forwards.domain_id);
     assert_eq!(".*@a-domain.com", email_forwards.from);
     assert_eq!("jane.smith@example.com", email_forwards.to);
-    assert_eq!("2016-02-04T13:59:29Z", email_forwards.created_at);
-    assert_eq!("2016-02-04T13:59:29Z", email_forwards.updated_at);
+    assert_eq!("2017-05-25T19:23:16Z", email_forwards.created_at);
+    assert_eq!("2017-05-25T19:23:16Z", email_forwards.updated_at);
 }
 
 #[test]
