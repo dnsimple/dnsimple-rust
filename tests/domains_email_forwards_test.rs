@@ -31,6 +31,7 @@ fn test_list_email_forwards() {
     assert_eq!("2017-05-25T19:23:16Z", email_forwards.updated_at);
 }
 
+#[allow(deprecated)]
 #[test]
 fn test_create_email_forward() {
     let setup = setup_mock_for(
@@ -63,6 +64,7 @@ fn test_create_email_forward() {
     assert_eq!("example@example.com", record.to);
 }
 
+#[allow(deprecated)]
 #[test]
 fn test_get_email_forward() {
     let setup = setup_mock_for(
