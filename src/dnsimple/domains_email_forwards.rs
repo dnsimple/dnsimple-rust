@@ -21,7 +21,7 @@ pub struct EmailForward {
     /// The destination email
     pub destination_email: String,
     /// The "local part" of the originating email address. Anything to the left of the @ symbol.
-    #[deprecated]
+    #[deprecated(note = "use alias_email instead")]
     pub from: String,
     /// The full email address to forward to.
     #[deprecated]
