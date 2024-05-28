@@ -24,7 +24,7 @@ pub struct EmailForward {
     #[deprecated(note = "use alias_email instead")]
     pub from: String,
     /// The full email address to forward to.
-    #[deprecated]
+    #[deprecated(note = "use destination_email instead")]
     pub to: String,
     ///  When the email forward was created in DNSimple.
     pub created_at: String,
