@@ -67,7 +67,9 @@ impl Domains<'_> {
     /// `domain_id`: The ID of the domain we want to list the collaborators from
     /// `options`: The `RequestOptions`
     ///            - Pagination
-    #[deprecated(note = "`DomainCollaborators` have been deprecated and will be removed in the next major version. Please use our Domain Access Control feature.")]
+    #[deprecated(
+        note = "`DomainCollaborators` have been deprecated and will be removed in the next major version. Please use our Domain Access Control feature."
+    )]
     pub fn list_collaborators(
         &self,
         account_id: u64,
@@ -103,7 +105,9 @@ impl Domains<'_> {
     /// `account_id`: The account ID
     /// `domain_id`: The ID of the domain we want to list the collaborators of
     /// `email`: The email of the collaborator to be added
-    #[deprecated(note = "`DomainCollaborators` have been deprecated and will be removed in the next major version. Please use our Domain Access Control feature.")]
+    #[deprecated(
+        note = "`DomainCollaborators` have been deprecated and will be removed in the next major version. Please use our Domain Access Control feature."
+    )]
     pub fn add_collaborator(
         &self,
         account_id: u64,
@@ -140,7 +144,9 @@ impl Domains<'_> {
     /// `account_id`: The account ID
     /// `domain_id`: The ID of the domain we want to permanently delete
     /// `collaborator_id`: The id of the collaborator we want to remove from the domain
-    #[deprecated(note = "`DomainCollaborators` have been deprecated and will be removed in the next major version. Please use our Domain Access Control feature.")]
+    #[deprecated(
+        note = "`DomainCollaborators` have been deprecated and will be removed in the next major version. Please use our Domain Access Control feature."
+    )]
     pub fn remove_collaborator(
         &self,
         account_id: u64,
