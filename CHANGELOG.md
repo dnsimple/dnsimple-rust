@@ -7,6 +7,7 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/).
 - CHANGED: Deprecated `from` and `to` fields in `EmailForward`
 - CHANGED: Drop support for Rust < 1.83
 - CHANGED: Add support for Rust 1.83
+- CHANGED: `DomainCollaborators` have been deprecated and will be removed in the next major version. Please use our Domain Access Control feature.
 
 ## 1.0.0
 
