@@ -3,3 +3,4 @@ target/
 *.sw[po]
 Cargo.lock
 .idea
+.tool-versions

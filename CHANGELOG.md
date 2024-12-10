@@ -5,6 +5,8 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/).
 ## main
 
 - CHANGED: Deprecated `from` and `to` fields in `EmailForward`
+- CHANGED: Drop support for Rust < 1.83
+- CHANGED: Add support for Rust 1.83
 
 ## 1.0.0
 
