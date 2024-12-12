@@ -2,6 +2,7 @@ use crate::common::setup_mock_for;
 mod common;
 
 #[test]
+#[allow(deprecated)]
 fn test_list_collaborators() {
     let setup = setup_mock_for(
         "/1385/domains/1/collaborators",
@@ -40,6 +41,7 @@ fn test_list_collaborators() {
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_add_collaborator_success() {
     let setup = setup_mock_for(
         "/1385/domains/1/collaborators",
@@ -72,6 +74,7 @@ fn test_add_collaborator_success() {
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_add_collaborator_invite_success() {
     let setup = setup_mock_for(
         "/1385/domains/1/collaborators",
@@ -102,6 +105,7 @@ fn test_add_collaborator_invite_success() {
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_remove_collaborator() {
     let setup = setup_mock_for(
         "/1385/domains/1/collaborators/100",
