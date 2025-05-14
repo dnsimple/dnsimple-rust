@@ -13,7 +13,7 @@ A Rust client for the [DNSimple API v2](https://developer.dnsimple.com/v2/).
 
 ## Requirements
 
-- Rust: 1.83+
+- Rust: 1.86+
 
 ## Usage
 
@@ -49,4 +49,4 @@ Contibutions are welcomed. Please open an issue to discuss the changes before op
 
 ## License
 
-Copyright (c) 2015-2024 DNSimple Corporation. This is Free Software distributed under the MIT license.
+Copyright (c) 2015-2025 DNSimple Corporation. This is Free Software distributed under the MIT license.
