@@ -13,7 +13,7 @@ A Rust client for the [DNSimple API v2](https://developer.dnsimple.com/v2/).
 
 ## Requirements
 
-- Rust: 1.83+
+- Rust: 1.86+
 
 ## Usage
 
