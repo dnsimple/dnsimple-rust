@@ -23,4 +23,4 @@ thiserror = "2.0"
 [dev-dependencies]
 assert_matches = "1.5"
 mockito = "= 1.6.1"
-colored = "= 2.1.0"
+colored = "= 3.0.0"
