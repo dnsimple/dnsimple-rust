@@ -23,7 +23,6 @@ pub mod accounts;
 pub mod certificates;
 pub mod contacts;
 pub mod domains;
-pub mod domains_collaborators;
 pub mod domains_dnssec;
 pub mod domains_email_forwards;
 pub mod domains_push;
