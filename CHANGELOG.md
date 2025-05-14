@@ -4,6 +4,8 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/).
 
 ## main
 
+## 3.0.0
+
 - CHANGED: `DomainCollaborators` have been removed. Please use our Domain Access Control feature.
 - CHANGED: Drop support for Rust < 1.86
 - CHANGED: Add support for Rust 1.86
