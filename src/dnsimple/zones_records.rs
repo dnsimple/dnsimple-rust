@@ -65,6 +65,7 @@ pub struct ZoneRecordUpdatePayload {
     /// The priority value, if the type of record accepts a priority.
     pub priority: Option<u64>,
     /// The regions where the record is propagated. This is optional.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub regions: Option<Vec<String>>,
 }
 
