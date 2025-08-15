@@ -23,8 +23,8 @@ fn activate_zone_dns_test() {
     assert_eq!(1010, zone.account_id);
     assert_eq!("example.com", zone.name);
     assert!(!zone.reverse);
-    assert_eq!("2015-04-23T07:40:03Z", zone.created_at);
-    assert_eq!("2015-04-23T07:40:03Z", zone.updated_at);
+    assert_eq!("2022-09-28T04:45:24Z", zone.created_at);
+    assert_eq!("2023-07-06T11:19:48Z", zone.updated_at);
 }
 
 #[test]
@@ -49,8 +49,8 @@ fn deactivate_zone_dns_test() {
     assert_eq!(1010, zone.account_id);
     assert_eq!("example.com", zone.name);
     assert!(!zone.reverse);
-    assert_eq!("2015-04-23T07:40:03Z", zone.created_at);
-    assert_eq!("2015-04-23T07:40:03Z", zone.updated_at);
+    assert_eq!("2022-09-28T04:45:24Z", zone.created_at);
+    assert_eq!("2023-08-08T04:19:52Z", zone.updated_at);
 }
 
 #[test]

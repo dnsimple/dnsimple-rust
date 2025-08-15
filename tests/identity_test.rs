@@ -12,7 +12,7 @@ fn whoami_success_with_account() {
 
     assert_eq!(1, account.id);
     assert_eq!("example-account@example.com", account.email);
-    assert_eq!("dnsimple-professional", account.plan_identifier);
+    assert_eq!("teams-v1-monthly", account.plan_identifier);
 }
 
 #[test]
