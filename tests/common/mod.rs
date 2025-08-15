@@ -20,7 +20,7 @@ pub fn setup_mock_for(path: &str, fixture: &str, method: &str) -> (Client, Serve
     let content =
         fs::read_to_string(fixture.as_str()).expect("Something went wrong: Couldn't read the file");
 
-    let lines = content.lines().filter(|l| !l.trim().is_empty());
+    let lines = content.trim_end().lines();
     let status = &content[9..12];
     let body = lines.last();
 
