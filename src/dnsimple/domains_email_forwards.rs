@@ -26,6 +26,8 @@ pub struct EmailForward {
     /// The full email address to forward to.
     #[deprecated(note = "use destination_email instead")]
     pub to: String,
+    /// Whether the email forward is active
+    pub active: bool,
     ///  When the email forward was created in DNSimple.
     pub created_at: String,
     /// Then the email forward was last updated in DNSimple.
@@ -43,6 +45,8 @@ pub struct EmailForwardsInList {
     pub from: String,
     /// The full email address to forward to.
     pub to: String,
+    /// Whether the email forward is active
+    pub active: bool,
     ///  When the email forward was created in DNSimple.
     pub created_at: String,
     /// Then the email forward was last updated in DNSimple.
