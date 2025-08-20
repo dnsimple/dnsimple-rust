@@ -20,12 +20,6 @@ pub struct EmailForward {
     pub alias_email: String,
     /// The destination email
     pub destination_email: String,
-    /// The "local part" of the originating email address. Anything to the left of the @ symbol.
-    #[deprecated(note = "use alias_email instead")]
-    pub from: String,
-    /// The full email address to forward to.
-    #[deprecated(note = "use destination_email instead")]
-    pub to: String,
     /// Whether the email forward is active
     pub active: bool,
     ///  When the email forward was created in DNSimple.
@@ -42,9 +36,9 @@ pub struct EmailForwardsInList {
     /// The domain id
     pub domain_id: u64,
     /// The "local part" of the originating email address. Anything to the left of the @ symbol.
-    pub from: String,
+    pub alias_email: String,
     /// The full email address to forward to.
-    pub to: String,
+    pub destination_email: String,
     /// Whether the email forward is active
     pub active: bool,
     ///  When the email forward was created in DNSimple.

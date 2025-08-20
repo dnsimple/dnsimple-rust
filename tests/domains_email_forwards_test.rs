@@ -25,8 +25,8 @@ fn test_list_email_forwards() {
 
     assert_eq!(24809, email_forwards.id);
     assert_eq!(235146, email_forwards.domain_id);
-    assert_eq!(".*@a-domain.com", email_forwards.from);
-    assert_eq!("jane.smith@example.com", email_forwards.to);
+    assert_eq!(".*@a-domain.com", email_forwards.alias_email);
+    assert_eq!("jane.smith@example.com", email_forwards.destination_email);
     assert_eq!("2017-05-25T19:23:16Z", email_forwards.created_at);
     assert_eq!("2017-05-25T19:23:16Z", email_forwards.updated_at);
     assert!(email_forwards.active);
@@ -61,8 +61,6 @@ fn test_create_email_forward() {
     assert_eq!("example@example.com", record.destination_email);
     assert_eq!("2021-01-25T13:54:40Z", record.created_at);
     assert_eq!("2021-01-25T13:54:40Z", record.updated_at);
-    assert_eq!("example@dnsimple.xyz", record.from);
-    assert_eq!("example@example.com", record.to);
     assert!(record.active);
 }
 
@@ -92,8 +90,6 @@ fn test_get_email_forward() {
     assert_eq!("example@example.com", record.destination_email);
     assert_eq!("2021-01-25T13:54:40Z", record.created_at);
     assert_eq!("2021-01-25T13:54:40Z", record.updated_at);
-    assert_eq!("example@dnsimple.xyz", record.from);
-    assert_eq!("example@example.com", record.to);
     assert!(record.active);
 }
 
