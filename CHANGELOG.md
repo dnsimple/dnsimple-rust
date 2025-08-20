@@ -4,6 +4,12 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/).
 
 ## main
 
+## 4.0.0
+
+- CHANGED: Removed `from` and `to` fields in `EmailForward`. Please use `alias_email` and `destination_email` instead.
+- NEW: Added `active` to `EmailForward`.
+- FIX: Skip serializing regions in ZoneRecordPayload if None (dnsimple/dnsimple-rust#67)
+
 ## 3.0.0
 
 - CHANGED: `DomainCollaborators` have been removed. Please use our Domain Access Control feature.
