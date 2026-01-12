@@ -4,6 +4,8 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/).
 
 ## main
 
+- REMOVED: Removed deprecated `check_domain_premium_price`. Use `get_domain_prices` instead.
+
 ## 4.0.0 - 2025-08-20
 
 - CHANGED: Removed `from` and `to` fields in `EmailForward`. Please use `alias_email` and `destination_email` instead.

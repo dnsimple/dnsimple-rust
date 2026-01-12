@@ -14,15 +14,6 @@ pub struct DomainCheck {
     pub premium: bool,
 }
 
-/// Represents a domain premium price
-#[derive(Debug, Deserialize, Serialize)]
-pub struct DomainPremiumPrice {
-    /// The domain premium price
-    pub premium_price: String,
-    /// The action: registration/transfer/renewal
-    pub action: String,
-}
-
 /// Represents the domain prices
 #[derive(Debug, Deserialize, Serialize)]
 pub struct DomainPrice {
@@ -156,12 +147,6 @@ impl Endpoint for DomainCheckEndpoint {
     type Output = DomainCheck;
 }
 
-struct DomainPremiumPriceEndpoint;
-
-impl Endpoint for DomainPremiumPriceEndpoint {
-    type Output = DomainPremiumPrice;
-}
-
 struct DomainPricesEndpoint;
 
 impl Endpoint for DomainPricesEndpoint {
@@ -219,39 +204,7 @@ impl Registrar<'_> {
         self.client.get::<DomainCheckEndpoint>(&path, None)
     }
 
-    /// Get the premium price for a domain.
-    ///
-    /// # Examples
-    ///
-    /// ```no_run
-    /// use dnsimple::dnsimple::new_client;
-    ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let domain_check = client.registrar().check_domain_premium_price(1234, "example.com", None).unwrap().data.unwrap();
-    /// ```
-    ///
-    /// # Attributes
-    ///
-    /// `account_id`: The account id
-    /// `domain`: The domain name
-    #[deprecated(note = "please use `get_domain_prices` instead")]
-    pub fn check_domain_premium_price(
-        &self,
-        account_id: u64,
-        domain: &str,
-        action: Option<String>,
-    ) -> Result<DNSimpleResponse<DomainPremiumPrice>, DNSimpleError> {
-        let path = format!(
-            "/{}/registrar/domains/{}/premium_price?action={}",
-            account_id,
-            domain,
-            action.unwrap_or_else(|| "registration".into())
-        );
-
-        self.client.get::<DomainPremiumPriceEndpoint>(&path, None)
-    }
-
-    /// Get a domain’s price for registration, renewal, and transfer.
+    /// Get a domain's price for registration, renewal, and transfer.
     ///
     /// # Examples
     ///
