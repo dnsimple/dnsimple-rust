@@ -45,8 +45,12 @@ Production tokens will *not* work in the sandbox environment.
 
 ## Contributing
 
-Contibutions are welcomed. Please open an issue to discuss the changes before opening a PR. For more details on how to do development please refer to [CONTRIBUTING.md](CONTRIBUTING.md)
+Contributions are welcome! Please feel free to submit issues and pull requests. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ## License
 
-Copyright (c) 2015-2025 DNSimple Corporation. This is Free Software distributed under the MIT license.
+Copyright (c) 2021-2026 DNSimple Corporation. This is Free Software distributed under the [MIT License](LICENSE.txt).
