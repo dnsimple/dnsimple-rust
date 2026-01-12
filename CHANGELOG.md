@@ -4,13 +4,13 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/).
 
 ## main
 
-## 4.0.0
+## 4.0.0 - 2025-08-20
 
 - CHANGED: Removed `from` and `to` fields in `EmailForward`. Please use `alias_email` and `destination_email` instead.
 - NEW: Added `active` to `EmailForward`.
 - FIX: Skip serializing regions in ZoneRecordPayload if None (dnsimple/dnsimple-rust#67)
 
-## 3.0.0
+## 3.0.0 - 2025-05-14
 
 - CHANGED: `DomainCollaborators` have been removed. Please use our Domain Access Control feature.
 - CHANGED: Drop support for Rust < 1.86
