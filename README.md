@@ -53,4 +53,4 @@ See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ## License
 
-Copyright (c) 2015-2024 DNSimple Corporation. This is Free Software distributed under the MIT license.
+Copyright (c) 2021-2026 DNSimple Corporation. This is Free Software distributed under the [MIT License](LICENSE.txt).
