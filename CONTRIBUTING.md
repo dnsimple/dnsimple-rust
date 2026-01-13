@@ -2,16 +2,12 @@
 
 ## Getting started
 
-### 1. Clone the repository
-
 Clone the repository and move into it:
 
 ```shell
 git clone git@github.com:dnsimple/dnsimple-rust.git
 cd dnsimple-rust
 ```
-
-### 2. Build and test
 
 [Run the test suite](#testing) to check everything works as expected.
 
@@ -27,8 +23,6 @@ To run the test suite:
 cargo test
 ```
 
-## Tests
-
-Submit unit tests for your changes. You can test your changes on your machine by [running the test suite](#testing).
+Submit unit tests for your changes. You can test your changes on your machine by running the test suite.
 
 When you submit a PR, tests will also be run on the [continuous integration environment via GitHub Actions](https://github.com/dnsimple/dnsimple-rust/actions).
