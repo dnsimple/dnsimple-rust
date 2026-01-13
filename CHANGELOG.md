@@ -4,6 +4,9 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/).
 
 ## main
 
+- REMOVED: Removed deprecated `get_whois_privacy` (dnsimple/dnsimple-developer#919)
+- REMOVED: Removed deprecated `renew_whois_privacy` (dnsimple/dnsimple-developer#919)
+
 ## 4.0.0 - 2025-08-20
 
 - CHANGED: Removed `from` and `to` fields in `EmailForward`. Please use `alias_email` and `destination_email` instead.
