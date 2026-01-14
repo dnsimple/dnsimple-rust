@@ -1,8 +1,10 @@
+---
 name: CI
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
     tags:
       - v*.*.*
   pull_request:
@@ -21,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: ${{ env.MSRV }}
@@ -35,7 +37,7 @@ jobs:
   check-docs:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: dtolnay/rust-toolchain@stable
     - uses: Swatinem/rust-cache@v2
     - name: cargo doc
@@ -52,7 +54,7 @@ jobs:
           - stable
           - '1.86'
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: taiki-e/install-action@protoc
     - uses: dtolnay/rust-toolchain@master
       with:
@@ -65,7 +67,7 @@ jobs:
     needs: check
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: dtolnay/rust-toolchain@stable
     - uses: Swatinem/rust-cache@v2
     - name: Run doc tests
