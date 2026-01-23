@@ -186,22 +186,25 @@ impl Registrar<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let domain_check = client.registrar().check_domain(1234, "example.com").unwrap().data.unwrap();
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let domain_check = client.registrar().check_domain(1234, "example.com").await.unwrap().data.unwrap();
+    /// }
     /// ```
     ///
     /// # Attributes
     ///
     /// `account_id`: The account id
     /// `domain`: The domain name
-    pub fn check_domain(
+    pub async fn check_domain(
         &self,
         account_id: u64,
         domain: &str,
     ) -> Result<DNSimpleResponse<DomainCheck>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/check", account_id, domain);
 
-        self.client.get::<DomainCheckEndpoint>(&path, None)
+        self.client.get::<DomainCheckEndpoint>(&path, None).await
     }
 
     /// Get a domain's price for registration, renewal, and transfer.
@@ -211,22 +214,25 @@ impl Registrar<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let domain_check = client.registrar().get_domain_prices(1234, "example.com").unwrap().data.unwrap();
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let domain_check = client.registrar().get_domain_prices(1234, "example.com").await.unwrap().data.unwrap();
+    /// }
     /// ```
     ///
     /// # Attributes
     ///
     /// `account_id`: The account id
     /// `domain`: The domain name
-    pub fn get_domain_prices(
+    pub async fn get_domain_prices(
         &self,
         account_id: u64,
         domain: &str,
     ) -> Result<DNSimpleResponse<DomainPrice>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/prices", account_id, domain);
 
-        self.client.get::<DomainPricesEndpoint>(&path, None)
+        self.client.get::<DomainPricesEndpoint>(&path, None).await
     }
 
     /// Get the details of an existing domain registration.
@@ -236,8 +242,11 @@ impl Registrar<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let domain_check = client.registrar().get_domain_registration(1234, "example.com", 1556).unwrap().data.unwrap();
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let domain_check = client.registrar().get_domain_registration(1234, "example.com", 1556).await.unwrap().data.unwrap();
+    /// }
     /// ```
     ///
     /// # Attributes
@@ -245,7 +254,7 @@ impl Registrar<'_> {
     /// `account_id`: The account id
     /// `domain`: The domain name
     /// `domain_registration_id`: The domain registration id
-    pub fn get_domain_registration(
+    pub async fn get_domain_registration(
         &self,
         account_id: u64,
         domain: &str,
@@ -256,7 +265,9 @@ impl Registrar<'_> {
             account_id, domain, domain_registration_id
         );
 
-        self.client.get::<DomainRegistrationEndpoint>(&path, None)
+        self.client
+            .get::<DomainRegistrationEndpoint>(&path, None)
+            .await
     }
 
     /// Get the details of an existing domain transfer.
@@ -266,8 +277,11 @@ impl Registrar<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let domain_check = client.registrar().get_domain_renewal(1234, "example.com", 1556).unwrap().data.unwrap();
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let domain_check = client.registrar().get_domain_renewal(1234, "example.com", 1556).await.unwrap().data.unwrap();
+    /// }
     /// ```
     ///
     /// # Attributes
@@ -275,7 +289,7 @@ impl Registrar<'_> {
     /// `account_id`: The account id
     /// `domain`: The domain name
     /// `domain_renewal_id`: The domain renewal id
-    pub fn get_domain_renewal(
+    pub async fn get_domain_renewal(
         &self,
         account_id: u64,
         domain: &str,
@@ -286,10 +300,10 @@ impl Registrar<'_> {
             account_id, domain, domain_renewal_id
         );
 
-        self.client.get::<DomainRenewalEndpoint>(&path, None)
+        self.client.get::<DomainRenewalEndpoint>(&path, None).await
     }
 
-    /// Get a domain’s price for registration, renewal, and transfer.
+    /// Get a domain's price for registration, renewal, and transfer.
     ///
     /// # Examples
     ///
@@ -297,15 +311,18 @@ impl Registrar<'_> {
     /// use dnsimple::dnsimple::new_client;
     /// use dnsimple::dnsimple::registrar::DomainRegistrationPayload;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let payload = DomainRegistrationPayload {
-    ///     registrant_id: 42,
-    ///     whois_privacy: None,
-    ///     auto_renew: None,
-    ///     extended_attributes: None,
-    ///     premium_price: None,
-    /// };
-    /// let domain_check = client.registrar().register_domain(1234, "example.com", payload).unwrap().data.unwrap();
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let payload = DomainRegistrationPayload {
+    ///         registrant_id: 42,
+    ///         whois_privacy: None,
+    ///         auto_renew: None,
+    ///         extended_attributes: None,
+    ///         premium_price: None,
+    ///     };
+    ///     let domain_check = client.registrar().register_domain(1234, "example.com", payload).await.unwrap().data.unwrap();
+    /// }
     /// ```
     ///
     /// # Attributes
@@ -313,7 +330,7 @@ impl Registrar<'_> {
     /// `account_id`: The account id
     /// `domain`: The domain name
     /// `payload`: The `DomainRegistrationPayload` with the information needed to register the domain
-    pub fn register_domain(
+    pub async fn register_domain(
         &self,
         account_id: u64,
         domain: &str,
@@ -322,7 +339,11 @@ impl Registrar<'_> {
         let path = format!("/{}/registrar/domains/{}/registrations", account_id, domain);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<DomainRegistrationEndpoint>(&path, json),
+            Ok(json) => {
+                self.client
+                    .post::<DomainRegistrationEndpoint>(&path, json)
+                    .await
+            }
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -337,16 +358,19 @@ impl Registrar<'_> {
     /// use dnsimple::dnsimple::new_client;
     /// use dnsimple::dnsimple::registrar::DomainTransferPayload;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let payload = DomainTransferPayload {
-    ///     registrant_id: 42,
-    ///     auth_code: "Some code".to_string(),
-    ///     whois_privacy: None,
-    ///     auto_renew: None,
-    ///     extended_attributes: None,
-    ///     premium_price: None,
-    /// };
-    /// let domain_transfer = client.registrar().transfer_domain(1234, "example.com", payload).unwrap().data.unwrap();
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let payload = DomainTransferPayload {
+    ///         registrant_id: 42,
+    ///         auth_code: "Some code".to_string(),
+    ///         whois_privacy: None,
+    ///         auto_renew: None,
+    ///         extended_attributes: None,
+    ///         premium_price: None,
+    ///     };
+    ///     let domain_transfer = client.registrar().transfer_domain(1234, "example.com", payload).await.unwrap().data.unwrap();
+    /// }
     /// ```
     ///
     /// # Attributes
@@ -354,7 +378,7 @@ impl Registrar<'_> {
     /// `account_id`: The account id
     /// `domain`: The domain name
     /// `payload`: The `DomainTransferPayload` with the information needed to transfer the domain
-    pub fn transfer_domain(
+    pub async fn transfer_domain(
         &self,
         account_id: u64,
         domain: &str,
@@ -363,7 +387,11 @@ impl Registrar<'_> {
         let path = format!("/{}/registrar/domains/{}/transfers", account_id, domain);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<DomainTransferEndpoint>(&path, json),
+            Ok(json) => {
+                self.client
+                    .post::<DomainTransferEndpoint>(&path, json)
+                    .await
+            }
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -377,7 +405,7 @@ impl Registrar<'_> {
     /// `account_id`: The account id
     /// `domain`: The domain name
     /// `domain_transfer`: The domain transfer id
-    pub fn get_domain_transfer(
+    pub async fn get_domain_transfer(
         &self,
         account_id: u64,
         domain: String,
@@ -388,7 +416,7 @@ impl Registrar<'_> {
             account_id, domain, domain_transfer
         );
 
-        self.client.get::<DomainTransferEndpoint>(&path, None)
+        self.client.get::<DomainTransferEndpoint>(&path, None).await
     }
 
     /// Cancels an in progress domain transfer.
@@ -398,7 +426,7 @@ impl Registrar<'_> {
     /// `account_id`: The account id
     /// `domain`: The domain name
     /// `domain_transfer`: The domain transfer id
-    pub fn cancel_domain_transfer(
+    pub async fn cancel_domain_transfer(
         &self,
         account_id: u64,
         domain: String,
@@ -411,16 +439,17 @@ impl Registrar<'_> {
 
         self.client
             .delete_with_response::<DomainTransferEndpoint>(&path)
+            .await
     }
 
-    /// Get a domain’s price for registration, renewal, and transfer.
+    /// Get a domain's price for registration, renewal, and transfer.
     ///
     /// # Attributes
     ///
     /// `account_id`: The account id
     /// `domain`: The domain name
     /// `payload`: The `DomainRenewalPayload` with the information needed to renew the domain
-    pub fn renew_domain(
+    pub async fn renew_domain(
         &self,
         account_id: u64,
         domain: String,
@@ -429,7 +458,7 @@ impl Registrar<'_> {
         let path = format!("/{}/registrar/domains/{}/renewals", account_id, domain);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<DomainRenewalEndpoint>(&path, json),
+            Ok(json) => self.client.post::<DomainRenewalEndpoint>(&path, json).await,
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -442,7 +471,7 @@ impl Registrar<'_> {
     ///
     /// `account_id`: The account id
     /// `domain`: The domain name
-    pub fn transfer_domain_out(
+    pub async fn transfer_domain_out(
         &self,
         account_id: u64,
         domain: String,
@@ -452,6 +481,6 @@ impl Registrar<'_> {
             account_id, domain
         );
 
-        self.client.empty_post(&path)
+        self.client.empty_post(&path).await
     }
 }

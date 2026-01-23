@@ -22,13 +22,16 @@ impl Accounts<'_> {
     ///
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
     ///
-    /// let response = client.accounts().list_accounts().unwrap();
-    /// let accounts = response.data.unwrap();
-    /// let first_account = accounts.first().unwrap();
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let response = client.accounts().list_accounts().await.unwrap();
+    ///     let accounts = response.data.unwrap();
+    ///     let first_account = accounts.first().unwrap();
+    /// }
     /// ```
-    pub fn list_accounts(&self) -> Result<DNSimpleResponse<Vec<Account>>, DNSimpleError> {
-        self.client.get::<AccountsEndpoint>("/accounts", None)
+    pub async fn list_accounts(&self) -> Result<DNSimpleResponse<Vec<Account>>, DNSimpleError> {
+        self.client.get::<AccountsEndpoint>("/accounts", None).await
     }
 }

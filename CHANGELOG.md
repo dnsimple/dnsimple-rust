@@ -4,6 +4,10 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/), the format is
 
 ## Unreleased
 
+### Changed
+
+- Migrated from `ureq` to `reqwest` with async support. All API methods are now async and require `.await` (#42, #76)
+
 ### Fixed
 
 - Fixed `deactivate_dns` using incorrect endpoint type
@@ -28,7 +32,7 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/), the format is
 
 ### Fixed
 
-- Skip serializing regions in ZoneRecordPayload if None (dnsimple/dnsimple-rust#67)
+- Skip serializing regions in ZoneRecordPayload if None (#67)
 
 ## 3.0.0 - 2025-05-14
 
@@ -71,14 +75,14 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/), the format is
 
 ### Added
 
-- Added `secondary`, `last_transferred_at`, `active` to `Zone` (dnsimple/dnsimple-rust#47)
+- Added `secondary`, `last_transferred_at`, `active` to `Zone` (#47)
 
 ## 0.5.0 - 2023-08-10
 
 ### Added
 
-- Added `Zones::activate_dns` to activate DNS services (resolution) for a zone. (dnsimple/dnsimple-rust#44)
-- Added `Zones::deactivate_dns` to deactivate DNS services (resolution) for a zone. (dnsimple/dnsimple-rust#44)
+- Added `Zones::activate_dns` to activate DNS services (resolution) for a zone. (#44)
+- Added `Zones::deactivate_dns` to deactivate DNS services (resolution) for a zone. (#44)
 
 ## 0.4.0 - 2023-03-06
 
@@ -95,19 +99,19 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/), the format is
 
 ### Changed
 
-- Sets Edition to 2021 (dnsimple/dnsimple-rust#34)
-- Update Ureq dependency to 2.6 (dnsimple/dnsimple-rust#34)
+- Sets Edition to 2021 (#34)
+- Update Ureq dependency to 2.6 (#34)
 
 ### Fixed
 
-- Fix serialized name of ZoneRecordPayload::record_type (dnsimple/dnsimple-rust#32)
-- Fix Clippy Lint explicit_auto_deref (dnsimple/dnsimple-rust#33)
+- Fix serialized name of ZoneRecordPayload::record_type (#32)
+- Fix Clippy Lint explicit_auto_deref (#33)
 
 ## 0.2.1 - 2022-09-21
 
 ### Changed
 
-- Expose specific model errors on validation error (dnsimple/dnsimple-rust#27)
+- Expose specific model errors on validation error (#27)
 
 ## 0.2.0 - 2022-06-15
 
@@ -118,7 +122,7 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/), the format is
 
 ### Deprecated
 
-- Deprecate Certificate's `contact_id` (dnsimple/dnsimple-rust#23)
+- Deprecate Certificate's `contact_id` (#23)
 
 ## 0.1.3 - 2022-01-26
 
