@@ -189,7 +189,10 @@ async fn check_zone_distribution_error() {
     let account_id = 1010;
     let zone = "example.com";
 
-    let response = client.zones().check_zone_distribution(account_id, zone).await;
+    let response = client
+        .zones()
+        .check_zone_distribution(account_id, zone)
+        .await;
 
     assert_eq!(
         "Could not query zone, connection timed out",

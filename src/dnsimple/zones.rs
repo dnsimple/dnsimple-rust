@@ -98,7 +98,9 @@ impl Zones<'_> {
     ) -> Result<DNSimpleResponse<Zone>, DNSimpleError> {
         let path = format!("/{}/zones/{}/activation", account_id, zone_name);
 
-        self.client.put::<ActivateDnsEndpoint>(&path, Value::Null).await
+        self.client
+            .put::<ActivateDnsEndpoint>(&path, Value::Null)
+            .await
     }
 
     /// Deactivates DNS resolution for the zone in the account.

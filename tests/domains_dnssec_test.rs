@@ -13,7 +13,11 @@ async fn test_enable_dnssec() {
     let account_id = 1385_u64;
     let domain = "example.com";
 
-    let response = client.domains().enable_dnssec(account_id, domain).await.unwrap();
+    let response = client
+        .domains()
+        .enable_dnssec(account_id, domain)
+        .await
+        .unwrap();
     let dnssec = response.data.unwrap();
 
     assert_eq!(response.status, 201);
@@ -53,7 +57,11 @@ async fn test_dnssec_status() {
     let account_id = 1385_u64;
     let domain = "example.com";
 
-    let response = client.domains().get_dnssec(account_id, domain).await.unwrap();
+    let response = client
+        .domains()
+        .get_dnssec(account_id, domain)
+        .await
+        .unwrap();
     let dnssec = response.data.unwrap();
 
     assert_eq!(response.status, 200);

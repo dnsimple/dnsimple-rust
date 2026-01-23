@@ -61,7 +61,10 @@ async fn delete_webhook_test() {
     let account_id = 1010;
     let webhook_id = String::from("1");
 
-    let response = client.webhooks().delete_webhook(account_id, webhook_id).await;
+    let response = client
+        .webhooks()
+        .delete_webhook(account_id, webhook_id)
+        .await;
 
     assert!(response.is_ok());
     assert_eq!(204, response.unwrap().status);

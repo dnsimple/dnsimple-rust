@@ -6,7 +6,13 @@ async fn list_services_test() {
     let setup = setup_mock_for("/services", "listServices/success", "GET").await;
     let client = setup.0;
 
-    let services = client.services().list_services(None).await.unwrap().data.unwrap();
+    let services = client
+        .services()
+        .list_services(None)
+        .await
+        .unwrap()
+        .data
+        .unwrap();
 
     assert_eq!(2, services.len());
 
@@ -112,11 +118,10 @@ async fn apply_service_test() {
     let domain = "example.com";
     let service = "wordpress";
 
-    let response =
-        client
-            .services()
-            .apply_service(account_id, String::from(domain), String::from(service))
-            .await;
+    let response = client
+        .services()
+        .apply_service(account_id, String::from(domain), String::from(service))
+        .await;
 
     assert!(response.is_ok());
     assert_eq!(204, response.unwrap().status);
@@ -135,11 +140,10 @@ async fn unapply_service_test() {
     let domain = "example.com";
     let service = "wordpress";
 
-    let response =
-        client
-            .services()
-            .unapply_service(account_id, String::from(domain), String::from(service))
-            .await;
+    let response = client
+        .services()
+        .unapply_service(account_id, String::from(domain), String::from(service))
+        .await;
 
     assert!(response.is_ok());
     assert_eq!(204, response.unwrap().status);

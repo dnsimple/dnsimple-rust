@@ -161,12 +161,10 @@ async fn test_delete_delegation_signer_record() {
     let domain = "example.com";
     let delegation_signer_record_id = 24;
 
-    let response = client.domains().delete_delegation_signer_record(
-        account_id,
-        domain,
-        delegation_signer_record_id,
-    )
-    .await;
+    let response = client
+        .domains()
+        .delete_delegation_signer_record(account_id, domain, delegation_signer_record_id)
+        .await;
 
     assert!(response.is_ok());
     assert_eq!(204, response.unwrap().status);

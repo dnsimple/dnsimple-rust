@@ -16,7 +16,11 @@ async fn test_check_domain() {
     let account_id = 1010;
     let domain = "ruby.codes";
 
-    let response = client.registrar().check_domain(account_id, domain).await.unwrap();
+    let response = client
+        .registrar()
+        .check_domain(account_id, domain)
+        .await
+        .unwrap();
     let domain_check = response.data.unwrap();
 
     assert_eq!("ruby.codes", domain_check.domain);
@@ -62,7 +66,10 @@ async fn test_get_domain_prices_failure() {
     let account_id = 1010;
     let domain = "bingo.pineapple";
 
-    let response = client.registrar().get_domain_prices(account_id, domain).await;
+    let response = client
+        .registrar()
+        .get_domain_prices(account_id, domain)
+        .await;
     let error = response.unwrap_err();
 
     assert_eq!("TLD .PINEAPPLE is not supported", error.to_string());
@@ -374,7 +381,10 @@ async fn test_renew_a_domain_to_early() {
         premium_price: None,
     };
 
-    let response = client.registrar().renew_domain(account_id, domain, payload).await;
+    let response = client
+        .registrar()
+        .renew_domain(account_id, domain, payload)
+        .await;
 
     let errors = response.unwrap_err();
 
@@ -396,7 +406,10 @@ async fn test_authorize_domain_transfer_out() {
     let account_id = 1010;
     let domain = String::from("example.com");
 
-    let response = client.registrar().transfer_domain_out(account_id, domain).await;
+    let response = client
+        .registrar()
+        .transfer_domain_out(account_id, domain)
+        .await;
 
     assert!(response.is_ok());
     assert_eq!(204, response.unwrap().status);

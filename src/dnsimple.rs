@@ -509,14 +509,11 @@ impl Client {
 
     fn extract_rate_limit_reset_header(resp: &reqwest::Response) -> Result<String, DNSimpleError> {
         match resp.headers().get("X-RateLimit-Reset") {
-            Some(header) => header
-                .to_str()
-                .map(|s| s.to_string())
-                .map_err(|_| {
-                    DNSimpleError::Deserialization(String::from(
-                        "Cannot parse the X-RateLimit-Reset header",
-                    ))
-                }),
+            Some(header) => header.to_str().map(|s| s.to_string()).map_err(|_| {
+                DNSimpleError::Deserialization(String::from(
+                    "Cannot parse the X-RateLimit-Reset header",
+                ))
+            }),
             None => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot parse the X-RateLimit-Reset header",
             ))),
@@ -527,14 +524,11 @@ impl Client {
         resp: &reqwest::Response,
     ) -> Result<String, DNSimpleError> {
         match resp.headers().get("X-RateLimit-Remaining") {
-            Some(header) => header
-                .to_str()
-                .map(|s| s.to_string())
-                .map_err(|_| {
-                    DNSimpleError::Deserialization(String::from(
-                        "Cannot parse the X-RateLimit-Remaining header",
-                    ))
-                }),
+            Some(header) => header.to_str().map(|s| s.to_string()).map_err(|_| {
+                DNSimpleError::Deserialization(String::from(
+                    "Cannot parse the X-RateLimit-Remaining header",
+                ))
+            }),
             None => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot parse the X-RateLimit-Remaining header",
             ))),
@@ -543,14 +537,11 @@ impl Client {
 
     fn extract_rate_limit_limit_header(resp: &reqwest::Response) -> Result<String, DNSimpleError> {
         match resp.headers().get("X-RateLimit-Limit") {
-            Some(header) => header
-                .to_str()
-                .map(|s| s.to_string())
-                .map_err(|_| {
-                    DNSimpleError::Deserialization(String::from(
-                        "Cannot parse the X-RateLimit-Limit header",
-                    ))
-                }),
+            Some(header) => header.to_str().map(|s| s.to_string()).map_err(|_| {
+                DNSimpleError::Deserialization(String::from(
+                    "Cannot parse the X-RateLimit-Limit header",
+                ))
+            }),
             None => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot parse the X-RateLimit-Limit header",
             ))),

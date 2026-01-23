@@ -86,7 +86,9 @@ impl Domains<'_> {
     ) -> Result<DNSimpleResponse<Vec<DelegationSignerRecord>>, DNSimpleError> {
         let path = format!("/{}/domains/{}/ds_records", account_id, domain);
 
-        self.client.get::<ListSignerRecordsEndpoint>(&path, options).await
+        self.client
+            .get::<ListSignerRecordsEndpoint>(&path, options)
+            .await
     }
 
     /// Creates a delegation signer record

@@ -7,7 +7,11 @@ async fn list_domains_test() {
     let client = setup.0;
     let account_id = 1385;
 
-    let domains_data = client.domains().list_domains(account_id, None).await.unwrap();
+    let domains_data = client
+        .domains()
+        .list_domains(account_id, None)
+        .await
+        .unwrap();
     let domains = domains_data.data.unwrap();
 
     assert_eq!(2, domains.len());

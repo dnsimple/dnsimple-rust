@@ -41,7 +41,9 @@ impl Registrar<'_> {
     ) -> Result<DNSimpleResponse<WhoisPrivacy>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/whois_privacy", account_id, domain);
 
-        self.client.put::<WhoisPrivacyEndpoint>(&path, Value::Null).await
+        self.client
+            .put::<WhoisPrivacyEndpoint>(&path, Value::Null)
+            .await
     }
 
     /// Enable WHOIS privacy

@@ -95,7 +95,9 @@ impl Domains<'_> {
     ) -> Result<DNSimpleResponse<Vec<EmailForwardsInList>>, DNSimpleError> {
         let path = format!("/{}/domains/{}/email_forwards", account_id, domain);
 
-        self.client.get::<EmailForwardsListEndpoint>(&path, options).await
+        self.client
+            .get::<EmailForwardsListEndpoint>(&path, options)
+            .await
     }
 
     /// Create an email forward

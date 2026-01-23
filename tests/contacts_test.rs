@@ -179,7 +179,10 @@ async fn delete_contact_test() {
     let account_id = 1010;
     let contact_id = 1;
 
-    let response = client.contacts().delete_contact(account_id, contact_id).await;
+    let response = client
+        .contacts()
+        .delete_contact(account_id, contact_id)
+        .await;
 
     assert!(response.is_ok());
     assert_eq!(204, response.unwrap().status);

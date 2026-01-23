@@ -229,7 +229,10 @@ async fn delete_zone_record_test() {
     let zone = "example.com";
     let record = 5;
 
-    let response = client.zones().delete_zone_record(account_id, zone, record).await;
+    let response = client
+        .zones()
+        .delete_zone_record(account_id, zone, record)
+        .await;
 
     assert!(response.is_ok());
     assert_eq!(204, response.unwrap().status);

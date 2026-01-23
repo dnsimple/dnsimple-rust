@@ -67,6 +67,8 @@ impl Registrar<'_> {
     ) -> Result<DNSimpleResponse<TransferLock>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/transfer_lock", account_id, domain);
 
-        self.client.get::<DomainTransferLockEndpoint>(&path, None).await
+        self.client
+            .get::<DomainTransferLockEndpoint>(&path, None)
+            .await
     }
 }

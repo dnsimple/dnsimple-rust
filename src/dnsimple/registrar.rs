@@ -265,7 +265,9 @@ impl Registrar<'_> {
             account_id, domain, domain_registration_id
         );
 
-        self.client.get::<DomainRegistrationEndpoint>(&path, None).await
+        self.client
+            .get::<DomainRegistrationEndpoint>(&path, None)
+            .await
     }
 
     /// Get the details of an existing domain transfer.
@@ -337,7 +339,11 @@ impl Registrar<'_> {
         let path = format!("/{}/registrar/domains/{}/registrations", account_id, domain);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<DomainRegistrationEndpoint>(&path, json).await,
+            Ok(json) => {
+                self.client
+                    .post::<DomainRegistrationEndpoint>(&path, json)
+                    .await
+            }
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -381,7 +387,11 @@ impl Registrar<'_> {
         let path = format!("/{}/registrar/domains/{}/transfers", account_id, domain);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<DomainTransferEndpoint>(&path, json).await,
+            Ok(json) => {
+                self.client
+                    .post::<DomainTransferEndpoint>(&path, json)
+                    .await
+            }
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),

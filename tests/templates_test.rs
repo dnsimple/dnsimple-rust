@@ -108,7 +108,10 @@ async fn delete_template() {
     let account_id = 1010;
     let template_id = String::from("beta");
 
-    let response = client.templates().delete_template(account_id, template_id).await;
+    let response = client
+        .templates()
+        .delete_template(account_id, template_id)
+        .await;
 
     assert!(response.is_ok());
     assert_eq!(204, response.unwrap().status);

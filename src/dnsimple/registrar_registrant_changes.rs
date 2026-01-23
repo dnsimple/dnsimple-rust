@@ -105,7 +105,9 @@ impl Registrar<'_> {
             account_id, registrant_change_id
         );
 
-        self.client.get::<RegistrantChangeEndpoint>(&path, None).await
+        self.client
+            .get::<RegistrantChangeEndpoint>(&path, None)
+            .await
     }
 
     /// Retrieves the requirements of a registrant change
@@ -123,10 +125,11 @@ impl Registrar<'_> {
         let path = format!("/{}/registrar/registrant_changes/check", account_id);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self
-                .client
-                .post::<RegistrantChangeCheckEndpoint>(&path, json)
-                .await,
+            Ok(json) => {
+                self.client
+                    .post::<RegistrantChangeCheckEndpoint>(&path, json)
+                    .await
+            }
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -147,7 +150,11 @@ impl Registrar<'_> {
         let path = format!("/{}/registrar/registrant_changes", account_id);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<RegistrantChangeEndpoint>(&path, json).await,
+            Ok(json) => {
+                self.client
+                    .post::<RegistrantChangeEndpoint>(&path, json)
+                    .await
+            }
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -169,7 +176,9 @@ impl Registrar<'_> {
     ) -> Result<DNSimpleResponse<Vec<RegistrantChange>>, DNSimpleError> {
         let path = format!("/{}/registrar/registrant_changes", account_id);
 
-        self.client.get::<RegistrantChangesEndpoint>(&path, options).await
+        self.client
+            .get::<RegistrantChangesEndpoint>(&path, options)
+            .await
     }
 
     /// Cancel a registrant change.

@@ -110,7 +110,9 @@ impl Domains<'_> {
     ) -> Result<DNSimpleResponse<Vec<DomainPush>>, DNSimpleError> {
         let path = format!("/{}/domains/pushes", account_id);
 
-        self.client.get::<DomainPushesListEndpoint>(&path, options).await
+        self.client
+            .get::<DomainPushesListEndpoint>(&path, options)
+            .await
     }
 
     /// Accept a push

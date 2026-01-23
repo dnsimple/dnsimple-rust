@@ -197,7 +197,9 @@ impl Certificates<'_> {
     ) -> Result<DNSimpleResponse<Vec<Certificate>>, DNSimpleError> {
         let path = format!("/{}/domains/{}/certificates", account_id, domain);
 
-        self.client.get::<ListCertificatesEndpoint>(&path, options).await
+        self.client
+            .get::<ListCertificatesEndpoint>(&path, options)
+            .await
     }
 
     /// Get the details of a certificate
@@ -263,7 +265,9 @@ impl Certificates<'_> {
             account_id, domain, certificate_id
         );
 
-        self.client.get::<CertificateDownloadEndpoint>(&path, None).await
+        self.client
+            .get::<CertificateDownloadEndpoint>(&path, None)
+            .await
     }
 
     /// Get the PEM-encoded certificate private key
@@ -339,7 +343,11 @@ impl Certificates<'_> {
         );
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<LetsEncryptPurchaseEndpoint>(&path, json).await,
+            Ok(json) => {
+                self.client
+                    .post::<LetsEncryptPurchaseEndpoint>(&path, json)
+                    .await
+            }
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -376,7 +384,9 @@ impl Certificates<'_> {
             account_id, domain, certificate_id
         );
 
-        self.client.post::<CertificateEndpoint>(&path, Value::Null).await
+        self.client
+            .post::<CertificateEndpoint>(&path, Value::Null)
+            .await
     }
 
     /// Purchase a Let's Encrypt certificate renewal
@@ -415,10 +425,11 @@ impl Certificates<'_> {
         );
 
         match serde_json::to_value(payload) {
-            Ok(json) => self
-                .client
-                .post::<LetsEncryptPurchaseRenewalEndpoint>(&path, json)
-                .await,
+            Ok(json) => {
+                self.client
+                    .post::<LetsEncryptPurchaseRenewalEndpoint>(&path, json)
+                    .await
+            }
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -456,6 +467,8 @@ impl Certificates<'_> {
             account_id, domain, certificate_id, certificate_renewal_id
         );
 
-        self.client.post::<CertificateEndpoint>(&path, Value::Null).await
+        self.client
+            .post::<CertificateEndpoint>(&path, Value::Null)
+            .await
     }
 }

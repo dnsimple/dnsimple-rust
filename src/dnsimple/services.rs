@@ -78,7 +78,10 @@ impl Services<'_> {
     ///
     /// # Arguments
     /// `service`: The service name or id
-    pub async fn get_service(&self, service: String) -> Result<DNSimpleResponse<Service>, DNSimpleError> {
+    pub async fn get_service(
+        &self,
+        service: String,
+    ) -> Result<DNSimpleResponse<Service>, DNSimpleError> {
         let path = format!("/services/{}", service);
 
         self.client.get::<ServiceEndpoint>(&path, None).await

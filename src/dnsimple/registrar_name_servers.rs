@@ -47,7 +47,9 @@ impl Registrar<'_> {
     ) -> Result<DNSimpleResponse<Vec<String>>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/delegation", account_id, domain);
 
-        self.client.get::<DomainDelegationEndpoint>(&path, None).await
+        self.client
+            .get::<DomainDelegationEndpoint>(&path, None)
+            .await
     }
 
     /// Change domain name servers

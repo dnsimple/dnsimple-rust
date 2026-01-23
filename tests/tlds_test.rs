@@ -56,7 +56,11 @@ async fn test_get_tld_extended_attributes() {
     let client = setup.0;
     let tld = String::from("com");
 
-    let response = client.tlds().get_tld_extended_attributes(tld).await.unwrap();
+    let response = client
+        .tlds()
+        .get_tld_extended_attributes(tld)
+        .await
+        .unwrap();
     let extended_attributes = response.data.unwrap();
 
     assert_eq!(4, extended_attributes.len());

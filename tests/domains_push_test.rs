@@ -40,7 +40,11 @@ async fn test_list_pushes() {
     let client = setup.0;
     let account_id = 1385_u64;
 
-    let response = client.domains().list_pushes(account_id, None).await.unwrap();
+    let response = client
+        .domains()
+        .list_pushes(account_id, None)
+        .await
+        .unwrap();
     let domain_pushes_list = response.data.unwrap();
 
     assert_eq!(2, domain_pushes_list.len());

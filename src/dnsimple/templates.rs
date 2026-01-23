@@ -208,7 +208,9 @@ impl Templates<'_> {
     ) -> Result<DNSimpleResponse<Vec<TemplateRecord>>, DNSimpleError> {
         let path = format!("/{}/templates/{}/records", account_id, template);
 
-        self.client.get::<TemplateRecordsEndpoint>(&path, options).await
+        self.client
+            .get::<TemplateRecordsEndpoint>(&path, options)
+            .await
     }
 
     /// Create a template record
@@ -226,7 +228,11 @@ impl Templates<'_> {
         let path = format!("/{}/templates/{}/records", account_id, template);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<TemplateRecordEndpoint>(&path, json).await,
+            Ok(json) => {
+                self.client
+                    .post::<TemplateRecordEndpoint>(&path, json)
+                    .await
+            }
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),

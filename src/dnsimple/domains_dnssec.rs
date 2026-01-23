@@ -51,7 +51,9 @@ impl Domains<'_> {
     ) -> Result<DNSimpleResponse<Dnssec>, DNSimpleError> {
         let path = format!("/{}/domains/{}/dnssec", account_id, domain);
 
-        self.client.post::<DnssecStatusEndpoint>(&path, Value::Null).await
+        self.client
+            .post::<DnssecStatusEndpoint>(&path, Value::Null)
+            .await
     }
 
     /// Disable DNSSEC for the domain in the account.
