@@ -211,67 +211,67 @@ pub fn new_client(sandbox: bool, token: String) -> Client {
 
 impl Client {
     ///Returns the `accounts` service attached to this client
-    pub fn accounts(&self) -> Accounts {
+    pub fn accounts(&self) -> Accounts<'_> {
         Accounts { client: self }
     }
 
     /// Returns the `contacts` service attached to this client
-    pub fn contacts(&self) -> Contacts {
+    pub fn contacts(&self) -> Contacts<'_> {
         Contacts { client: self }
     }
 
     /// Returns the `certificates` service attached to this client
-    pub fn certificates(&self) -> Certificates {
+    pub fn certificates(&self) -> Certificates<'_> {
         Certificates { client: self }
     }
 
     /// Returns the `domains` service attached to this client
-    pub fn domains(&self) -> Domains {
+    pub fn domains(&self) -> Domains<'_> {
         Domains { client: self }
     }
 
     /// Returns the `identity` service attached to this client
-    pub fn identity(&self) -> Identity {
+    pub fn identity(&self) -> Identity<'_> {
         Identity { client: self }
     }
 
     /// Returns the `oauth` service attached to this client
-    pub fn oauth(&self) -> OAuth {
+    pub fn oauth(&self) -> OAuth<'_> {
         OAuth { client: self }
     }
 
     /// Returns the `registrar` service attached to this client
-    pub fn registrar(&self) -> Registrar {
+    pub fn registrar(&self) -> Registrar<'_> {
         Registrar { client: self }
     }
 
     /// Returns the `services` service attached to this client
-    pub fn services(&self) -> Services {
+    pub fn services(&self) -> Services<'_> {
         Services { client: self }
     }
 
     /// Returns the `templates` service attached to this client
-    pub fn templates(&self) -> Templates {
+    pub fn templates(&self) -> Templates<'_> {
         Templates { client: self }
     }
 
     /// Returns the `tlds` service attached to this endpoint
-    pub fn tlds(&self) -> Tlds {
+    pub fn tlds(&self) -> Tlds<'_> {
         Tlds { client: self }
     }
 
     /// Returns the `vanity_name_servers` service attached to this endpoint
-    pub fn vanity_name_servers(&self) -> VanityNameServers {
+    pub fn vanity_name_servers(&self) -> VanityNameServers<'_> {
         VanityNameServers { client: self }
     }
 
     /// Returns the `webhooks` service attached to this endpoint
-    pub fn webhooks(&self) -> Webhooks {
+    pub fn webhooks(&self) -> Webhooks<'_> {
         Webhooks { client: self }
     }
 
     /// Returns the `zones` service attached to this endpoint
-    pub fn zones(&self) -> Zones {
+    pub fn zones(&self) -> Zones<'_> {
         Zones { client: self }
     }
 
