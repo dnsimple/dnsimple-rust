@@ -1,13 +1,14 @@
 use crate::common::setup_mock_for;
 mod common;
 
-#[test]
-fn get_domain_delegation_test() {
+#[tokio::test]
+async fn get_domain_delegation_test() {
     let setup = setup_mock_for(
         "/1385/registrar/domains/example.com/delegation",
         "getDomainDelegation/success",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
@@ -15,6 +16,7 @@ fn get_domain_delegation_test() {
     let delegation = client
         .registrar()
         .get_domain_delegation(account_id, String::from(domain))
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -28,13 +30,14 @@ fn get_domain_delegation_test() {
     }
 }
 
-#[test]
-fn get_empty_domain_delegation_test() {
+#[tokio::test]
+async fn get_empty_domain_delegation_test() {
     let setup = setup_mock_for(
         "/1385/registrar/domains/example.com/delegation",
         "getDomainDelegation/success-empty",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
@@ -42,6 +45,7 @@ fn get_empty_domain_delegation_test() {
     let delegation = client
         .registrar()
         .get_domain_delegation(account_id, String::from(domain))
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -49,13 +53,14 @@ fn get_empty_domain_delegation_test() {
     assert!(delegation.is_empty());
 }
 
-#[test]
-fn change_domain_delegation_test() {
+#[tokio::test]
+async fn change_domain_delegation_test() {
     let setup = setup_mock_for(
         "/1385/registrar/domains/example.com/delegation",
         "changeDomainDelegation/success",
         "PUT",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
@@ -69,6 +74,7 @@ fn change_domain_delegation_test() {
     let delegation_change = client
         .registrar()
         .change_domain_delegation(account_id, String::from(domain), server_names)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -80,13 +86,14 @@ fn change_domain_delegation_test() {
     }
 }
 
-#[test]
-fn change_domain_delegation_to_vanity() {
+#[tokio::test]
+async fn change_domain_delegation_to_vanity() {
     let setup = setup_mock_for(
         "/1385/registrar/domains/example.com/delegation/vanity",
         "changeDomainDelegationToVanity/success",
         "PUT",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
@@ -95,6 +102,7 @@ fn change_domain_delegation_to_vanity() {
     let vanity_servers = client
         .registrar()
         .change_domain_delegation_to_vanity(account_id, String::from(domain), server_names)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -111,20 +119,22 @@ fn change_domain_delegation_to_vanity() {
     assert_eq!("2016-07-11T09:40:19Z", vanity_server.updated_at);
 }
 
-#[test]
-fn change_domain_delegation_from_vanity() {
+#[tokio::test]
+async fn change_domain_delegation_from_vanity() {
     let setup = setup_mock_for(
         "/1385/registrar/domains/example.com/delegation/vanity",
         "changeDomainDelegationFromVanity/success",
         "DELETE",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
 
     let response = client
         .registrar()
-        .change_domain_delegation_from_vanity(account_id, String::from(domain));
+        .change_domain_delegation_from_vanity(account_id, String::from(domain))
+        .await;
 
     assert!(response.is_ok());
     assert_eq!(204, response.unwrap().status);

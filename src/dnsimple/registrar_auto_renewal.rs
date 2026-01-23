@@ -9,14 +9,14 @@ impl Registrar<'_> {
     ///
     /// `account_id`: The account ID
     /// `domain`: The domain name or id
-    pub fn enable_domain_auto_renewal(
+    pub async fn enable_domain_auto_renewal(
         &self,
         account_id: u64,
         domain: String,
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/auto_renewal", account_id, domain);
 
-        self.client.empty_put(&path)
+        self.client.empty_put(&path).await
     }
 
     /// Disable domain auto-renewal
@@ -25,13 +25,13 @@ impl Registrar<'_> {
     ///
     /// `account_id`: The account ID
     /// `domain`: The domain name or id
-    pub fn disable_domain_auto_renewal(
+    pub async fn disable_domain_auto_renewal(
         &self,
         account_id: u64,
         domain: String,
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/auto_renewal", account_id, domain);
 
-        self.client.delete(&path)
+        self.client.delete(&path).await
     }
 }

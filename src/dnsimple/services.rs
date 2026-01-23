@@ -65,23 +65,23 @@ pub struct Services<'a> {
 
 impl Services<'_> {
     /// List services
-    pub fn list_services(
+    pub async fn list_services(
         &self,
         options: Option<RequestOptions>,
     ) -> Result<DNSimpleResponse<Vec<Service>>, DNSimpleError> {
         let path = "/services";
 
-        self.client.get::<ServicesEndpoint>(path, options)
+        self.client.get::<ServicesEndpoint>(path, options).await
     }
 
     /// Retrieve a service
     ///
     /// # Arguments
     /// `service`: The service name or id
-    pub fn get_service(&self, service: String) -> Result<DNSimpleResponse<Service>, DNSimpleError> {
+    pub async fn get_service(&self, service: String) -> Result<DNSimpleResponse<Service>, DNSimpleError> {
         let path = format!("/services/{}", service);
 
-        self.client.get::<ServiceEndpoint>(&path, None)
+        self.client.get::<ServiceEndpoint>(&path, None).await
     }
 
     /// List services applied to a domain.
@@ -89,7 +89,7 @@ impl Services<'_> {
     /// # Arguments
     /// `account_id`: The account id
     /// `domain`: The domain name or id
-    pub fn applied_services(
+    pub async fn applied_services(
         &self,
         account_id: u64,
         domain: String,
@@ -97,7 +97,7 @@ impl Services<'_> {
     ) -> Result<DNSimpleResponse<Vec<Service>>, DNSimpleError> {
         let path = format!("/{}/domains/{}/services", account_id, domain);
 
-        self.client.get::<ServicesEndpoint>(&path, options)
+        self.client.get::<ServicesEndpoint>(&path, options).await
     }
 
     /// Applies a service to a domain.
@@ -106,7 +106,7 @@ impl Services<'_> {
     /// `account_id`: The account id
     /// `domain`: The domain name or id
     /// `service`: The service name or id
-    pub fn apply_service(
+    pub async fn apply_service(
         &self,
         account_id: u64,
         domain: String,
@@ -114,7 +114,7 @@ impl Services<'_> {
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/domains/{}/services/{}", account_id, domain, service);
 
-        self.client.empty_post(&path)
+        self.client.empty_post(&path).await
     }
 
     /// Unapplies a service to a domain.
@@ -123,7 +123,7 @@ impl Services<'_> {
     /// `account_id`: The account id
     /// `domain`: The domain name or id
     /// `service`: The service name or id
-    pub fn unapply_service(
+    pub async fn unapply_service(
         &self,
         account_id: u64,
         domain: String,
@@ -131,6 +131,6 @@ impl Services<'_> {
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/domains/{}/services/{}", account_id, domain, service);
 
-        self.client.delete(&path)
+        self.client.delete(&path).await
     }
 }

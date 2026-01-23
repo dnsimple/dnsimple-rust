@@ -95,7 +95,7 @@ impl Registrar<'_> {
     ///
     /// `account_id`: The account ID
     /// `registrant_change_id`: The contact change ID
-    pub fn get_registrant_change(
+    pub async fn get_registrant_change(
         &self,
         account_id: u64,
         registrant_change_id: u64,
@@ -105,7 +105,7 @@ impl Registrar<'_> {
             account_id, registrant_change_id
         );
 
-        self.client.get::<RegistrantChangeEndpoint>(&path, None)
+        self.client.get::<RegistrantChangeEndpoint>(&path, None).await
     }
 
     /// Retrieves the requirements of a registrant change
@@ -115,7 +115,7 @@ impl Registrar<'_> {
     /// `account_id`: The account ID
     /// `payload`: The `RegistrantChangeCheckPayload` with the information needed to check the
     /// requirements for a registrant change
-    pub fn check_registrant_change(
+    pub async fn check_registrant_change(
         &self,
         account_id: u64,
         payload: RegistrantChangeCheckPayload,
@@ -125,7 +125,8 @@ impl Registrar<'_> {
         match serde_json::to_value(payload) {
             Ok(json) => self
                 .client
-                .post::<RegistrantChangeCheckEndpoint>(&path, json),
+                .post::<RegistrantChangeCheckEndpoint>(&path, json)
+                .await,
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -138,7 +139,7 @@ impl Registrar<'_> {
     ///
     /// `account_id`: The account ID
     /// `payload`: The `RegistrantChangePayload` with the information needed to start a registrant change
-    pub fn create_registrant_change(
+    pub async fn create_registrant_change(
         &self,
         account_id: u64,
         payload: RegistrantChangePayload,
@@ -146,7 +147,7 @@ impl Registrar<'_> {
         let path = format!("/{}/registrar/registrant_changes", account_id);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<RegistrantChangeEndpoint>(&path, json),
+            Ok(json) => self.client.post::<RegistrantChangeEndpoint>(&path, json).await,
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -161,14 +162,14 @@ impl Registrar<'_> {
     /// `options`: The `RequestOptions`
     ///             - Filters: `domain_id`, `state`, `contact_id`
     ///             - Sorting: `id`
-    pub fn list_registrant_changes(
+    pub async fn list_registrant_changes(
         &self,
         account_id: u64,
         options: Option<RequestOptions>,
     ) -> Result<DNSimpleResponse<Vec<RegistrantChange>>, DNSimpleError> {
         let path = format!("/{}/registrar/registrant_changes", account_id);
 
-        self.client.get::<RegistrantChangesEndpoint>(&path, options)
+        self.client.get::<RegistrantChangesEndpoint>(&path, options).await
     }
 
     /// Cancel a registrant change.
@@ -177,7 +178,7 @@ impl Registrar<'_> {
     ///
     /// `account_id`: The account ID
     /// `registrant_change_id`: The contact change ID
-    pub fn delete_registrant_change(
+    pub async fn delete_registrant_change(
         &self,
         account_id: u64,
         registrant_change_id: u64,
@@ -189,5 +190,6 @@ impl Registrar<'_> {
 
         self.client
             .delete_with_response::<DeleteRegistrantChangeEndpoint>(&path)
+            .await
     }
 }

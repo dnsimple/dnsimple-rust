@@ -53,11 +53,14 @@ impl Domains<'_> {
     /// use dnsimple::dnsimple::domains_push::InitiatePushPayload;
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let payload = InitiatePushPayload {
-    ///     new_account_email: String::from("admin@target-account.test"),
-    /// };
-    /// let push = client.domains().initiate_push(1234, "example.com", payload).unwrap().data.unwrap();
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let payload = InitiatePushPayload {
+    ///         new_account_email: String::from("admin@target-account.test"),
+    ///     };
+    ///     let push = client.domains().initiate_push(1234, "example.com", payload).await.unwrap().data.unwrap();
+    /// }
     /// ```
     ///
     /// # Arguments
@@ -65,7 +68,7 @@ impl Domains<'_> {
     /// `account_id`: The account id
     /// `domain`: The domain name or id
     /// `payload`: The `InitiatePushPayload` used to initiate a push
-    pub fn initiate_push(
+    pub async fn initiate_push(
         &self,
         account_id: u64,
         domain: &str,
@@ -74,7 +77,7 @@ impl Domains<'_> {
         let path = format!("/{}/domains/{}/pushes", account_id, domain);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<DomainPushEndpoint>(&path, json),
+            Ok(json) => self.client.post::<DomainPushEndpoint>(&path, json).await,
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -88,8 +91,11 @@ impl Domains<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let pushes = client.domains().list_pushes(1234, None).unwrap().data.unwrap();
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let pushes = client.domains().list_pushes(1234, None).await.unwrap().data.unwrap();
+    /// }
     /// ```
     ///
     /// # Arguments
@@ -97,14 +103,14 @@ impl Domains<'_> {
     /// `account_id`: The account id
     /// `options`: The `RequestOptions`
     ///            - Pagination
-    pub fn list_pushes(
+    pub async fn list_pushes(
         &self,
         account_id: u64,
         options: Option<RequestOptions>,
     ) -> Result<DNSimpleResponse<Vec<DomainPush>>, DNSimpleError> {
         let path = format!("/{}/domains/pushes", account_id);
 
-        self.client.get::<DomainPushesListEndpoint>(&path, options)
+        self.client.get::<DomainPushesListEndpoint>(&path, options).await
     }
 
     /// Accept a push
@@ -114,22 +120,25 @@ impl Domains<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let response = client.domains().accept_push(1234, 42);
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let response = client.domains().accept_push(1234, 42).await;
+    /// }
     /// ```
     ///
     /// # Arguments
     ///
     /// `account_id`: The account id
     /// `push_id`: The push id
-    pub fn accept_push(
+    pub async fn accept_push(
         &self,
         account_id: u64,
         push_id: u64,
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/domains/pushes/{}", account_id, push_id);
 
-        self.client.empty_post(&path)
+        self.client.empty_post(&path).await
     }
 
     /// Reject a push
@@ -139,21 +148,24 @@ impl Domains<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let response = client.domains().reject_push(1234, 42);
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let response = client.domains().reject_push(1234, 42).await;
+    /// }
     /// ```
     ///
     /// # Arguments
     ///
     /// `account_id`: The account id
     /// `push_id`: The push id
-    pub fn reject_push(
+    pub async fn reject_push(
         &self,
         account_id: u64,
         push_id: u64,
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/domains/pushes/{}", account_id, push_id);
 
-        self.client.delete(&path)
+        self.client.delete(&path).await
     }
 }

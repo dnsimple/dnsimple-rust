@@ -1,12 +1,12 @@
 use crate::common::setup_mock_for;
 mod common;
 
-#[test]
-fn list_services_test() {
-    let setup = setup_mock_for("/services", "listServices/success", "GET");
+#[tokio::test]
+async fn list_services_test() {
+    let setup = setup_mock_for("/services", "listServices/success", "GET").await;
     let client = setup.0;
 
-    let services = client.services().list_services(None).unwrap().data.unwrap();
+    let services = client.services().list_services(None).await.unwrap().data.unwrap();
 
     assert_eq!(2, services.len());
 
@@ -33,15 +33,16 @@ fn list_services_test() {
     assert!(!settings.password);
 }
 
-#[test]
-fn get_service_test() {
-    let setup = setup_mock_for("/services/1", "getService/success", "GET");
+#[tokio::test]
+async fn get_service_test() {
+    let setup = setup_mock_for("/services/1", "getService/success", "GET").await;
     let client = setup.0;
     let service_id = "1";
 
     let service = client
         .services()
         .get_service(String::from(service_id))
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -75,13 +76,14 @@ fn get_service_test() {
     assert!(!service.settings.first().unwrap().password);
 }
 
-#[test]
-fn applied_services_test() {
+#[tokio::test]
+async fn applied_services_test() {
     let setup = setup_mock_for(
         "/1010/domains/example.com/services",
         "appliedServices/success",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let domain = "example.com";
@@ -89,6 +91,7 @@ fn applied_services_test() {
     let applied_services = client
         .services()
         .applied_services(account_id, String::from(domain), None)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -96,13 +99,14 @@ fn applied_services_test() {
     assert_eq!(1, applied_services.len());
 }
 
-#[test]
-fn apply_service_test() {
+#[tokio::test]
+async fn apply_service_test() {
     let setup = setup_mock_for(
         "/1010/domains/example.com/services/wordpress",
         "applyService/success",
         "POST",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let domain = "example.com";
@@ -111,19 +115,21 @@ fn apply_service_test() {
     let response =
         client
             .services()
-            .apply_service(account_id, String::from(domain), String::from(service));
+            .apply_service(account_id, String::from(domain), String::from(service))
+            .await;
 
     assert!(response.is_ok());
     assert_eq!(204, response.unwrap().status);
 }
 
-#[test]
-fn unapply_service_test() {
+#[tokio::test]
+async fn unapply_service_test() {
     let setup = setup_mock_for(
         "/1010/domains/example.com/services/wordpress",
         "unapplyService/success",
         "DELETE",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let domain = "example.com";
@@ -132,7 +138,8 @@ fn unapply_service_test() {
     let response =
         client
             .services()
-            .unapply_service(account_id, String::from(domain), String::from(service));
+            .unapply_service(account_id, String::from(domain), String::from(service))
+            .await;
 
     assert!(response.is_ok());
     assert_eq!(204, response.unwrap().status);

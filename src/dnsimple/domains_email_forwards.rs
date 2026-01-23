@@ -73,8 +73,11 @@ impl Domains<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let email_forwards_list = client.domains().list_email_forwards(1234, "example.com", None).unwrap().data.unwrap();
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let email_forwards_list = client.domains().list_email_forwards(1234, "example.com", None).await.unwrap().data.unwrap();
+    /// }
     /// ```
     ///
     /// # Arguments
@@ -84,7 +87,7 @@ impl Domains<'_> {
     /// `options`: The `RequestOptions`
     ///            - Sort: `id`, `from`, `to`
     ///            - Pagination
-    pub fn list_email_forwards(
+    pub async fn list_email_forwards(
         &self,
         account_id: u64,
         domain: &str,
@@ -92,7 +95,7 @@ impl Domains<'_> {
     ) -> Result<DNSimpleResponse<Vec<EmailForwardsInList>>, DNSimpleError> {
         let path = format!("/{}/domains/{}/email_forwards", account_id, domain);
 
-        self.client.get::<EmailForwardsListEndpoint>(&path, options)
+        self.client.get::<EmailForwardsListEndpoint>(&path, options).await
     }
 
     /// Create an email forward
@@ -103,12 +106,15 @@ impl Domains<'_> {
     /// use dnsimple::dnsimple::domains_email_forwards::EmailForwardPayload;
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let payload = EmailForwardPayload {
-    ///     alias_name: "My forward".to_string(),
-    ///     destination_email: "some@example.com".to_string(),
-    /// };
-    /// let email_forwards = client.domains().create_email_forward(1234, "example.com", payload).unwrap().data.unwrap();
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let payload = EmailForwardPayload {
+    ///         alias_name: "My forward".to_string(),
+    ///         destination_email: "some@example.com".to_string(),
+    ///     };
+    ///     let email_forwards = client.domains().create_email_forward(1234, "example.com", payload).await.unwrap().data.unwrap();
+    /// }
     /// ```
     ///
     /// # Arguments
@@ -116,7 +122,7 @@ impl Domains<'_> {
     /// `account_id`: The account ID
     /// `domain`: The ID or name of the domain we want list the email forwards
     /// `payload`: The `EmailForwardPayload` with the data needed to create the email forward
-    pub fn create_email_forward(
+    pub async fn create_email_forward(
         &self,
         account_id: u64,
         domain: &str,
@@ -125,7 +131,7 @@ impl Domains<'_> {
         let path = format!("/{}/domains/{}/email_forwards", account_id, domain);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<EmailForwardEndpoint>(&path, json),
+            Ok(json) => self.client.post::<EmailForwardEndpoint>(&path, json).await,
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -139,8 +145,11 @@ impl Domains<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let email_forwards = client.domains().get_email_forward(1234, "example.com", 42).unwrap().data.unwrap();
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let email_forwards = client.domains().get_email_forward(1234, "example.com", 42).await.unwrap().data.unwrap();
+    /// }
     /// ```
     ///
     /// # Arguments
@@ -148,7 +157,7 @@ impl Domains<'_> {
     /// `account_id`: The account ID
     /// `domain`: The ID or name of the domain we want list the email forwards
     /// `email_forward`: The email forward id
-    pub fn get_email_forward(
+    pub async fn get_email_forward(
         &self,
         account_id: u64,
         domain: &str,
@@ -159,7 +168,7 @@ impl Domains<'_> {
             account_id, domain, email_forward
         );
 
-        self.client.get::<EmailForwardEndpoint>(&path, None)
+        self.client.get::<EmailForwardEndpoint>(&path, None).await
     }
 
     /// Delete the email forward from the domain.
@@ -169,8 +178,11 @@ impl Domains<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let response = client.domains().delete_email_forward(1234, "example.com", 42);
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let response = client.domains().delete_email_forward(1234, "example.com", 42).await;
+    /// }
     /// ```
     ///
     /// # Arguments
@@ -178,7 +190,7 @@ impl Domains<'_> {
     /// `account_id`: The account ID
     /// `domain`: The ID or name of the domain we want list the email forwards
     /// `email_forward`: The email forward id
-    pub fn delete_email_forward(
+    pub async fn delete_email_forward(
         &self,
         account_id: u64,
         domain: &str,
@@ -189,6 +201,6 @@ impl Domains<'_> {
             account_id, domain, email_forward
         );
 
-        self.client.delete(&path)
+        self.client.delete(&path).await
     }
 }

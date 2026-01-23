@@ -1,12 +1,12 @@
 use crate::common::setup_mock_for;
 mod common;
 
-#[test]
-fn test_list_tlds() {
-    let setup = setup_mock_for("/tlds", "listTlds/success", "GET");
+#[tokio::test]
+async fn test_list_tlds() {
+    let setup = setup_mock_for("/tlds", "listTlds/success", "GET").await;
     let client = setup.0;
 
-    let response = client.tlds().list_tlds(None).unwrap();
+    let response = client.tlds().list_tlds(None).await.unwrap();
     let tlds = response.data.unwrap();
 
     assert_eq!(2, tlds.len());
@@ -25,13 +25,13 @@ fn test_list_tlds() {
     assert_eq!("ds", tld.dnssec_interface_type.as_ref().unwrap());
 }
 
-#[test]
-fn test_get_tld() {
-    let setup = setup_mock_for("/tlds/com", "getTld/success", "GET");
+#[tokio::test]
+async fn test_get_tld() {
+    let setup = setup_mock_for("/tlds/com", "getTld/success", "GET").await;
     let client = setup.0;
     let tld = String::from("com");
 
-    let tld = client.tlds().get_tld(tld).unwrap().data.unwrap();
+    let tld = client.tlds().get_tld(tld).await.unwrap().data.unwrap();
 
     assert_eq!("com", tld.tld);
     assert_eq!(1, tld.tld_type);
@@ -45,17 +45,18 @@ fn test_get_tld() {
     assert_eq!("ds", tld.dnssec_interface_type.unwrap());
 }
 
-#[test]
-fn test_get_tld_extended_attributes() {
+#[tokio::test]
+async fn test_get_tld_extended_attributes() {
     let setup = setup_mock_for(
         "/tlds/com/extended_attributes",
         "getTldExtendedAttributes/success",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let tld = String::from("com");
 
-    let response = client.tlds().get_tld_extended_attributes(tld).unwrap();
+    let response = client.tlds().get_tld_extended_attributes(tld).await.unwrap();
     let extended_attributes = response.data.unwrap();
 
     assert_eq!(4, extended_attributes.len());

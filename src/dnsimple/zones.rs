@@ -91,14 +91,14 @@ impl Zones<'_> {
     ///
     /// `account_id`: The account ID
     /// `zone_name`: The zone name
-    pub fn activate_dns(
+    pub async fn activate_dns(
         &self,
         account_id: u64,
         zone_name: &str,
     ) -> Result<DNSimpleResponse<Zone>, DNSimpleError> {
         let path = format!("/{}/zones/{}/activation", account_id, zone_name);
 
-        self.client.put::<ActivateDnsEndpoint>(&path, Value::Null)
+        self.client.put::<ActivateDnsEndpoint>(&path, Value::Null).await
     }
 
     /// Deactivates DNS resolution for the zone in the account.
@@ -107,7 +107,7 @@ impl Zones<'_> {
     ///
     /// `account_id`: The account ID
     /// `zone_name`: The zone name
-    pub fn deactivate_dns(
+    pub async fn deactivate_dns(
         &self,
         account_id: u64,
         zone_name: &str,
@@ -116,6 +116,7 @@ impl Zones<'_> {
 
         self.client
             .delete_with_response::<ActivateDnsEndpoint>(&path)
+            .await
     }
 
     /// Lists the zones in the account.
@@ -123,14 +124,14 @@ impl Zones<'_> {
     /// # Arguments
     ///
     /// `account_id`: The account ID
-    pub fn list_zones(
+    pub async fn list_zones(
         &self,
         account_id: u64,
         options: Option<RequestOptions>,
     ) -> Result<DNSimpleResponse<Vec<Zone>>, DNSimpleError> {
         let path = format!("/{}/zones", account_id);
 
-        self.client.get::<ListZonesEndpoint>(&path, options)
+        self.client.get::<ListZonesEndpoint>(&path, options).await
     }
 
     /// Retrieve a zone
@@ -139,14 +140,14 @@ impl Zones<'_> {
     ///
     /// `account_id`: The account ID
     /// `zone`: The zone name
-    pub fn get_zone(
+    pub async fn get_zone(
         &self,
         account_id: u64,
         zone: &str,
     ) -> Result<DNSimpleResponse<Zone>, DNSimpleError> {
         let path = format!("/{}/zones/{}", account_id, zone);
 
-        self.client.get::<ZoneEndpoint>(&path, None)
+        self.client.get::<ZoneEndpoint>(&path, None).await
     }
 
     /// Download a zone file
@@ -155,14 +156,14 @@ impl Zones<'_> {
     ///
     /// `account_id`: The account ID
     /// `zone`: The zone name
-    pub fn get_zone_file(
+    pub async fn get_zone_file(
         &self,
         account_id: u64,
         zone: &str,
     ) -> Result<DNSimpleResponse<ZoneFile>, DNSimpleError> {
         let path = format!("/{}/zones/{}/file", account_id, zone);
 
-        self.client.get::<ZoneFileEndpoint>(&path, None)
+        self.client.get::<ZoneFileEndpoint>(&path, None).await
     }
 
     /// Check zone distribution
@@ -171,13 +172,13 @@ impl Zones<'_> {
     ///
     /// `account_id`: The account ID
     /// `zone`: The zone name
-    pub fn check_zone_distribution(
+    pub async fn check_zone_distribution(
         &self,
         account_id: u64,
         zone: &str,
     ) -> Result<DNSimpleResponse<ZoneDistribution>, DNSimpleError> {
         let path = format!("/{}/zones/{}/distribution", account_id, zone);
 
-        self.client.get::<DistributionEndpoint>(&path, None)
+        self.client.get::<DistributionEndpoint>(&path, None).await
     }
 }

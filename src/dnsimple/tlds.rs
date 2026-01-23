@@ -78,13 +78,13 @@ pub struct Tlds<'a> {
 
 impl Tlds<'_> {
     /// Returns the list of TLDs supported for registration or transfer.
-    pub fn list_tlds(
+    pub async fn list_tlds(
         &self,
         options: Option<RequestOptions>,
     ) -> Result<DNSimpleResponse<Vec<Tld>>, DNSimpleError> {
         let path = "/tlds";
 
-        self.client.get::<ListTldsEndpoint>(path, options)
+        self.client.get::<ListTldsEndpoint>(path, options).await
     }
 
     /// Retrieves the details of a supported TLD.
@@ -92,10 +92,10 @@ impl Tlds<'_> {
     /// # Attributes
     ///
     /// `tld`: The TLD name
-    pub fn get_tld(&self, tld: String) -> Result<DNSimpleResponse<Tld>, DNSimpleError> {
+    pub async fn get_tld(&self, tld: String) -> Result<DNSimpleResponse<Tld>, DNSimpleError> {
         let path = format!("/tlds/{}", tld);
 
-        self.client.get::<TldEndpoint>(&path, None)
+        self.client.get::<TldEndpoint>(&path, None).await
     }
 
     /// Lists the TLD Extended Attributes
@@ -103,7 +103,7 @@ impl Tlds<'_> {
     /// # Attributes
     ///
     /// `tld`: The TLD name
-    pub fn get_tld_extended_attributes(
+    pub async fn get_tld_extended_attributes(
         &self,
         tld: String,
     ) -> Result<DNSimpleResponse<Vec<TldExtendedAttribute>>, DNSimpleError> {
@@ -111,5 +111,6 @@ impl Tlds<'_> {
 
         self.client
             .get::<ListTldsExtendedAttributesEndpoint>(&path, None)
+            .await
     }
 }

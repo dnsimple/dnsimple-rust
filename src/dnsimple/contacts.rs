@@ -101,14 +101,14 @@ impl Contacts<'_> {
     /// `account_id`: The account ID
     /// `options`: The `RequestOptions`
     ///            - Sort: `id`, `label`, `email`
-    pub fn list_contacts(
+    pub async fn list_contacts(
         &self,
         account_id: u64,
         options: Option<RequestOptions>,
     ) -> Result<DNSimpleResponse<Vec<Contact>>, DNSimpleError> {
         let path = format!("/{}/contacts", account_id);
 
-        self.client.get::<ContactsEndpoint>(&path, options)
+        self.client.get::<ContactsEndpoint>(&path, options).await
     }
 
     /// Create a contact in the account.
@@ -117,7 +117,7 @@ impl Contacts<'_> {
     ///
     /// `account_id`: The account ID
     /// `payload`: The `ContactPayload` with the information needed to create the contact
-    pub fn create_contact(
+    pub async fn create_contact(
         &self,
         account_id: u64,
         payload: ContactPayload,
@@ -125,7 +125,7 @@ impl Contacts<'_> {
         let path = format!("/{}/contacts", account_id);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<ContactEndpoint>(&path, json),
+            Ok(json) => self.client.post::<ContactEndpoint>(&path, json).await,
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -138,14 +138,14 @@ impl Contacts<'_> {
     ///
     /// `account_id`: The account ID
     /// `contact`: The contact id
-    pub fn get_contact(
+    pub async fn get_contact(
         &self,
         account_id: u64,
         contact: u64,
     ) -> Result<DNSimpleResponse<Contact>, DNSimpleError> {
         let path = format!("/{}/contacts/{}", account_id, contact);
 
-        self.client.get::<ContactEndpoint>(&path, None)
+        self.client.get::<ContactEndpoint>(&path, None).await
     }
 
     /// Update a contact
@@ -155,7 +155,7 @@ impl Contacts<'_> {
     /// `account_id`: The account ID
     /// `contact`: The contact id
     /// `payload`: The `ContactPayload` with the information needed to update the contact
-    pub fn update_contact(
+    pub async fn update_contact(
         &self,
         account_id: u64,
         contact: u64,
@@ -164,7 +164,7 @@ impl Contacts<'_> {
         let path = format!("/{}/contacts/{}", account_id, contact);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.patch::<ContactEndpoint>(&path, json),
+            Ok(json) => self.client.patch::<ContactEndpoint>(&path, json).await,
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -177,13 +177,13 @@ impl Contacts<'_> {
     ///
     /// `account_id`: The account ID
     /// `contact`: The contact id
-    pub fn delete_contact(
+    pub async fn delete_contact(
         &self,
         account_id: u64,
         contact: u64,
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/contacts/{}", account_id, contact);
 
-        self.client.delete(&path)
+        self.client.delete(&path).await
     }
 }

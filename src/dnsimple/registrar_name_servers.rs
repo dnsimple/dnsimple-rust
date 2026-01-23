@@ -40,14 +40,14 @@ impl Registrar<'_> {
     ///
     /// `account_id`: The account ID
     /// `domain`: The domain name or id
-    pub fn get_domain_delegation(
+    pub async fn get_domain_delegation(
         &self,
         account_id: u64,
         domain: String,
     ) -> Result<DNSimpleResponse<Vec<String>>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/delegation", account_id, domain);
 
-        self.client.get::<DomainDelegationEndpoint>(&path, None)
+        self.client.get::<DomainDelegationEndpoint>(&path, None).await
     }
 
     /// Change domain name servers
@@ -57,7 +57,7 @@ impl Registrar<'_> {
     /// `account_id`: The account ID
     /// `domain`: The domain name or id
     /// `server_names`: A list of name server names as strings
-    pub fn change_domain_delegation(
+    pub async fn change_domain_delegation(
         &self,
         account_id: u64,
         domain: String,
@@ -67,6 +67,7 @@ impl Registrar<'_> {
 
         self.client
             .put::<DomainDelegationEndpoint>(&path, Value::from(server_names))
+            .await
     }
 
     /// Delegate to vanity name servers
@@ -76,7 +77,7 @@ impl Registrar<'_> {
     /// `account_id`: The account ID
     /// `domain`: The domain name or id
     /// `server_names`: A list of name server names as strings
-    pub fn change_domain_delegation_to_vanity(
+    pub async fn change_domain_delegation_to_vanity(
         &self,
         account_id: u64,
         domain: String,
@@ -89,6 +90,7 @@ impl Registrar<'_> {
 
         self.client
             .put::<DomainDelegationVanityEndpoint>(&path, Value::from(server_names))
+            .await
     }
 
     /// De-delegate from vanity name servers
@@ -97,7 +99,7 @@ impl Registrar<'_> {
     ///
     /// `account_id`: The account ID
     /// `domain`: The domain name or id
-    pub fn change_domain_delegation_from_vanity(
+    pub async fn change_domain_delegation_from_vanity(
         &self,
         account_id: u64,
         domain: String,
@@ -107,6 +109,6 @@ impl Registrar<'_> {
             account_id, domain
         );
 
-        self.client.delete(&path)
+        self.client.delete(&path).await
     }
 }

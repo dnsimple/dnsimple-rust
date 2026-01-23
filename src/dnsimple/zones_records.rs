@@ -88,7 +88,7 @@ impl Zones<'_> {
     ///
     /// `account_id`: The account ID
     /// `zone`: The zone name
-    pub fn list_zone_records(
+    pub async fn list_zone_records(
         &self,
         account_id: u64,
         zone: &str,
@@ -96,7 +96,7 @@ impl Zones<'_> {
     ) -> Result<DNSimpleResponse<Vec<ZoneRecord>>, DNSimpleError> {
         let path = format!("/{}/zones/{}/records", account_id, zone);
 
-        self.client.get::<ZoneRecordsEndpoint>(&path, options)
+        self.client.get::<ZoneRecordsEndpoint>(&path, options).await
     }
 
     /// Create a zone record
@@ -106,7 +106,7 @@ impl Zones<'_> {
     /// `account_id`: The account ID
     /// `zone`: The zone name
     /// `payload`: The `ZoneRecordPayload` with the information to create the zone record
-    pub fn create_zone_record(
+    pub async fn create_zone_record(
         &self,
         account_id: u64,
         zone: &str,
@@ -115,7 +115,7 @@ impl Zones<'_> {
         let path = format!("/{}/zones/{}/records", account_id, zone);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<ZoneRecordEndpoint>(&path, json),
+            Ok(json) => self.client.post::<ZoneRecordEndpoint>(&path, json).await,
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -129,7 +129,7 @@ impl Zones<'_> {
     /// `account_id`: The account ID
     /// `zone`: The zone name
     /// `record`: The record id
-    pub fn get_zone_record(
+    pub async fn get_zone_record(
         &self,
         account_id: u64,
         zone: &str,
@@ -137,7 +137,7 @@ impl Zones<'_> {
     ) -> Result<DNSimpleResponse<ZoneRecord>, DNSimpleError> {
         let path = format!("/{}/zones/{}/records/{}", account_id, zone, record);
 
-        self.client.get::<ZoneRecordEndpoint>(&path, None)
+        self.client.get::<ZoneRecordEndpoint>(&path, None).await
     }
 
     /// Update a zone record
@@ -148,7 +148,7 @@ impl Zones<'_> {
     /// `zone`: The zone name
     /// `record`: The record id
     /// `payload`: The `ZoneRecordUpdatePayload` with the information to create the zone record
-    pub fn update_zone_record(
+    pub async fn update_zone_record(
         &self,
         account_id: u64,
         zone: &str,
@@ -158,7 +158,7 @@ impl Zones<'_> {
         let path = format!("/{}/zones/{}/records/{}", account_id, zone, record);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.patch::<ZoneRecordEndpoint>(&path, json),
+            Ok(json) => self.client.patch::<ZoneRecordEndpoint>(&path, json).await,
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -172,7 +172,7 @@ impl Zones<'_> {
     /// `account_id`: The account ID
     /// `zone`: The zone name
     /// `record`: The record id
-    pub fn delete_zone_record(
+    pub async fn delete_zone_record(
         &self,
         account_id: u64,
         zone: &str,
@@ -180,7 +180,7 @@ impl Zones<'_> {
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/zones/{}/records/{}", account_id, zone, record);
 
-        self.client.delete(&path)
+        self.client.delete(&path).await
     }
 
     /// Check zone record distribution
@@ -190,7 +190,7 @@ impl Zones<'_> {
     /// `account_id`: The account ID
     /// `zone`: The zone name
     /// `record`: The record id
-    pub fn check_zone_record_distribution(
+    pub async fn check_zone_record_distribution(
         &self,
         account_id: u64,
         zone: &str,
@@ -201,6 +201,6 @@ impl Zones<'_> {
             account_id, zone, record
         );
 
-        self.client.get::<DistributionEndpoint>(&path, None)
+        self.client.get::<DistributionEndpoint>(&path, None).await
     }
 }

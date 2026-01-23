@@ -2,11 +2,11 @@ use crate::common::setup_mock_for;
 
 mod common;
 
-#[test]
-fn whoami_success_with_account() {
-    let setup = setup_mock_for("/whoami", "whoami/success-account", "GET");
+#[tokio::test]
+async fn whoami_success_with_account() {
+    let setup = setup_mock_for("/whoami", "whoami/success-account", "GET").await;
     let client = setup.0;
-    let identity = client.identity().whoami().unwrap();
+    let identity = client.identity().whoami().await.unwrap();
 
     let account = identity.data.unwrap().account.unwrap();
 
@@ -15,11 +15,11 @@ fn whoami_success_with_account() {
     assert_eq!("teams-v1-monthly", account.plan_identifier);
 }
 
-#[test]
-fn whoami_success_with_user() {
-    let setup = setup_mock_for("/whoami", "whoami/success-user", "GET");
+#[tokio::test]
+async fn whoami_success_with_user() {
+    let setup = setup_mock_for("/whoami", "whoami/success-user", "GET").await;
     let client = setup.0;
-    let identity_response = client.identity().whoami().unwrap().data.unwrap();
+    let identity_response = client.identity().whoami().await.unwrap().data.unwrap();
 
     let user = identity_response.user.unwrap();
 
