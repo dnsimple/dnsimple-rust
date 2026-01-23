@@ -96,7 +96,7 @@ impl OAuth<'_> {
         let response = self
             .client
             ._client
-            .post(&self.client.url(path))
+            .post(self.client.url(path))
             .json(&value)
             .send()
             .await

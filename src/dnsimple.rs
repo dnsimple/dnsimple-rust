@@ -594,7 +594,7 @@ impl Client {
 
         let request = self
             ._client
-            .get(&self.url(path))
+            .get(self.url(path))
             .header("User-Agent", &self.user_agent)
             .header("Accept", "application/json")
             .query(&query_params);
@@ -605,7 +605,7 @@ impl Client {
     pub fn build_post_request(&self, path: &str) -> reqwest::RequestBuilder {
         let request = self
             ._client
-            .post(&self.url(path))
+            .post(self.url(path))
             .header("User-Agent", &self.user_agent)
             .header("Accept", "application/json");
         self.add_headers_to_request(request)
@@ -614,7 +614,7 @@ impl Client {
     pub fn build_put_request(&self, path: &str) -> reqwest::RequestBuilder {
         let request = self
             ._client
-            .put(&self.url(path))
+            .put(self.url(path))
             .header("User-Agent", &self.user_agent)
             .header("Accept", "application/json");
         self.add_headers_to_request(request)
@@ -623,7 +623,7 @@ impl Client {
     pub fn build_patch_request(&self, path: &str) -> reqwest::RequestBuilder {
         let request = self
             ._client
-            .patch(&self.url(path))
+            .patch(self.url(path))
             .header("User-Agent", &self.user_agent)
             .header("Accept", "application/json");
         self.add_headers_to_request(request)
@@ -632,7 +632,7 @@ impl Client {
     fn build_delete_request(&self, path: &str) -> reqwest::RequestBuilder {
         let request = self
             ._client
-            .delete(&self.url(path))
+            .delete(self.url(path))
             .header("User-Agent", &self.user_agent)
             .header("Accept", "application/json");
         self.add_headers_to_request(request)
