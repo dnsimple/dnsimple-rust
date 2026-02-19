@@ -2,12 +2,12 @@ use crate::common::setup_mock_for;
 
 mod common;
 
-#[test]
-fn list_accounts_account_success() {
-    let setup = setup_mock_for("/accounts", "accounts/success-account", "GET");
+#[tokio::test]
+async fn list_accounts_account_success() {
+    let setup = setup_mock_for("/accounts", "accounts/success-account", "GET").await;
     let client = setup.0;
 
-    let accounts_response = client.accounts().list_accounts();
+    let accounts_response = client.accounts().list_accounts().await;
     let accounts = accounts_response.unwrap().data.unwrap();
 
     assert_eq!(1, accounts.len());
@@ -17,12 +17,12 @@ fn list_accounts_account_success() {
     assert_eq!("dnsimple-personal", account.plan_identifier);
 }
 
-#[test]
-fn list_accounts_user_success() {
-    let setup = setup_mock_for("/accounts", "accounts/success-user", "GET");
+#[tokio::test]
+async fn list_accounts_user_success() {
+    let setup = setup_mock_for("/accounts", "accounts/success-user", "GET").await;
     let client = setup.0;
 
-    let accounts_response = client.accounts().list_accounts();
+    let accounts_response = client.accounts().list_accounts().await;
     let accounts = accounts_response.unwrap().data.unwrap();
 
     assert_eq!(2, accounts.len());

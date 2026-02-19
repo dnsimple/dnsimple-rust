@@ -5,12 +5,12 @@ use serde_json::json;
 
 mod common;
 
-#[test]
-fn validation_error() {
-    let setup = setup_mock_for("/whoami", "validation-error", "GET");
+#[tokio::test]
+async fn validation_error() {
+    let setup = setup_mock_for("/whoami", "validation-error", "GET").await;
     let client = setup.0;
 
-    let response = client.identity().whoami();
+    let response = client.identity().whoami().await;
     let error = response.unwrap_err();
 
     assert_eq!("Validation failed", error.to_string());
@@ -20,45 +20,45 @@ fn validation_error() {
     })
 }
 
-#[test]
-fn not_found() {
-    let setup = setup_mock_for("/whoami", "notfound-certificate", "GET");
+#[tokio::test]
+async fn not_found() {
+    let setup = setup_mock_for("/whoami", "notfound-certificate", "GET").await;
     let client = setup.0;
 
-    let response = client.identity().whoami();
+    let response = client.identity().whoami().await;
     let error = response.unwrap_err();
 
     assert_eq!("Certificate `0` not found", error.to_string());
 }
 
-#[test]
-fn method_not_allowed() {
-    let setup = setup_mock_for("/whoami", "method-not-allowed", "GET");
+#[tokio::test]
+async fn method_not_allowed() {
+    let setup = setup_mock_for("/whoami", "method-not-allowed", "GET").await;
     let client = setup.0;
 
-    let response = client.identity().whoami();
+    let response = client.identity().whoami().await;
     let error = response.unwrap_err();
 
     assert_eq!("Method not Allowed", error.to_string());
 }
 
-#[test]
-fn bad_gateway() {
-    let setup = setup_mock_for("/whoami", "badgateway", "GET");
+#[tokio::test]
+async fn bad_gateway() {
+    let setup = setup_mock_for("/whoami", "badgateway", "GET").await;
     let client = setup.0;
 
-    let response = client.identity().whoami();
+    let response = client.identity().whoami().await;
     let error = response.unwrap_err();
 
     assert_eq!("Bad Gateway", error.to_string());
 }
-#[test]
-fn transport() {
-    let setup = setup_mock_for("/other", "badgateway", "GET");
+#[tokio::test]
+async fn transport() {
+    let setup = setup_mock_for("/other", "badgateway", "GET").await;
     let client = setup.0;
 
-    let response = client.identity().whoami();
+    let response = client.identity().whoami().await;
     let error = response.unwrap_err();
 
-    assert_eq!("Transport Error - 501(Not Implemented)", error.to_string());
+    assert_eq!("Transport Error - 501(Unknown error)", error.to_string());
 }

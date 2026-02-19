@@ -2,15 +2,16 @@ use crate::common::setup_mock_for;
 use dnsimple::dnsimple::templates::{TemplatePayload, TemplateRecordPayload};
 mod common;
 
-#[test]
-fn list_templates_test() {
-    let setup = setup_mock_for("/1010/templates", "listTemplates/success", "GET");
+#[tokio::test]
+async fn list_templates_test() {
+    let setup = setup_mock_for("/1010/templates", "listTemplates/success", "GET").await;
     let client = setup.0;
     let account_id = 1010;
 
     let templates = client
         .templates()
         .list_templates(account_id, None)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -18,9 +19,9 @@ fn list_templates_test() {
     assert_eq!(2, templates.len());
 }
 
-#[test]
-fn create_template_test() {
-    let setup = setup_mock_for("/1010/templates", "createTemplate/created", "POST");
+#[tokio::test]
+async fn create_template_test() {
+    let setup = setup_mock_for("/1010/templates", "createTemplate/created", "POST").await;
     let client = setup.0;
     let account_id = 1010;
     let payload = TemplatePayload {
@@ -32,6 +33,7 @@ fn create_template_test() {
     let template = client
         .templates()
         .create_template(account_id, payload)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -45,9 +47,9 @@ fn create_template_test() {
     assert_eq!("2016-03-24T11:09:16Z", template.updated_at);
 }
 
-#[test]
-fn get_template_test() {
-    let setup = setup_mock_for("/1010/templates/alpha", "getTemplate/success", "GET");
+#[tokio::test]
+async fn get_template_test() {
+    let setup = setup_mock_for("/1010/templates/alpha", "getTemplate/success", "GET").await;
     let client = setup.0;
     let account_id = 1010;
     let template = String::from("alpha");
@@ -55,6 +57,7 @@ fn get_template_test() {
     let template = client
         .templates()
         .get_template(account_id, template)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -68,9 +71,9 @@ fn get_template_test() {
     assert_eq!("2016-03-22T11:08:58Z", template.updated_at);
 }
 
-#[test]
-fn update_template_test() {
-    let setup = setup_mock_for("/1010/templates/beta", "updateTemplate/success", "PATCH");
+#[tokio::test]
+async fn update_template_test() {
+    let setup = setup_mock_for("/1010/templates/beta", "updateTemplate/success", "PATCH").await;
     let client = setup.0;
     let account_id = 1010;
     let template_id = String::from("beta");
@@ -84,6 +87,7 @@ fn update_template_test() {
     let template = client
         .templates()
         .update_template(account_id, template_id, payload)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -97,26 +101,30 @@ fn update_template_test() {
     assert_eq!("2016-03-22T11:08:58Z", template.updated_at);
 }
 
-#[test]
-fn delete_template() {
-    let setup = setup_mock_for("/1010/templates/beta", "deleteTemplate/success", "DELETE");
+#[tokio::test]
+async fn delete_template() {
+    let setup = setup_mock_for("/1010/templates/beta", "deleteTemplate/success", "DELETE").await;
     let client = setup.0;
     let account_id = 1010;
     let template_id = String::from("beta");
 
-    let response = client.templates().delete_template(account_id, template_id);
+    let response = client
+        .templates()
+        .delete_template(account_id, template_id)
+        .await;
 
     assert!(response.is_ok());
     assert_eq!(204, response.unwrap().status);
 }
 
-#[test]
-fn list_template_records() {
+#[tokio::test]
+async fn list_template_records() {
     let setup = setup_mock_for(
         "/1010/templates/beta/records",
         "listTemplateRecords/success",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let template = String::from("beta");
@@ -124,6 +132,7 @@ fn list_template_records() {
     let records = client
         .templates()
         .list_template_records(account_id, template, None)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -131,13 +140,14 @@ fn list_template_records() {
     assert_eq!(2, records.len());
 }
 
-#[test]
-fn create_template_record() {
+#[tokio::test]
+async fn create_template_record() {
     let setup = setup_mock_for(
         "/1010/templates/beta/records",
         "createTemplateRecord/created",
         "POST",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let template = String::from("beta");
@@ -152,6 +162,7 @@ fn create_template_record() {
     let record = client
         .templates()
         .create_template_record(account_id, template, payload)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -167,13 +178,14 @@ fn create_template_record() {
     assert_eq!("2016-05-03T07:51:33Z", record.updated_at);
 }
 
-#[test]
-fn get_template_record() {
+#[tokio::test]
+async fn get_template_record() {
     let setup = setup_mock_for(
         "/1010/templates/beta/records/301",
         "getTemplateRecord/success",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let template = String::from("beta");
@@ -182,6 +194,7 @@ fn get_template_record() {
     let record = client
         .templates()
         .get_template_record(account_id, template, record_id)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -197,13 +210,14 @@ fn get_template_record() {
     assert_eq!("2016-05-03T08:03:26Z", record.updated_at);
 }
 
-#[test]
-fn delete_template_record() {
+#[tokio::test]
+async fn delete_template_record() {
     let setup = setup_mock_for(
         "/1010/templates/beta/records/301",
         "deleteTemplateRecord/success",
         "DELETE",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let template = String::from("beta");
@@ -211,19 +225,21 @@ fn delete_template_record() {
 
     let response = client
         .templates()
-        .delete_template_record(account_id, template, record_id);
+        .delete_template_record(account_id, template, record_id)
+        .await;
 
     assert!(response.is_ok());
     assert_eq!(204, response.unwrap().status);
 }
 
-#[test]
-fn apply_template() {
+#[tokio::test]
+async fn apply_template() {
     let setup = setup_mock_for(
         "/1010/domains/example.com/templates/301",
         "applyTemplate/success",
         "POST",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let domain = String::from("example.com");
@@ -231,7 +247,8 @@ fn apply_template() {
 
     let response = client
         .templates()
-        .apply_template(account_id, domain, template);
+        .apply_template(account_id, domain, template)
+        .await;
 
     assert!(response.is_ok());
     assert_eq!(204, response.unwrap().status);

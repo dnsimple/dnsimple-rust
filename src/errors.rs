@@ -1,7 +1,6 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use thiserror::Error;
-use ureq::{Response, Transport};
 
 /// Represents the possible errors thrown while interacting with the DNSimple API
 #[derive(Error, Deserialize, Serialize, Debug, PartialEq, Eq)]
@@ -36,57 +35,57 @@ pub enum DNSimpleError {
 }
 
 impl DNSimpleError {
-    pub fn parse_response(code: u16, response: Response) -> DNSimpleError {
+    pub fn parse_response(code: u16, body: Option<Value>) -> DNSimpleError {
         match code {
-            400 => Self::bad_request(response),
+            400 => Self::bad_request(body),
             401 => Self::Unauthorized,
             402 => Self::PaymentRequired,
-            404 => Self::not_found(response),
+            404 => Self::not_found(body),
             405 => Self::MethodNotAllowed,
-            428 => Self::precondition_required(response),
+            428 => Self::precondition_required(body),
             429 => Self::TooManyRequests,
             502 => Self::BadGateway,
             503 => Self::ServiceUnavailable,
-            504 => Self::gateway_timeout(response),
-            _ => Self::Transport(
-                response.status().to_string(),
-                response.status_text().to_string(),
-            ),
+            504 => Self::gateway_timeout(body),
+            _ => Self::Transport(code.to_string(), "Unknown error".to_string()),
         }
     }
 
-    pub fn parse_transport(transport: Transport) -> DNSimpleError {
-        Self::Transport(transport.to_string(), transport.kind().to_string())
+    pub fn parse_reqwest_error(error: reqwest::Error) -> DNSimpleError {
+        Self::Transport(error.to_string(), "Request error".to_string())
     }
 
-    fn bad_request(response: Response) -> DNSimpleError {
-        match Self::response_to_json(response) {
-            Ok(json) => Self::BadRequest {
+    fn bad_request(body: Option<Value>) -> DNSimpleError {
+        match body {
+            Some(json) => Self::BadRequest {
                 message: Self::message_in(&json),
                 attribute_errors: Some(json["errors"].clone()),
             },
-            Err(error) => error,
+            None => Self::BadRequest {
+                message: String::from("Bad Request"),
+                attribute_errors: None,
+            },
         }
     }
 
-    fn gateway_timeout(response: Response) -> DNSimpleError {
-        match Self::response_to_json(response) {
-            Ok(json) => Self::GatewayTimeout(Self::message_in(&json)),
-            Err(error) => error,
+    fn gateway_timeout(body: Option<Value>) -> DNSimpleError {
+        match body {
+            Some(json) => Self::GatewayTimeout(Self::message_in(&json)),
+            None => Self::GatewayTimeout(String::from("Gateway Timeout")),
         }
     }
 
-    fn not_found(response: Response) -> DNSimpleError {
-        match Self::response_to_json(response) {
-            Ok(json) => Self::NotFound(Self::message_in(&json)),
-            Err(error) => error,
+    fn not_found(body: Option<Value>) -> DNSimpleError {
+        match body {
+            Some(json) => Self::NotFound(Self::message_in(&json)),
+            None => Self::NotFound(String::from("Not Found")),
         }
     }
 
-    fn precondition_required(response: Response) -> DNSimpleError {
-        match Self::response_to_json(response) {
-            Ok(json) => Self::PreconditionRequired(Self::message_in(&json)),
-            Err(error) => error,
+    fn precondition_required(body: Option<Value>) -> DNSimpleError {
+        match body {
+            Some(json) => Self::PreconditionRequired(Self::message_in(&json)),
+            None => Self::PreconditionRequired(String::from("Precondition Required")),
         }
     }
 
@@ -94,13 +93,6 @@ impl DNSimpleError {
         match json["message"].as_str() {
             None => String::from("Unable to parse error message"),
             Some(json_string) => json_string.to_string(),
-        }
-    }
-
-    fn response_to_json(response: Response) -> Result<Value, DNSimpleError> {
-        match response.into_json::<Value>() {
-            Ok(value) => Ok(value),
-            Err(error) => Err(DNSimpleError::Deserialization(error.to_string())),
         }
     }
 }

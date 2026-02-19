@@ -3,13 +3,14 @@ use dnsimple::dnsimple::domains_signer_records::DelegationSignerRecordPayload;
 
 mod common;
 
-#[test]
-fn test_list_delegation_signer_records() {
+#[tokio::test]
+async fn test_list_delegation_signer_records() {
     let setup = setup_mock_for(
         "/1385/domains/example.com/ds_records",
         "listDelegationSignerRecords/success",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1385_u64;
     let domain = "example.com";
@@ -17,6 +18,7 @@ fn test_list_delegation_signer_records() {
     let response = client
         .domains()
         .list_delegation_signer_records(account_id, domain, None)
+        .await
         .unwrap();
     let signer_records = response.data.unwrap();
 
@@ -38,13 +40,14 @@ fn test_list_delegation_signer_records() {
     assert_eq!("2017-03-03T13:49:58Z", record.updated_at);
 }
 
-#[test]
-fn test_create_delegation_signer_record() {
+#[tokio::test]
+async fn test_create_delegation_signer_record() {
     let setup = setup_mock_for(
         "/1385/domains/example.com/ds_records",
         "createDelegationSignerRecord/created",
         "POST",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
@@ -60,6 +63,7 @@ fn test_create_delegation_signer_record() {
     let record = client
         .domains()
         .create_delegation_signer_record(account_id, domain, payload)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -78,13 +82,14 @@ fn test_create_delegation_signer_record() {
     assert_eq!("2017-03-03T15:24:00Z", record.updated_at);
 }
 
-#[test]
-fn test_create_delegation_signer_record_validation_error() {
+#[tokio::test]
+async fn test_create_delegation_signer_record_validation_error() {
     let setup = setup_mock_for(
         "/1385/domains/example.com/ds_records",
         "createDelegationSignerRecord/validation-error",
         "POST",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
@@ -99,7 +104,8 @@ fn test_create_delegation_signer_record_validation_error() {
 
     let response = client
         .domains()
-        .create_delegation_signer_record(account_id, domain, payload);
+        .create_delegation_signer_record(account_id, domain, payload)
+        .await;
 
     assert!(response.is_err());
 
@@ -108,13 +114,14 @@ fn test_create_delegation_signer_record_validation_error() {
     assert_eq!("Validation failed", err.to_string());
 }
 
-#[test]
-fn test_get_delegation_signer_record() {
+#[tokio::test]
+async fn test_get_delegation_signer_record() {
     let setup = setup_mock_for(
         "/1385/domains/example.com/ds_records",
         "getDelegationSignerRecord/success",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
@@ -122,6 +129,7 @@ fn test_get_delegation_signer_record() {
     let record = client
         .domains()
         .get_delegation_signer_record(account_id, domain)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -140,23 +148,23 @@ fn test_get_delegation_signer_record() {
     assert_eq!("2017-03-03T13:49:58Z", record.updated_at);
 }
 
-#[test]
-fn test_delete_delegation_signer_record() {
+#[tokio::test]
+async fn test_delete_delegation_signer_record() {
     let setup = setup_mock_for(
         "/1385/domains/example.com/ds_records/24",
         "deleteDelegationSignerRecord/success",
         "DELETE",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
     let delegation_signer_record_id = 24;
 
-    let response = client.domains().delete_delegation_signer_record(
-        account_id,
-        domain,
-        delegation_signer_record_id,
-    );
+    let response = client
+        .domains()
+        .delete_delegation_signer_record(account_id, domain, delegation_signer_record_id)
+        .await;
 
     assert!(response.is_ok());
     assert_eq!(204, response.unwrap().status);

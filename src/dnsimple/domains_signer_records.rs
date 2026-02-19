@@ -64,8 +64,11 @@ impl Domains<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let signer_records = client.domains().list_delegation_signer_records(1234, "example.com", None).unwrap().data.unwrap();
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let signer_records = client.domains().list_delegation_signer_records(1234, "example.com", None).await.unwrap().data.unwrap();
+    /// }
     /// ```
     ///
     /// # Arguments
@@ -75,7 +78,7 @@ impl Domains<'_> {
     /// `options` The `RequestOptions`
     ///           - Sort: `id`, `created_at`
     ///           - Pagination
-    pub fn list_delegation_signer_records(
+    pub async fn list_delegation_signer_records(
         &self,
         account_id: u64,
         domain: &str,
@@ -83,7 +86,9 @@ impl Domains<'_> {
     ) -> Result<DNSimpleResponse<Vec<DelegationSignerRecord>>, DNSimpleError> {
         let path = format!("/{}/domains/{}/ds_records", account_id, domain);
 
-        self.client.get::<ListSignerRecordsEndpoint>(&path, options)
+        self.client
+            .get::<ListSignerRecordsEndpoint>(&path, options)
+            .await
     }
 
     /// Creates a delegation signer record
@@ -98,15 +103,18 @@ impl Domains<'_> {
     /// use dnsimple::dnsimple::domains_signer_records::DelegationSignerRecordPayload;
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let payload = DelegationSignerRecordPayload {
-    ///     algorithm: String::from("13"),
-    ///     digest: String::from("684a1f049d7d082b7f98691657da5a65764913df7f065f6f8c36edf62d66ca03"),
-    ///     digest_type: String::from("2"),
-    ///     keytag: String::from("2371"),
-    ///     public_key: None,
-    /// };
-    /// let signer_record = client.domains().create_delegation_signer_record(1234, "example.com", payload).unwrap().data.unwrap();
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let payload = DelegationSignerRecordPayload {
+    ///         algorithm: String::from("13"),
+    ///         digest: String::from("684a1f049d7d082b7f98691657da5a65764913df7f065f6f8c36edf62d66ca03"),
+    ///         digest_type: String::from("2"),
+    ///         keytag: String::from("2371"),
+    ///         public_key: None,
+    ///     };
+    ///     let signer_record = client.domains().create_delegation_signer_record(1234, "example.com", payload).await.unwrap().data.unwrap();
+    /// }
     /// ```
     ///
     /// # Arguments
@@ -114,7 +122,7 @@ impl Domains<'_> {
     /// `account_id`: The account ID
     /// `domain`: The ID or name of the domain we want list the signer records from
     /// `payload`: The `SignerRecordPayload` with the data needed to create the delegation signer record
-    pub fn create_delegation_signer_record(
+    pub async fn create_delegation_signer_record(
         &self,
         account_id: u64,
         domain: &str,
@@ -123,7 +131,7 @@ impl Domains<'_> {
         let path = format!("/{}/domains/{}/ds_records", account_id, domain);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<SignerRecordEndpoint>(&path, json),
+            Ok(json) => self.client.post::<SignerRecordEndpoint>(&path, json).await,
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -137,22 +145,25 @@ impl Domains<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let signer_records = client.domains().get_delegation_signer_record(1234, "example.com").unwrap().data.unwrap();
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let signer_records = client.domains().get_delegation_signer_record(1234, "example.com").await.unwrap().data.unwrap();
+    /// }
     /// ```
     ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
     /// `domain`: The ID or name of the domain we want list the signer records from
-    pub fn get_delegation_signer_record(
+    pub async fn get_delegation_signer_record(
         &self,
         account_id: u64,
         domain: &str,
     ) -> Result<DNSimpleResponse<DelegationSignerRecord>, DNSimpleError> {
         let path = format!("/{}/domains/{}/ds_records", account_id, domain);
 
-        self.client.get::<SignerRecordEndpoint>(&path, None)
+        self.client.get::<SignerRecordEndpoint>(&path, None).await
     }
 
     /// Delete a Delegation Signer record
@@ -162,8 +173,11 @@ impl Domains<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let response = client.domains().delete_delegation_signer_record(1234, "example.com", 42);
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let response = client.domains().delete_delegation_signer_record(1234, "example.com", 42).await;
+    /// }
     /// ```
     ///
     /// # Arguments
@@ -171,7 +185,7 @@ impl Domains<'_> {
     /// `account_id`: The account ID
     /// `domain`: The ID or name of the domain we want list the signer records from
     /// `ds_record_id`: The delegation signer record id
-    pub fn delete_delegation_signer_record(
+    pub async fn delete_delegation_signer_record(
         &self,
         account_id: u64,
         domain: &str,
@@ -182,6 +196,6 @@ impl Domains<'_> {
             account_id, domain, delegation_signer_record_id
         );
 
-        self.client.delete(&path)
+        self.client.delete(&path).await
     }
 }

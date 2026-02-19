@@ -2,13 +2,14 @@ use crate::common::setup_mock_for;
 use dnsimple::dnsimple::domains_email_forwards::EmailForwardPayload;
 mod common;
 
-#[test]
-fn test_list_email_forwards() {
+#[tokio::test]
+async fn test_list_email_forwards() {
     let setup = setup_mock_for(
         "/1385/domains/example.com/email_forwards",
         "listEmailForwards/success",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1385_u64;
     let domain = "example.com";
@@ -16,6 +17,7 @@ fn test_list_email_forwards() {
     let response = client
         .domains()
         .list_email_forwards(account_id, domain, None)
+        .await
         .unwrap();
     let email_forwards_list = response.data.unwrap();
 
@@ -33,13 +35,14 @@ fn test_list_email_forwards() {
 }
 
 #[allow(deprecated)]
-#[test]
-fn test_create_email_forward() {
+#[tokio::test]
+async fn test_create_email_forward() {
     let setup = setup_mock_for(
         "/1385/domains/example.com/email_forwards",
         "createEmailForward/created",
         "POST",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1385_u64;
     let domain = "example.com";
@@ -51,6 +54,7 @@ fn test_create_email_forward() {
     let record = client
         .domains()
         .create_email_forward(account_id, domain, payload)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -65,13 +69,14 @@ fn test_create_email_forward() {
 }
 
 #[allow(deprecated)]
-#[test]
-fn test_get_email_forward() {
+#[tokio::test]
+async fn test_get_email_forward() {
     let setup = setup_mock_for(
         "/1385/domains/example.com/email_forwards/41872",
         "getEmailForward/success",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1385_u64;
     let domain = "example.com";
@@ -80,6 +85,7 @@ fn test_get_email_forward() {
     let record = client
         .domains()
         .get_email_forward(account_id, domain, email_forward)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -93,13 +99,14 @@ fn test_get_email_forward() {
     assert!(record.active);
 }
 
-#[test]
-fn test_delete_email_forward() {
+#[tokio::test]
+async fn test_delete_email_forward() {
     let setup = setup_mock_for(
         "/1385/domains/example.com/email_forwards/41872",
         "deleteEmailForward/success",
         "DELETE",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1385_u64;
     let domain = "example.com";
@@ -107,7 +114,8 @@ fn test_delete_email_forward() {
 
     let response = client
         .domains()
-        .delete_email_forward(account_id, domain, email_forward);
+        .delete_email_forward(account_id, domain, email_forward)
+        .await;
 
     assert!(response.is_ok());
     assert_eq!(204, response.unwrap().status);

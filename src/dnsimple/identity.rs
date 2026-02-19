@@ -61,13 +61,15 @@ impl Identity<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::{Client, new_client};
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let response = client.identity().whoami().unwrap().data.unwrap();
-    /// let account = response.account.unwrap();
-    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let response = client.identity().whoami().await.unwrap().data.unwrap();
+    ///     let account = response.account.unwrap();
+    /// }
     /// ```
-    pub fn whoami(&self) -> Result<DNSimpleResponse<WhoamiData>, DNSimpleError> {
-        self.client.get::<IdentityEndpoint>("/whoami", None)
+    pub async fn whoami(&self) -> Result<DNSimpleResponse<WhoamiData>, DNSimpleError> {
+        self.client.get::<IdentityEndpoint>("/whoami", None).await
     }
 }
 
