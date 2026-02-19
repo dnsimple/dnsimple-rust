@@ -26,6 +26,7 @@ pub mod domains;
 pub mod domains_dnssec;
 pub mod domains_email_forwards;
 pub mod domains_push;
+pub mod domains_research;
 pub mod domains_signer_records;
 pub mod identity;
 pub mod oauth;
