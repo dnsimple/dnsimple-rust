@@ -10,7 +10,7 @@ pub struct DomainResearchStatus {
     pub request_id: String,
     /// The domain name that was researched
     pub domain: String,
-    /// The availability status. See https://developer.dnsimple.com/v2/domains/research/#getDomainsResearchStatus
+    /// The availability status. See [API Documentation](https://developer.dnsimple.com/v2/domains/research/#getDomainsResearchStatus)
     pub availability: String,
     /// Array of error messages if the domain cannot be researched
     pub errors: Vec<String>,
@@ -52,10 +52,13 @@ impl Domains<'_> {
         let mut filter_map = std::collections::HashMap::new();
         filter_map.insert("domain".to_string(), domain);
         let options = RequestOptions {
-            filters: Some(Filters { filters: filter_map }),
+            filters: Some(Filters {
+                filters: filter_map,
+            }),
             sort: None,
             paginate: None,
         };
-        self.client.get::<DomainResearchStatusEndpoint>(&path, Some(options))
+        self.client
+            .get::<DomainResearchStatusEndpoint>(&path, Some(options))
     }
 }
