@@ -36,14 +36,14 @@ impl Domains<'_> {
     /// use dnsimple::dnsimple::new_client;
     ///
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let response = client.domains().domain_research_status(1234, String::from("example.com")).unwrap();
+    /// let response = client.domains().get_domain_research_status(1234, String::from("example.com")).unwrap();
     /// ```
     ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
     /// `domain`: The domain name to research
-    pub fn domain_research_status(
+    pub fn get_domain_research_status(
         &self,
         account_id: u64,
         domain: String,

@@ -2,7 +2,7 @@ use crate::common::setup_mock_for;
 mod common;
 
 #[test]
-fn domain_research_status_test() {
+fn get_domain_research_status_test() {
     let setup = setup_mock_for(
         "/1385/domains/research/status?domain=taken.com",
         "getDomainsResearchStatus/success-unavailable",
@@ -13,7 +13,7 @@ fn domain_research_status_test() {
 
     let response = client
         .domains()
-        .domain_research_status(account_id, String::from("taken.com"))
+        .get_domain_research_status(account_id, String::from("taken.com"))
         .unwrap();
 
     let data = response.data.unwrap();
