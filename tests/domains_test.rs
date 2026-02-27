@@ -1,13 +1,17 @@
 use crate::common::setup_mock_for;
 mod common;
 
-#[test]
-fn list_domains_test() {
-    let setup = setup_mock_for("/1385/domains", "listDomains/success", "GET");
+#[tokio::test]
+async fn list_domains_test() {
+    let setup = setup_mock_for("/1385/domains", "listDomains/success", "GET").await;
     let client = setup.0;
     let account_id = 1385;
 
-    let domains_data = client.domains().list_domains(account_id, None).unwrap();
+    let domains_data = client
+        .domains()
+        .list_domains(account_id, None)
+        .await
+        .unwrap();
     let domains = domains_data.data.unwrap();
 
     assert_eq!(2, domains.len());
@@ -30,9 +34,9 @@ fn list_domains_test() {
     assert_eq!("2020-06-04T19:15:21Z", first_domain.updated_at);
 }
 
-#[test]
-fn create_domain_test() {
-    let setup = setup_mock_for("/1385/domains", "createDomain/created", "POST");
+#[tokio::test]
+async fn create_domain_test() {
+    let setup = setup_mock_for("/1385/domains", "createDomain/created", "POST").await;
     let client = setup.0;
     let account_id = 1385;
     let domain_name = String::from("example-beta.com");
@@ -40,6 +44,7 @@ fn create_domain_test() {
     let domain = client
         .domains()
         .create_domain(account_id, domain_name)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -58,9 +63,9 @@ fn create_domain_test() {
     assert_eq!(domain.updated_at, "2020-06-04T19:47:05Z");
 }
 
-#[test]
-fn test_get_domain() {
-    let setup = setup_mock_for("/1385/domains/181984", "getDomain/success", "GET");
+#[tokio::test]
+async fn test_get_domain() {
+    let setup = setup_mock_for("/1385/domains/181984", "getDomain/success", "GET").await;
     let client = setup.0;
     let account_id = 1385_u64;
     let domain_id = 181984_u64;
@@ -68,6 +73,7 @@ fn test_get_domain() {
     let domain = client
         .domains()
         .get_domain(account_id, domain_id)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -86,14 +92,14 @@ fn test_get_domain() {
     assert_eq!("2020-06-04T19:15:21Z", domain.updated_at);
 }
 
-#[test]
-fn test_delete_domain() {
-    let setup = setup_mock_for("/1385/domains/181984", "deleteDomain/success", "DELETE");
+#[tokio::test]
+async fn test_delete_domain() {
+    let setup = setup_mock_for("/1385/domains/181984", "deleteDomain/success", "DELETE").await;
     let client = setup.0;
     let account_id = 1385_u64;
     let domain_id = 181984_u64;
 
-    let response = client.domains().delete_domain(account_id, domain_id);
+    let response = client.domains().delete_domain(account_id, domain_id).await;
 
     assert!(response.is_ok());
     assert_eq!(204, response.unwrap().status);

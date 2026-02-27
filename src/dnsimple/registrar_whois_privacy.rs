@@ -34,14 +34,16 @@ impl Registrar<'_> {
     ///
     /// `account_id`: The account ID
     /// `domain`: The domain name or id
-    pub fn enable_whois_privacy(
+    pub async fn enable_whois_privacy(
         &self,
         account_id: u64,
         domain: String,
     ) -> Result<DNSimpleResponse<WhoisPrivacy>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/whois_privacy", account_id, domain);
 
-        self.client.put::<WhoisPrivacyEndpoint>(&path, Value::Null)
+        self.client
+            .put::<WhoisPrivacyEndpoint>(&path, Value::Null)
+            .await
     }
 
     /// Enable WHOIS privacy
@@ -50,7 +52,7 @@ impl Registrar<'_> {
     ///
     /// `account_id`: The account ID
     /// `domain`: The domain name or id
-    pub fn disable_whois_privacy(
+    pub async fn disable_whois_privacy(
         &self,
         account_id: u64,
         domain: String,
@@ -59,5 +61,6 @@ impl Registrar<'_> {
 
         self.client
             .delete_with_response::<WhoisPrivacyEndpoint>(&path)
+            .await
     }
 }

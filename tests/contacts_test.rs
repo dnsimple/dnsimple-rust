@@ -2,15 +2,16 @@ use crate::common::setup_mock_for;
 use dnsimple::dnsimple::contacts::ContactPayload;
 mod common;
 
-#[test]
-fn list_contacts_test() {
-    let setup = setup_mock_for("/1010/contacts", "listContacts/success", "GET");
+#[tokio::test]
+async fn list_contacts_test() {
+    let setup = setup_mock_for("/1010/contacts", "listContacts/success", "GET").await;
     let client = setup.0;
     let account_id = 1010;
 
     let contacts = client
         .contacts()
         .list_contacts(account_id, None)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -39,9 +40,9 @@ fn list_contacts_test() {
     assert_eq!("2015-01-08T21:30:50Z", contact.updated_at);
 }
 
-#[test]
-fn create_contact_test() {
-    let setup = setup_mock_for("/1010/contacts", "createContact/created", "POST");
+#[tokio::test]
+async fn create_contact_test() {
+    let setup = setup_mock_for("/1010/contacts", "createContact/created", "POST").await;
     let client = setup.0;
     let account_id = 1010;
     let payload = ContactPayload {
@@ -64,6 +65,7 @@ fn create_contact_test() {
     let contact = client
         .contacts()
         .create_contact(account_id, payload)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -86,9 +88,9 @@ fn create_contact_test() {
     assert_eq!("IT", contact.country);
 }
 
-#[test]
-fn get_contact_test() {
-    let setup = setup_mock_for("/1010/contacts/1", "getContact/success", "GET");
+#[tokio::test]
+async fn get_contact_test() {
+    let setup = setup_mock_for("/1010/contacts/1", "getContact/success", "GET").await;
     let client = setup.0;
     let account_id = 1010;
     let contact_id = 1;
@@ -96,6 +98,7 @@ fn get_contact_test() {
     let contact = client
         .contacts()
         .get_contact(account_id, contact_id)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -120,9 +123,9 @@ fn get_contact_test() {
     assert_eq!("2016-01-19T20:50:26Z", contact.updated_at);
 }
 
-#[test]
-fn update_contact_test() {
-    let setup = setup_mock_for("/1010/contacts/1", "updateContact/success", "PATCH");
+#[tokio::test]
+async fn update_contact_test() {
+    let setup = setup_mock_for("/1010/contacts/1", "updateContact/success", "PATCH").await;
     let client = setup.0;
     let account_id = 1010;
     let contact_id = 1;
@@ -146,6 +149,7 @@ fn update_contact_test() {
     let contact = client
         .contacts()
         .update_contact(account_id, contact_id, payload)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -168,14 +172,17 @@ fn update_contact_test() {
     assert_eq!("IT", contact.country);
 }
 
-#[test]
-fn delete_contact_test() {
-    let setup = setup_mock_for("/1010/contacts/1", "deleteContact/success", "DELETE");
+#[tokio::test]
+async fn delete_contact_test() {
+    let setup = setup_mock_for("/1010/contacts/1", "deleteContact/success", "DELETE").await;
     let client = setup.0;
     let account_id = 1010;
     let contact_id = 1;
 
-    let response = client.contacts().delete_contact(account_id, contact_id);
+    let response = client
+        .contacts()
+        .delete_contact(account_id, contact_id)
+        .await;
 
     assert!(response.is_ok());
     assert_eq!(204, response.unwrap().status);

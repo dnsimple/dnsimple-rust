@@ -15,16 +15,22 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-dnsimple = "0.1"
+dnsimple = "5.0"
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 ```
 
 ## Usage
 
+This library uses async/await with the Tokio runtime:
+
 ```rust
 use dnsimple::dnsimple::{Client, new_client};
 
-let client = new_client(false, String::from("AUTH_TOKEN"));
-let identity_response = client.identity().whoami().unwrap().data.unwrap();
+#[tokio::main]
+async fn main() {
+    let client = new_client(false, String::from("AUTH_TOKEN"));
+    let identity_response = client.identity().whoami().await.unwrap().data.unwrap();
+}
 ```
 
 ## Configuration
@@ -41,8 +47,11 @@ The client supports both the production and sandbox environment. To switch to sa
 ```rust
 use dnsimple::dnsimple::{Client, new_client};
 
-let client = new_client(true, String::from("AUTH_TOKEN"));
-let identity_response = client.identity().whoami().unwrap().data.unwrap();
+#[tokio::main]
+async fn main() {
+    let client = new_client(true, String::from("AUTH_TOKEN"));
+    let identity_response = client.identity().whoami().await.unwrap().data.unwrap();
+}
 ```
 
 You will need to ensure that you are using an access token created in the sandbox environment.

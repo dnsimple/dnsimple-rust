@@ -16,9 +16,9 @@ impl Endpoint for IdsEndpoint {
     type Output = Vec<Id>;
 }
 
-#[test]
-fn can_paginate() {
-    let setup = setup_mock_for("/pagination_test?page=2&per_page=2", "pages-2of3", "GET");
+#[tokio::test]
+async fn can_paginate() {
+    let setup = setup_mock_for("/pagination_test?page=2&per_page=2", "pages-2of3", "GET").await;
     let client = setup.0;
     let options = RequestOptions {
         filters: None,
@@ -31,12 +31,13 @@ fn can_paginate() {
 
     client
         .get::<IdsEndpoint>("/pagination_test", Some(options))
+        .await
         .unwrap();
 }
 
-#[test]
-fn can_filter() {
-    let setup = setup_mock_for("/filter_test?name_like=example", "pages-2of3", "GET");
+#[tokio::test]
+async fn can_filter() {
+    let setup = setup_mock_for("/filter_test?name_like=example", "pages-2of3", "GET").await;
     let client = setup.0;
     let mut filters = HashMap::new();
     filters.insert("name_like".to_string(), "example".to_string());
@@ -48,12 +49,13 @@ fn can_filter() {
 
     client
         .get::<IdsEndpoint>("/filter_test", Some(options))
+        .await
         .unwrap();
 }
 
-#[test]
-fn can_sort() {
-    let setup = setup_mock_for("/sort_test?sort=expiration%3Aasc", "pages-2of3", "GET");
+#[tokio::test]
+async fn can_sort() {
+    let setup = setup_mock_for("/sort_test?sort=expiration%3Aasc", "pages-2of3", "GET").await;
     let client = setup.0;
     let options = RequestOptions {
         filters: None,
@@ -65,5 +67,6 @@ fn can_sort() {
 
     client
         .get::<IdsEndpoint>("/sort_test", Some(options))
+        .await
         .unwrap();
 }

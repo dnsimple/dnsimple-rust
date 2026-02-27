@@ -24,7 +24,7 @@ impl Registrar<'_> {
     ///
     /// `account_id`: The account ID
     /// `domain`: The domain name or id
-    pub fn enable_domain_transfer_lock(
+    pub async fn enable_domain_transfer_lock(
         &self,
         account_id: u64,
         domain: String,
@@ -33,6 +33,7 @@ impl Registrar<'_> {
 
         self.client
             .post::<DomainTransferLockEndpoint>(&path, Value::Null)
+            .await
     }
 
     /// Disable domain transfer lock
@@ -41,7 +42,7 @@ impl Registrar<'_> {
     ///
     /// `account_id`: The account ID
     /// `domain`: The domain name or id
-    pub fn disable_domain_transfer_lock(
+    pub async fn disable_domain_transfer_lock(
         &self,
         account_id: u64,
         domain: String,
@@ -50,6 +51,7 @@ impl Registrar<'_> {
 
         self.client
             .delete_with_response::<DomainTransferLockEndpoint>(&path)
+            .await
     }
 
     /// Get domain transfer lock status
@@ -58,13 +60,15 @@ impl Registrar<'_> {
     ///
     /// `account_id`: The account ID
     /// `domain`: The domain name or id
-    pub fn get_domain_transfer_lock(
+    pub async fn get_domain_transfer_lock(
         &self,
         account_id: u64,
         domain: String,
     ) -> Result<DNSimpleResponse<TransferLock>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/transfer_lock", account_id, domain);
 
-        self.client.get::<DomainTransferLockEndpoint>(&path, None)
+        self.client
+            .get::<DomainTransferLockEndpoint>(&path, None)
+            .await
     }
 }

@@ -110,14 +110,14 @@ impl Templates<'_> {
     ///
     /// `account_id`: The account id
     /// `options`: The `RequestOptions` for sorting, etc.
-    pub fn list_templates(
+    pub async fn list_templates(
         &self,
         account_id: u64,
         options: Option<RequestOptions>,
     ) -> Result<DNSimpleResponse<Vec<Template>>, DNSimpleError> {
         let path = format!("/{}/templates", account_id);
 
-        self.client.get::<TemplatesEndpoint>(&path, options)
+        self.client.get::<TemplatesEndpoint>(&path, options).await
     }
 
     /// Create a template in the account
@@ -126,7 +126,7 @@ impl Templates<'_> {
     ///
     /// `account_id`: The account id
     /// `payload`: The `Template payload` with the information to create the template
-    pub fn create_template(
+    pub async fn create_template(
         &self,
         account_id: u64,
         payload: TemplatePayload,
@@ -134,7 +134,7 @@ impl Templates<'_> {
         let path = format!("/{}/templates", account_id);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<TemplateEndpoint>(&path, json),
+            Ok(json) => self.client.post::<TemplateEndpoint>(&path, json).await,
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -147,14 +147,14 @@ impl Templates<'_> {
     ///
     /// `account_id`: The account id
     /// `template`: The template name or id
-    pub fn get_template(
+    pub async fn get_template(
         &self,
         account_id: u64,
         template: String,
     ) -> Result<DNSimpleResponse<Template>, DNSimpleError> {
         let path = format!("/{}/templates/{}", account_id, template);
 
-        self.client.get::<TemplateEndpoint>(&path, None)
+        self.client.get::<TemplateEndpoint>(&path, None).await
     }
 
     /// Update a template in the account
@@ -164,7 +164,7 @@ impl Templates<'_> {
     /// `account_id`: The account id
     /// `template`: The template name or id
     /// `payload`: The `Template payload` with the information to create the template
-    pub fn update_template(
+    pub async fn update_template(
         &self,
         account_id: u64,
         template: String,
@@ -173,7 +173,7 @@ impl Templates<'_> {
         let path = format!("/{}/templates/{}", account_id, template);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.patch::<TemplateEndpoint>(&path, json),
+            Ok(json) => self.client.patch::<TemplateEndpoint>(&path, json).await,
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -185,14 +185,14 @@ impl Templates<'_> {
     /// # Arguments
     /// `account_id`: The account id
     /// `template`: The template name or id
-    pub fn delete_template(
+    pub async fn delete_template(
         &self,
         account_id: u64,
         template: String,
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/templates/{}", account_id, template);
 
-        self.client.delete(&path)
+        self.client.delete(&path).await
     }
 
     /// List template records
@@ -200,7 +200,7 @@ impl Templates<'_> {
     /// # Arguments
     /// `account_id`: The account id
     /// `template`: The template name or id
-    pub fn list_template_records(
+    pub async fn list_template_records(
         &self,
         account_id: u64,
         template: String,
@@ -208,7 +208,9 @@ impl Templates<'_> {
     ) -> Result<DNSimpleResponse<Vec<TemplateRecord>>, DNSimpleError> {
         let path = format!("/{}/templates/{}/records", account_id, template);
 
-        self.client.get::<TemplateRecordsEndpoint>(&path, options)
+        self.client
+            .get::<TemplateRecordsEndpoint>(&path, options)
+            .await
     }
 
     /// Create a template record
@@ -217,7 +219,7 @@ impl Templates<'_> {
     /// `account_id`: The account id
     /// `template`: The template name or id
     /// `payload`: The `TemplateRecordPayload` with the information needed to create the template record
-    pub fn create_template_record(
+    pub async fn create_template_record(
         &self,
         account_id: u64,
         template: String,
@@ -226,7 +228,11 @@ impl Templates<'_> {
         let path = format!("/{}/templates/{}/records", account_id, template);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<TemplateRecordEndpoint>(&path, json),
+            Ok(json) => {
+                self.client
+                    .post::<TemplateRecordEndpoint>(&path, json)
+                    .await
+            }
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -239,7 +245,7 @@ impl Templates<'_> {
     /// `account_id`: The account id
     /// `template`: The template name or id
     /// `record`: The record id
-    pub fn get_template_record(
+    pub async fn get_template_record(
         &self,
         account_id: u64,
         template: String,
@@ -247,7 +253,7 @@ impl Templates<'_> {
     ) -> Result<DNSimpleResponse<TemplateRecord>, DNSimpleError> {
         let path = format!("/{}/templates/{}/records/{}", account_id, template, record);
 
-        self.client.get::<TemplateRecordEndpoint>(&path, None)
+        self.client.get::<TemplateRecordEndpoint>(&path, None).await
     }
 
     /// Delete a template record
@@ -256,7 +262,7 @@ impl Templates<'_> {
     /// `account_id`: The account id
     /// `template`: The template name or id
     /// `record`: The record id
-    pub fn delete_template_record(
+    pub async fn delete_template_record(
         &self,
         account_id: u64,
         template: String,
@@ -264,7 +270,7 @@ impl Templates<'_> {
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/templates/{}/records/{}", account_id, template, record);
 
-        self.client.delete(&path)
+        self.client.delete(&path).await
     }
 
     /// Applies a template to a domain.
@@ -273,7 +279,7 @@ impl Templates<'_> {
     /// `account_id`: The account id
     /// `domain`: The domain name or id
     /// `template`: The template id or short name
-    pub fn apply_template(
+    pub async fn apply_template(
         &self,
         account_id: u64,
         domain: String,
@@ -281,6 +287,6 @@ impl Templates<'_> {
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/domains/{}/templates/{}", account_id, domain, template);
 
-        self.client.empty_post(&path)
+        self.client.empty_post(&path).await
     }
 }

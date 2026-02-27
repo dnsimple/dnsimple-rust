@@ -1,13 +1,14 @@
 use crate::common::setup_mock_for;
 mod common;
 
-#[test]
-fn activate_zone_dns_test() {
+#[tokio::test]
+async fn activate_zone_dns_test() {
     let setup = setup_mock_for(
         "/1010/zones/example.com/activation",
         "activateZoneService/success",
         "PUT",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let zone = "example.com";
@@ -15,6 +16,7 @@ fn activate_zone_dns_test() {
     let zone = client
         .zones()
         .activate_dns(account_id, zone)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -27,13 +29,14 @@ fn activate_zone_dns_test() {
     assert_eq!("2023-07-06T11:19:48Z", zone.updated_at);
 }
 
-#[test]
-fn deactivate_zone_dns_test() {
+#[tokio::test]
+async fn deactivate_zone_dns_test() {
     let setup = setup_mock_for(
         "/1010/zones/example.com/activation",
         "deactivateZoneService/success",
         "DELETE",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let zone = "example.com";
@@ -41,6 +44,7 @@ fn deactivate_zone_dns_test() {
     let zone = client
         .zones()
         .deactivate_dns(account_id, zone)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -53,15 +57,16 @@ fn deactivate_zone_dns_test() {
     assert_eq!("2023-08-08T04:19:52Z", zone.updated_at);
 }
 
-#[test]
-fn list_zones_test() {
-    let setup = setup_mock_for("/1010/zones", "listZones/success", "GET");
+#[tokio::test]
+async fn list_zones_test() {
+    let setup = setup_mock_for("/1010/zones", "listZones/success", "GET").await;
     let client = setup.0;
     let account_id = 1010;
 
     let zones = client
         .zones()
         .list_zones(account_id, None)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -81,9 +86,9 @@ fn list_zones_test() {
     assert_eq!("2015-04-23T07:40:03Z", zone.updated_at);
 }
 
-#[test]
-fn get_zone_test() {
-    let setup = setup_mock_for("/1010/zones/example-alpha.com", "getZone/success", "GET");
+#[tokio::test]
+async fn get_zone_test() {
+    let setup = setup_mock_for("/1010/zones/example-alpha.com", "getZone/success", "GET").await;
     let client = setup.0;
     let account_id = 1010;
     let zone = "example-alpha.com";
@@ -91,6 +96,7 @@ fn get_zone_test() {
     let zone = client
         .zones()
         .get_zone(account_id, zone)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -106,9 +112,9 @@ fn get_zone_test() {
     assert_eq!("2015-04-23T07:40:03Z", zone.updated_at);
 }
 
-#[test]
-fn get_zone_file_test() {
-    let setup = setup_mock_for("/1010/zones/example.com/file", "getZoneFile/success", "GET");
+#[tokio::test]
+async fn get_zone_file_test() {
+    let setup = setup_mock_for("/1010/zones/example.com/file", "getZoneFile/success", "GET").await;
     let client = setup.0;
     let account_id = 1010;
     let zone = "example.com";
@@ -116,6 +122,7 @@ fn get_zone_file_test() {
     let zone_file = client
         .zones()
         .get_zone_file(account_id, zone)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -124,13 +131,14 @@ fn get_zone_file_test() {
                zone_file.zone);
 }
 
-#[test]
-fn check_zone_distribution() {
+#[tokio::test]
+async fn check_zone_distribution() {
     let setup = setup_mock_for(
         "/1010/zones/example.com/distribution",
         "checkZoneDistribution/success",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let zone = "example.com";
@@ -138,6 +146,7 @@ fn check_zone_distribution() {
     let zone_distribution = client
         .zones()
         .check_zone_distribution(account_id, zone)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -145,13 +154,14 @@ fn check_zone_distribution() {
     assert!(zone_distribution.distributed);
 }
 
-#[test]
-fn check_zone_distribution_failure() {
+#[tokio::test]
+async fn check_zone_distribution_failure() {
     let setup = setup_mock_for(
         "/1010/zones/example.com/distribution",
         "checkZoneDistribution/failure",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let zone = "example.com";
@@ -159,6 +169,7 @@ fn check_zone_distribution_failure() {
     let zone_distribution = client
         .zones()
         .check_zone_distribution(account_id, zone)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -166,18 +177,22 @@ fn check_zone_distribution_failure() {
     assert!(!zone_distribution.distributed);
 }
 
-#[test]
-fn check_zone_distribution_error() {
+#[tokio::test]
+async fn check_zone_distribution_error() {
     let setup = setup_mock_for(
         "/1010/zones/example.com/distribution",
         "checkZoneDistribution/error",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let zone = "example.com";
 
-    let response = client.zones().check_zone_distribution(account_id, zone);
+    let response = client
+        .zones()
+        .check_zone_distribution(account_id, zone)
+        .await;
 
     assert_eq!(
         "Could not query zone, connection timed out",

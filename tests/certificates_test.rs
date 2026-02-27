@@ -4,14 +4,15 @@ use dnsimple::dnsimple::certificates::{
 };
 mod common;
 
-#[test]
+#[tokio::test]
 #[allow(deprecated)]
-fn test_list_certificates() {
+async fn test_list_certificates() {
     let setup = setup_mock_for(
         "/1385/domains/example.com/certificates",
         "listCertificates/success",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
@@ -19,6 +20,7 @@ fn test_list_certificates() {
     let response = client
         .certificates()
         .list_certificates(account_id, domain, None)
+        .await
         .unwrap();
     let certificates = response.data.unwrap();
 
@@ -47,14 +49,15 @@ fn test_list_certificates() {
     assert_eq!("2020-09-16", certificate.expires_on.to_owned().unwrap());
 }
 
-#[test]
+#[tokio::test]
 #[allow(deprecated)]
-fn test_get_certificate() {
+async fn test_get_certificate() {
     let setup = setup_mock_for(
         "/1385/domains/example.com/certificates/101967",
         "getCertificate/success",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
@@ -63,6 +66,7 @@ fn test_get_certificate() {
     let certificate = client
         .certificates()
         .get_certificate(account_id, domain, certificate_id)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -88,13 +92,14 @@ fn test_get_certificate() {
     assert_eq!("2020-09-16", certificate.expires_on.unwrap());
 }
 
-#[test]
-fn test_download_certificate() {
+#[tokio::test]
+async fn test_download_certificate() {
     let setup = setup_mock_for(
         "/1385/domains/example.com/certificates/101967/download",
         "downloadCertificate/success",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
@@ -103,6 +108,7 @@ fn test_download_certificate() {
     let download = client
         .certificates()
         .download_certificate(account_id, domain, certificate_id)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -115,13 +121,14 @@ fn test_download_certificate() {
     assert_eq!("-----BEGIN CERTIFICATE-----\nMIIEqzCCApOgAwIBAgIRAIvhKg5ZRO08VGQx8JdhT+UwDQYJKoZIhvcNAQELBQAw\nGjEYMBYGA1UEAwwPRmFrZSBMRSBSb290IFgxMB4XDTE2MDUyMzIyMDc1OVoXDTM2\nMDUyMzIyMDc1OVowIjEgMB4GA1UEAwwXRmFrZSBMRSBJbnRlcm1lZGlhdGUgWDEw\nggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDtWKySDn7rWZc5ggjz3ZB0\n8jO4xti3uzINfD5sQ7Lj7hzetUT+wQob+iXSZkhnvx+IvdbXF5/yt8aWPpUKnPym\noLxsYiI5gQBLxNDzIec0OIaflWqAr29m7J8+NNtApEN8nZFnf3bhehZW7AxmS1m0\nZnSsdHw0Fw+bgixPg2MQ9k9oefFeqa+7Kqdlz5bbrUYV2volxhDFtnI4Mh8BiWCN\nxDH1Hizq+GKCcHsinDZWurCqder/afJBnQs+SBSL6MVApHt+d35zjBD92fO2Je56\ndhMfzCgOKXeJ340WhW3TjD1zqLZXeaCyUNRnfOmWZV8nEhtHOFbUCU7r/KkjMZO9\nAgMBAAGjgeMwgeAwDgYDVR0PAQH/BAQDAgGGMBIGA1UdEwEB/wQIMAYBAf8CAQAw\nHQYDVR0OBBYEFMDMA0a5WCDMXHJw8+EuyyCm9Wg6MHoGCCsGAQUFBwEBBG4wbDA0\nBggrBgEFBQcwAYYoaHR0cDovL29jc3Auc3RnLXJvb3QteDEubGV0c2VuY3J5cHQu\nb3JnLzA0BggrBgEFBQcwAoYoaHR0cDovL2NlcnQuc3RnLXJvb3QteDEubGV0c2Vu\nY3J5cHQub3JnLzAfBgNVHSMEGDAWgBTBJnSkikSg5vogKNhcI5pFiBh54DANBgkq\nhkiG9w0BAQsFAAOCAgEABYSu4Il+fI0MYU42OTmEj+1HqQ5DvyAeyCA6sGuZdwjF\nUGeVOv3NnLyfofuUOjEbY5irFCDtnv+0ckukUZN9lz4Q2YjWGUpW4TTu3ieTsaC9\nAFvCSgNHJyWSVtWvB5XDxsqawl1KzHzzwr132bF2rtGtazSqVqK9E07sGHMCf+zp\nDQVDVVGtqZPHwX3KqUtefE621b8RI6VCl4oD30Olf8pjuzG4JKBFRFclzLRjo/h7\nIkkfjZ8wDa7faOjVXx6n+eUQ29cIMCzr8/rNWHS9pYGGQKJiY2xmVC9h12H99Xyf\nzWE9vb5zKP3MVG6neX1hSdo7PEAb9fqRhHkqVsqUvJlIRmvXvVKTwNCP3eCjRCCI\nPTAvjV+4ni786iXwwFYNz8l3PmPLCyQXWGohnJ8iBm+5nk7O2ynaPVW0U2W+pt2w\nSVuvdDM5zGv2f9ltNWUiYZHJ1mmO97jSY/6YfdOUH66iRtQtDkHBRdkNBsMbD+Em\n2TgBldtHNSJBfB3pm9FblgOcJ0FSWcUDWJ7vO0+NTXlgrRofRT6pVywzxVo6dND0\nWzYlTWeUVsO40xJqhgUQRER9YLOLxJ0O6C8i0xFxAMKOtSdodMB3RIwt7RFQ0uyt\nn5Z5MqkYhlMI3J1tPRTp1nEt9fyGspBOO05gi148Qasp+3N+svqKomoQglNoAxU=\n-----END CERTIFICATE-----",
             chain.first().unwrap());
 }
-#[test]
-fn test_get_certificate_private_key() {
+#[tokio::test]
+async fn test_get_certificate_private_key() {
     let setup = setup_mock_for(
         "/1385/domains/example.com/certificates/101967/private_key",
         "getCertificatePrivateKey/success",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
@@ -130,6 +137,7 @@ fn test_get_certificate_private_key() {
     let certificate_private_key = client
         .certificates()
         .get_certificate_private_key(account_id, domain, certificate_id)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -138,13 +146,14 @@ fn test_get_certificate_private_key() {
         certificate_private_key.private_key);
 }
 
-#[test]
-fn test_purchase_letsencrypt_certificate() {
+#[tokio::test]
+async fn test_purchase_letsencrypt_certificate() {
     let setup = setup_mock_for(
         "/1385/domains/example.com/certificates/letsencrypt",
         "purchaseLetsencryptCertificate/success",
         "POST",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
@@ -159,6 +168,7 @@ fn test_purchase_letsencrypt_certificate() {
     let letsencrypt = client
         .certificates()
         .purchase_letsencrypt_certificate(account_id, domain, payload)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -171,14 +181,15 @@ fn test_purchase_letsencrypt_certificate() {
     assert_eq!("2020-06-18T18:54:17Z", letsencrypt.updated_at);
 }
 
-#[test]
+#[tokio::test]
 #[allow(deprecated)]
-fn test_issue_letsencrypt_certificate() {
+async fn test_issue_letsencrypt_certificate() {
     let setup = setup_mock_for(
         "/1385/domains/example.com/certificates/letsencrypt/101967/issue",
         "issueLetsencryptCertificate/success",
         "POST",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
@@ -187,6 +198,7 @@ fn test_issue_letsencrypt_certificate() {
     let certificate = client
         .certificates()
         .issue_letsencrypt_certificate(account_id, domain, certificate_id)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -208,13 +220,14 @@ fn test_issue_letsencrypt_certificate() {
     assert_eq!(None, certificate.expires_on);
 }
 
-#[test]
-fn test_purchase_letsencrypt_certificate_renewal() {
+#[tokio::test]
+async fn test_purchase_letsencrypt_certificate_renewal() {
     let setup = setup_mock_for(
         "/1385/domains/example.com/certificates/letsencrypt/101967/renewals",
         "purchaseRenewalLetsencryptCertificate/success",
         "POST",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
@@ -228,6 +241,7 @@ fn test_purchase_letsencrypt_certificate_renewal() {
     let letsencrypt_renewal = client
         .certificates()
         .purchase_letsencrypt_certificate_renewal(account_id, domain, certificate_id, payload)
+        .await
         .unwrap()
         .data
         .unwrap();
@@ -241,14 +255,15 @@ fn test_purchase_letsencrypt_certificate_renewal() {
     assert_eq!("2020-06-18T19:56:20Z", letsencrypt_renewal.updated_at);
 }
 
-#[test]
+#[tokio::test]
 #[allow(deprecated)]
-fn test_issue_letsencrypt_certificate_renewal() {
+async fn test_issue_letsencrypt_certificate_renewal() {
     let setup = setup_mock_for(
         "/1385/domains/example.com/certificates/letsencrypt/101967/renewals/12121/issue",
         "issueRenewalLetsencryptCertificate/success",
         "POST",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
@@ -263,6 +278,7 @@ fn test_issue_letsencrypt_certificate_renewal() {
             certificate_id,
             certificate_renewal_id,
         )
+        .await
         .unwrap()
         .data
         .unwrap();
