@@ -45,6 +45,9 @@ fn test_get_domain_prices() {
     assert_eq!(20.0, domain_prices.registration_price);
     assert_eq!(20.0, domain_prices.renewal_price);
     assert_eq!(20.0, domain_prices.transfer_price);
+    if let Some(trustee_service_price) = domain_prices.trustee_service_price {
+        assert_eq!(20.0, trustee_service_price);
+    }
 }
 
 #[test]
@@ -89,6 +92,7 @@ fn test_get_domain_registration() {
     assert_eq!(domain_registration.state, "registering");
     assert!(!domain_registration.auto_renew);
     assert!(!domain_registration.whois_privacy);
+    assert!(!domain_registration.trustee_service);
     assert_eq!(domain_registration.created_at, "2023-01-27T17:44:32Z");
     assert_eq!(domain_registration.updated_at, "2023-01-27T17:44:40Z");
 }
@@ -132,6 +136,7 @@ fn test_register_domain() {
     let payload = DomainRegistrationPayload {
         registrant_id: 2,
         whois_privacy: None,
+        trustee_service: None,
         auto_renew: None,
         extended_attributes: None,
         premium_price: None,
@@ -150,6 +155,7 @@ fn test_register_domain() {
     assert_eq!("new", domain_registration.state);
     assert!(!domain_registration.auto_renew);
     assert!(!domain_registration.whois_privacy);
+    assert!(!domain_registration.trustee_service);
     assert_eq!("2016-12-09T19:35:31Z", domain_registration.created_at);
     assert_eq!("2016-12-09T19:35:31Z", domain_registration.updated_at);
 }

@@ -27,6 +27,8 @@ pub struct DomainPrice {
     pub renewal_price: f32,
     /// The price for transfer
     pub transfer_price: f32,
+    /// The trustee service price (if supported by the TLD).
+    pub trustee_service_price: Option<f32>,
 }
 
 /// The payload to register a domain
@@ -37,6 +39,9 @@ pub struct DomainRegistrationPayload {
     /// True if the domain WHOIS privacy was requested.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub whois_privacy: Option<bool>,
+    /// True if the trustee service was requested.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trustee_service: Option<bool>,
     /// True if the domain auto-renew was requested.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub auto_renew: Option<bool>,
@@ -65,6 +70,8 @@ pub struct DomainRegistration {
     pub auto_renew: bool,
     /// True if the domain WHOIS privacy was requested.
     pub whois_privacy: bool,
+    /// True if the trustee service was enabled for the domain.
+    pub trustee_service: bool,
     /// When the domain renewal was created in DNSimple.
     pub created_at: String,
     /// When the domain renewal was last updated in DNSimple.
@@ -301,6 +308,7 @@ impl Registrar<'_> {
     /// let payload = DomainRegistrationPayload {
     ///     registrant_id: 42,
     ///     whois_privacy: None,
+    ///     trustee_service: None,
     ///     auto_renew: None,
     ///     extended_attributes: None,
     ///     premium_price: None,
