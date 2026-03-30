@@ -12,6 +12,7 @@ fn whoami_success_with_account() {
 
     assert_eq!(1, account.id);
     assert_eq!("example-account@example.com", account.email);
+    assert_eq!(Some(String::from("Example Account")), account.name);
     assert_eq!("teams-v1-monthly", account.plan_identifier);
 }
 
