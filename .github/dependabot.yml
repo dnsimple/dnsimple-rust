@@ -18,3 +18,5 @@ updates:
     labels:
       - task
       - dependencies
+    cooldown:
+      default-days: 3
