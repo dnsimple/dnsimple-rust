@@ -355,6 +355,7 @@ impl Registrar<'_> {
     ///     registrant_id: 42,
     ///     auth_code: "Some code".to_string(),
     ///     whois_privacy: None,
+    ///     trustee_service: None,
     ///     auto_renew: None,
     ///     extended_attributes: None,
     ///     premium_price: None,
