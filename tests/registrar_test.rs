@@ -174,6 +174,7 @@ fn test_transfer_domain() {
         registrant_id: 2,
         auth_code: String::from("THE_AUTH_CODE"),
         whois_privacy: None,
+        trustee_service: None,
         auto_renew: None,
         extended_attributes: None,
         premium_price: None,
@@ -191,6 +192,7 @@ fn test_transfer_domain() {
     assert_eq!("transferring", domain_transfer.state);
     assert!(!domain_transfer.auto_renew);
     assert!(!domain_transfer.whois_privacy);
+    assert!(!domain_transfer.trustee_service);
     assert_eq!("2016-12-09T19:43:41Z", domain_transfer.created_at);
     assert_eq!("2016-12-09T19:43:43Z", domain_transfer.updated_at);
 }
@@ -209,6 +211,7 @@ fn test_transfer_domain_error_in_dnsimple() {
         registrant_id: 2,
         auth_code: String::from("THE_AUTH_CODE"),
         whois_privacy: None,
+        trustee_service: None,
         auto_renew: None,
         extended_attributes: None,
         premium_price: None,
@@ -239,6 +242,7 @@ fn test_transfer_domain_error_missing_auth_code() {
         registrant_id: 2,
         auth_code: String::from(""),
         whois_privacy: None,
+        trustee_service: None,
         auto_renew: None,
         extended_attributes: None,
         premium_price: None,
@@ -276,6 +280,7 @@ fn test_retrieve_domain_transfer() {
     assert_eq!("cancelled", transfer.state);
     assert!(!transfer.auto_renew);
     assert!(!transfer.whois_privacy);
+    assert!(!transfer.trustee_service);
     assert_eq!("Canceled by customer", transfer.status_description.unwrap());
     assert_eq!("2020-06-05T18:08:00Z", transfer.created_at);
     assert_eq!("2020-06-05T18:10:01Z", transfer.updated_at);
@@ -308,6 +313,7 @@ fn test_cancel_domain_transfer() {
     assert_eq!("transferring", transfer.state);
     assert!(!transfer.auto_renew);
     assert!(!transfer.whois_privacy);
+    assert!(!transfer.trustee_service);
     assert_eq!(None, transfer.status_description);
     assert_eq!("2020-06-05T18:08:00Z", transfer.created_at);
     assert_eq!("2020-06-05T18:08:04Z", transfer.updated_at);

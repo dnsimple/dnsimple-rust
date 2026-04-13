@@ -88,6 +88,9 @@ pub struct DomainTransferPayload {
     /// True if the domain WHOIS privacy was requested.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub whois_privacy: Option<bool>,
+    /// True if the trustee service was requested.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trustee_service: Option<bool>,
     /// True if the domain auto-renew was requested.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub auto_renew: Option<bool>,
@@ -114,6 +117,8 @@ pub struct DomainTransfer {
     pub auto_renew: bool,
     /// True if the domain WHOIS privacy was requested.
     pub whois_privacy: bool,
+    /// True if the trustee service was enabled for the domain.
+    pub trustee_service: bool,
     /// The reason if transfer failed.
     pub status_description: Option<String>,
     /// When the domain renewal was created in DNSimple.
