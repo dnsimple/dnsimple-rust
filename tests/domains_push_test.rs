@@ -14,7 +14,7 @@ fn test_initiate_push_test() {
     let domain = "target-account.test";
     let payload = InitiatePushPayload {
         new_account_email: Some(String::from("admin@target-account.test")),
-        new_domain_push_identifier: None,
+        new_account_identifier: None,
     };
 
     let push = client
@@ -34,7 +34,7 @@ fn test_initiate_push_test() {
 }
 
 #[test]
-fn test_initiate_push_with_domain_push_identifier() {
+fn test_initiate_push_with_account_identifier() {
     let setup = setup_mock_for(
         "/1385/domains/target-account.test/pushes",
         "initiatePush/success",
@@ -45,7 +45,7 @@ fn test_initiate_push_with_domain_push_identifier() {
     let domain = "target-account.test";
     let payload = InitiatePushPayload {
         new_account_email: None,
-        new_domain_push_identifier: Some(String::from("abc123")),
+        new_account_identifier: Some(String::from("abc123")),
     };
 
     let push = client

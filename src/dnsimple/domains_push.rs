@@ -37,12 +37,12 @@ pub struct DomainPush {
 /// Payload to initiate a push
 #[derive(Debug, Deserialize, Serialize)]
 pub struct InitiatePushPayload {
-    /// Deprecated: Use `new_domain_push_identifier` instead.
+    /// Deprecated: Use `new_account_identifier` instead.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub new_account_email: Option<String>,
-    /// The domain push identifier of the target account.
+    /// The identifier of the target account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub new_domain_push_identifier: Option<String>,
+    pub new_account_identifier: Option<String>,
 }
 
 /// The domains push set of endpoints
@@ -60,7 +60,7 @@ impl Domains<'_> {
     /// let client = new_client(true, String::from("AUTH_TOKEN"));
     /// let payload = InitiatePushPayload {
     ///     new_account_email: None,
-    ///     new_domain_push_identifier: Some(String::from("abc123")),
+    ///     new_account_identifier: Some(String::from("abc123")),
     /// };
     /// let push = client.domains().initiate_push(1234, "example.com", payload).unwrap().data.unwrap();
     /// ```
