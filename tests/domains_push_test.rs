@@ -13,7 +13,8 @@ fn test_initiate_push_test() {
     let account_id = 1385_u64;
     let domain = "target-account.test";
     let payload = InitiatePushPayload {
-        new_account_email: String::from("admin@target-account.test"),
+        new_account_email: Some(String::from("admin@target-account.test")),
+        new_account_identifier: None,
     };
 
     let push = client
@@ -30,6 +31,32 @@ fn test_initiate_push_test() {
     assert_eq!("2016-08-11T10:16:03Z", push.created_at);
     assert_eq!("2016-08-11T10:16:03Z", push.updated_at);
     assert_eq!(None, push.accepted_at);
+}
+
+#[test]
+fn test_initiate_push_with_account_identifier() {
+    let setup = setup_mock_for(
+        "/1385/domains/target-account.test/pushes",
+        "initiatePush/success",
+        "POST",
+    );
+    let client = setup.0;
+    let account_id = 1385_u64;
+    let domain = "target-account.test";
+    let payload = InitiatePushPayload {
+        new_account_email: None,
+        new_account_identifier: Some(String::from("abc123")),
+    };
+
+    let push = client
+        .domains()
+        .initiate_push(account_id, domain, payload)
+        .unwrap()
+        .data
+        .unwrap();
+
+    assert_eq!(1, push.id);
+    assert_eq!(2020, push.account_id);
 }
 
 #[test]
