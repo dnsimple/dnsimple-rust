@@ -1,6 +1,6 @@
 [package]
 name = "dnsimple"
-version = "5.2.0"
+version = "5.3.0"
 authors = ["DNSimple External Integrations Team <support@dnsimple.com>"]
 edition = "2021"
 description = "The DNSimple API client for Rust."
