@@ -74,7 +74,7 @@ pub struct Client {
     base_url: String,
     user_agent: String,
     auth_token: String,
-    pub _client: reqwest::Client,
+    client: reqwest::Client,
 }
 
 /// Defines the Endpoint trait for the different API endpoints
@@ -208,7 +208,7 @@ pub fn new_client(sandbox: bool, token: String) -> Client {
         base_url: String::from(url),
         user_agent: DEFAULT_USER_AGENT.to_owned() + VERSION,
         auth_token: token,
-        _client: reqwest::Client::new(),
+        client: reqwest::Client::new(),
     }
 }
 
@@ -584,7 +584,7 @@ impl Client {
         }
 
         let request = self
-            ._client
+            .client
             .get(self.url(path))
             .header("User-Agent", &self.user_agent)
             .header("Accept", "application/json")
@@ -595,7 +595,7 @@ impl Client {
 
     pub fn build_post_request(&self, path: &str) -> reqwest::RequestBuilder {
         let request = self
-            ._client
+            .client
             .post(self.url(path))
             .header("User-Agent", &self.user_agent)
             .header("Accept", "application/json");
@@ -604,7 +604,7 @@ impl Client {
 
     pub fn build_put_request(&self, path: &str) -> reqwest::RequestBuilder {
         let request = self
-            ._client
+            .client
             .put(self.url(path))
             .header("User-Agent", &self.user_agent)
             .header("Accept", "application/json");
@@ -613,7 +613,7 @@ impl Client {
 
     pub fn build_patch_request(&self, path: &str) -> reqwest::RequestBuilder {
         let request = self
-            ._client
+            .client
             .patch(self.url(path))
             .header("User-Agent", &self.user_agent)
             .header("Accept", "application/json");
@@ -622,7 +622,7 @@ impl Client {
 
     fn build_delete_request(&self, path: &str) -> reqwest::RequestBuilder {
         let request = self
-            ._client
+            .client
             .delete(self.url(path))
             .header("User-Agent", &self.user_agent)
             .header("Accept", "application/json");
