@@ -1,5 +1,5 @@
-use crate::dnsimple::registrar::Registrar;
 use crate::dnsimple::DNSimpleEmptyResponse;
+use crate::dnsimple::registrar::Registrar;
 use crate::errors::DNSimpleError;
 
 impl Registrar<'_> {

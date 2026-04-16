@@ -15,7 +15,7 @@ use crate::errors::DNSimpleError;
 use serde;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::collections::HashMap;
 
 pub mod accounts;
@@ -61,7 +61,7 @@ const DEFAULT_SANDBOX_URL: &str = "https://api.sandbox.dnsimple.com";
 /// ```no_run
 /// use dnsimple::dnsimple::{Client, new_client};
 ///
-/// #[tokio::main]
+/// #[tokio::main(flavor = "current_thread")]
 /// async fn main() {
 ///     let client = new_client(true, String::from("AUTH_TOKEN"));
 ///     let identity = client.identity().whoami().await.unwrap().data.unwrap();
@@ -644,7 +644,7 @@ impl Client {
 
 #[cfg(test)]
 mod tests {
-    use crate::dnsimple::{new_client, DEFAULT_SANDBOX_URL, DEFAULT_USER_AGENT, VERSION};
+    use crate::dnsimple::{DEFAULT_SANDBOX_URL, DEFAULT_USER_AGENT, VERSION, new_client};
 
     #[test]
     fn creates_a_client() {

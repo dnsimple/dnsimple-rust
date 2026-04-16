@@ -176,7 +176,7 @@ impl Certificates<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::{Client, new_client};
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let certificates = client.certificates().list_certificates(1010, "example.com", None).await.unwrap().data.unwrap();
@@ -209,7 +209,7 @@ impl Certificates<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::{Client, new_client};
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let certificate = client.certificates().get_certificate(1010, "example.com", 42).await.unwrap().data.unwrap();
@@ -242,7 +242,7 @@ impl Certificates<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::{Client, new_client};
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let certificate = client.certificates().download_certificate(1010, "example.com", 42).await.unwrap().data.unwrap();
@@ -277,7 +277,7 @@ impl Certificates<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::{Client, new_client};
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let private_key = client.certificates().get_certificate_private_key(1010, "example.com", 42).await.unwrap().data.unwrap();
@@ -313,7 +313,7 @@ impl Certificates<'_> {
     /// use dnsimple::dnsimple::{Client, new_client};
     /// use dnsimple::dnsimple::certificates::LetsEncryptPurchasePayload;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let payload = LetsEncryptPurchasePayload {
@@ -361,7 +361,7 @@ impl Certificates<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::{Client, new_client};
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let issued = client.certificates().issue_letsencrypt_certificate(1010, "example.com", 42).await.unwrap().data.unwrap();
@@ -397,7 +397,7 @@ impl Certificates<'_> {
     /// use dnsimple::dnsimple::{Client, new_client};
     /// use dnsimple::dnsimple::certificates::LetsEncryptPurchaseRenewalPayload;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let payload = LetsEncryptPurchaseRenewalPayload {
@@ -443,7 +443,7 @@ impl Certificates<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::{Client, new_client};
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let issued = client.certificates().issue_letsencrypt_certificate_renewal(1010, "example.com", 41, 42).await.unwrap().data.unwrap();

@@ -33,7 +33,7 @@ impl Domains<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let dnssec = client.domains().enable_dnssec(1234, "example.com").await.unwrap().data.unwrap();
@@ -63,7 +63,7 @@ impl Domains<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let response = client.domains().disable_dnssec(1234, "example.com").await;
@@ -91,7 +91,7 @@ impl Domains<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let dnssec = client.domains().get_dnssec(1234, "example.com").await.unwrap().data.unwrap();

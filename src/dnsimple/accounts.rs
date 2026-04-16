@@ -23,7 +23,7 @@ impl Accounts<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let response = client.accounts().list_accounts().await.unwrap();

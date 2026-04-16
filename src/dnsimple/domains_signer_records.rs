@@ -64,7 +64,7 @@ impl Domains<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let signer_records = client.domains().list_delegation_signer_records(1234, "example.com", None).await.unwrap().data.unwrap();
@@ -103,7 +103,7 @@ impl Domains<'_> {
     /// use dnsimple::dnsimple::domains_signer_records::DelegationSignerRecordPayload;
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let payload = DelegationSignerRecordPayload {
@@ -145,7 +145,7 @@ impl Domains<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let signer_records = client.domains().get_delegation_signer_record(1234, "example.com").await.unwrap().data.unwrap();
@@ -173,7 +173,7 @@ impl Domains<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let response = client.domains().delete_delegation_signer_record(1234, "example.com", 42).await;

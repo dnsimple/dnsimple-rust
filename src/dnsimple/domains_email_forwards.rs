@@ -73,7 +73,7 @@ impl Domains<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let email_forwards_list = client.domains().list_email_forwards(1234, "example.com", None).await.unwrap().data.unwrap();
@@ -108,7 +108,7 @@ impl Domains<'_> {
     /// use dnsimple::dnsimple::domains_email_forwards::EmailForwardPayload;
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let payload = EmailForwardPayload {
@@ -147,7 +147,7 @@ impl Domains<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let email_forwards = client.domains().get_email_forward(1234, "example.com", 42).await.unwrap().data.unwrap();
@@ -180,7 +180,7 @@ impl Domains<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let response = client.domains().delete_email_forward(1234, "example.com", 42).await;

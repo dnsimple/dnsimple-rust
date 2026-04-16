@@ -1,4 +1,4 @@
-use dnsimple::dnsimple::{new_client, Client};
+use dnsimple::dnsimple::{Client, new_client};
 use mockito::{Server, ServerGuard};
 use std::fs;
 

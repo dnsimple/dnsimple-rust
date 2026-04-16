@@ -26,7 +26,7 @@ This library uses async/await with the Tokio runtime:
 ```rust
 use dnsimple::dnsimple::{Client, new_client};
 
-#[tokio::main]
+#[tokio::main(flavor = "current_thread")]
 async fn main() {
     let client = new_client(false, String::from("AUTH_TOKEN"));
     let identity_response = client.identity().whoami().await.unwrap().data.unwrap();
@@ -47,7 +47,7 @@ The client supports both the production and sandbox environment. To switch to sa
 ```rust
 use dnsimple::dnsimple::{Client, new_client};
 
-#[tokio::main]
+#[tokio::main(flavor = "current_thread")]
 async fn main() {
     let client = new_client(true, String::from("AUTH_TOKEN"));
     let identity_response = client.identity().whoami().await.unwrap().data.unwrap();

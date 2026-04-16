@@ -198,7 +198,7 @@ impl Registrar<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let domain_check = client.registrar().check_domain(1234, "example.com").await.unwrap().data.unwrap();
@@ -226,7 +226,7 @@ impl Registrar<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let domain_check = client.registrar().get_domain_prices(1234, "example.com").await.unwrap().data.unwrap();
@@ -254,7 +254,7 @@ impl Registrar<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let domain_check = client.registrar().get_domain_registration(1234, "example.com", 1556).await.unwrap().data.unwrap();
@@ -289,7 +289,7 @@ impl Registrar<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::new_client;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let domain_check = client.registrar().get_domain_renewal(1234, "example.com", 1556).await.unwrap().data.unwrap();
@@ -323,7 +323,7 @@ impl Registrar<'_> {
     /// use dnsimple::dnsimple::new_client;
     /// use dnsimple::dnsimple::registrar::DomainRegistrationPayload;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let payload = DomainRegistrationPayload {
@@ -371,7 +371,7 @@ impl Registrar<'_> {
     /// use dnsimple::dnsimple::new_client;
     /// use dnsimple::dnsimple::registrar::DomainTransferPayload;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let payload = DomainTransferPayload {

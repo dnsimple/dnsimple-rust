@@ -68,7 +68,7 @@ impl Domains<'_> {
     /// use std::collections::HashMap;
     /// use dnsimple::dnsimple::{Client, new_client};
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let domains = client.domains().list_domains(1234, None).await.unwrap().data.unwrap();
@@ -98,7 +98,7 @@ impl Domains<'_> {
     /// use dnsimple::dnsimple::{Client, new_client};
     /// use dnsimple::dnsimple::domains::DomainCreationPayload;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let domain_name = String::from("example-beta.com");
@@ -136,7 +136,7 @@ impl Domains<'_> {
     /// use dnsimple::dnsimple::{Client, new_client};
     /// use dnsimple::dnsimple::domains::DomainCreationPayload;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let domains_response = client.domains().get_domain(1234, 42).await;
@@ -165,7 +165,7 @@ impl Domains<'_> {
     /// use dnsimple::dnsimple::{Client, new_client};
     /// use dnsimple::dnsimple::domains::DomainCreationPayload;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let domains_response = client.domains().delete_domain(1234, 42).await;

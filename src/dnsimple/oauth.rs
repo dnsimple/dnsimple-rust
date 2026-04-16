@@ -58,7 +58,7 @@ impl OAuth<'_> {
     /// use dnsimple::dnsimple::new_client;
     /// use dnsimple::dnsimple::oauth::OAuthTokenPayload;
     ///
-    /// #[tokio::main]
+    /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let payload = OAuthTokenPayload {
