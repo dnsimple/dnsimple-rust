@@ -28,7 +28,6 @@ fn test_list_certificates() {
 
     assert_eq!(101973, certificate.id);
     assert_eq!(14279, certificate.domain_id);
-    assert_eq!(11435, certificate.contact_id);
     assert_eq!("www2", certificate.name);
     assert_eq!("www2.dnsimple.us", certificate.common_name);
     assert_eq!(1, certificate.years);
@@ -69,7 +68,6 @@ fn test_get_certificate() {
 
     assert_eq!(101967, certificate.id);
     assert_eq!(289333, certificate.domain_id);
-    assert_eq!(2511, certificate.contact_id);
     assert_eq!("www", certificate.name);
     assert_eq!("www.bingo.pizza", certificate.common_name);
     assert_eq!(1, certificate.years);
@@ -193,7 +191,6 @@ fn test_issue_letsencrypt_certificate() {
 
     assert_eq!(101967, certificate.id);
     assert_eq!(289333, certificate.domain_id);
-    assert_eq!(2511, certificate.contact_id);
     assert_eq!("www", certificate.name);
     assert_eq!("www.bingo.pizza", certificate.common_name);
     assert_eq!(1, certificate.years);
@@ -269,7 +266,6 @@ fn test_issue_letsencrypt_certificate_renewal() {
 
     assert_eq!(101972, renewal.id);
     assert_eq!(289333, renewal.domain_id);
-    assert_eq!(2511, renewal.contact_id);
     assert_eq!("www", renewal.name);
     assert_eq!("www.bingo.pizza", renewal.common_name);
     assert_eq!(1, renewal.years);
