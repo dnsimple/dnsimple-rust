@@ -21,6 +21,9 @@ pub struct Domain {
     pub auto_renew: bool,
     /// Set to true if the domain is WHOIS protected
     pub private_whois: bool,
+    /// True if the trustee service is enabled for the domain.
+    #[serde(default)]
+    pub trustee_service: bool,
     /// The day the domain will expire
     pub expires_on: Option<String>,
     /// The exact expiration time of the domain

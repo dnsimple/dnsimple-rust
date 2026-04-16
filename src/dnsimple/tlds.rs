@@ -12,6 +12,10 @@ pub struct Tld {
     pub tld_type: u64,
     /// True if Whois Privacy Protection is available.
     pub whois_privacy: bool,
+    /// True if Trustee service is available.
+    pub trustee_service_enabled: bool,
+    /// True if Trustee service is required.
+    pub trustee_service_required: bool,
     ///  True if TLD requires use of auto-renewal for renewals.
     pub auto_renew_only: bool,
     /// True if IDN is available.

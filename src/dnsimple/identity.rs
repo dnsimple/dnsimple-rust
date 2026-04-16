@@ -23,6 +23,8 @@ pub struct Account {
     pub id: u64,
     /// The account email
     pub email: String,
+    /// The account name
+    pub name: Option<String>,
     /// The identifier of the plan the account is subscribed to
     pub plan_identifier: String,
     /// When the account was created in DNSimple
@@ -94,11 +96,13 @@ mod tests {
         let account = identity::Account {
             id: 14,
             email: String::from("account@dnsimple.com"),
+            name: Some(String::from("Test Account")),
             plan_identifier: String::from("testing_plan"),
             created_at: String::from("some_time_ago"),
             updated_at: String::from("recently"),
         };
 
-        assert_eq!("testing_plan", account.plan_identifier)
+        assert_eq!("testing_plan", account.plan_identifier);
+        assert_eq!(Some(String::from("Test Account")), account.name)
     }
 }

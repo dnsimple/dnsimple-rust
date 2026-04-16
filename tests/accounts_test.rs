@@ -14,6 +14,7 @@ async fn list_accounts_account_success() {
     let account = accounts.first().unwrap();
     assert_eq!(123, account.id);
     assert_eq!("john@example.com", account.email);
+    assert_eq!(Some(String::from("John")), account.name);
     assert_eq!("dnsimple-personal", account.plan_identifier);
 }
 

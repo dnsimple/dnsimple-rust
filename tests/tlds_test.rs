@@ -16,6 +16,8 @@ async fn test_list_tlds() {
     assert_eq!("ac", tld.tld);
     assert_eq!(2, tld.tld_type);
     assert!(!tld.whois_privacy);
+    assert!(!tld.trustee_service_enabled);
+    assert!(!tld.trustee_service_required);
     assert!(tld.auto_renew_only);
     assert!(!tld.idn);
     assert_eq!(1, tld.minimum_registration);
@@ -36,6 +38,8 @@ async fn test_get_tld() {
     assert_eq!("com", tld.tld);
     assert_eq!(1, tld.tld_type);
     assert!(tld.whois_privacy);
+    assert!(!tld.trustee_service_enabled);
+    assert!(!tld.trustee_service_required);
     assert!(!tld.auto_renew_only);
     assert!(tld.idn);
     assert_eq!(1, tld.minimum_registration);

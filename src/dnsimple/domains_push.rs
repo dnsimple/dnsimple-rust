@@ -37,8 +37,12 @@ pub struct DomainPush {
 /// Payload to initiate a push
 #[derive(Debug, Deserialize, Serialize)]
 pub struct InitiatePushPayload {
-    /// The email address of the target DNSimple account.
-    pub new_account_email: String,
+    /// Deprecated: Use `new_account_identifier` instead.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub new_account_email: Option<String>,
+    /// The identifier of the target account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub new_account_identifier: Option<String>,
 }
 
 /// The domains push set of endpoints
@@ -57,7 +61,8 @@ impl Domains<'_> {
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN"));
     ///     let payload = InitiatePushPayload {
-    ///         new_account_email: String::from("admin@target-account.test"),
+    ///         new_account_email: None,
+    ///         new_account_identifier: Some(String::from("abc123")),
     ///     };
     ///     let push = client.domains().initiate_push(1234, "example.com", payload).await.unwrap().data.unwrap();
     /// }

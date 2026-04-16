@@ -52,6 +52,9 @@ async fn test_get_domain_prices() {
     assert_eq!(20.0, domain_prices.registration_price);
     assert_eq!(20.0, domain_prices.renewal_price);
     assert_eq!(20.0, domain_prices.transfer_price);
+    if let Some(trustee_service_price) = domain_prices.trustee_service_price {
+        assert_eq!(20.0, trustee_service_price);
+    }
 }
 
 #[tokio::test]
@@ -102,6 +105,7 @@ async fn test_get_domain_registration() {
     assert_eq!(domain_registration.state, "registering");
     assert!(!domain_registration.auto_renew);
     assert!(!domain_registration.whois_privacy);
+    assert!(!domain_registration.trustee_service);
     assert_eq!(domain_registration.created_at, "2023-01-27T17:44:32Z");
     assert_eq!(domain_registration.updated_at, "2023-01-27T17:44:40Z");
 }
@@ -148,6 +152,7 @@ async fn test_register_domain() {
     let payload = DomainRegistrationPayload {
         registrant_id: 2,
         whois_privacy: None,
+        trustee_service: None,
         auto_renew: None,
         extended_attributes: None,
         premium_price: None,
@@ -167,6 +172,7 @@ async fn test_register_domain() {
     assert_eq!("new", domain_registration.state);
     assert!(!domain_registration.auto_renew);
     assert!(!domain_registration.whois_privacy);
+    assert!(!domain_registration.trustee_service);
     assert_eq!("2016-12-09T19:35:31Z", domain_registration.created_at);
     assert_eq!("2016-12-09T19:35:31Z", domain_registration.updated_at);
 }
@@ -186,6 +192,7 @@ async fn test_transfer_domain() {
         registrant_id: 2,
         auth_code: String::from("THE_AUTH_CODE"),
         whois_privacy: None,
+        trustee_service: None,
         auto_renew: None,
         extended_attributes: None,
         premium_price: None,
@@ -204,6 +211,7 @@ async fn test_transfer_domain() {
     assert_eq!("transferring", domain_transfer.state);
     assert!(!domain_transfer.auto_renew);
     assert!(!domain_transfer.whois_privacy);
+    assert!(!domain_transfer.trustee_service);
     assert_eq!("2016-12-09T19:43:41Z", domain_transfer.created_at);
     assert_eq!("2016-12-09T19:43:43Z", domain_transfer.updated_at);
 }
@@ -223,6 +231,7 @@ async fn test_transfer_domain_error_in_dnsimple() {
         registrant_id: 2,
         auth_code: String::from("THE_AUTH_CODE"),
         whois_privacy: None,
+        trustee_service: None,
         auto_renew: None,
         extended_attributes: None,
         premium_price: None,
@@ -255,6 +264,7 @@ async fn test_transfer_domain_error_missing_auth_code() {
         registrant_id: 2,
         auth_code: String::from(""),
         whois_privacy: None,
+        trustee_service: None,
         auto_renew: None,
         extended_attributes: None,
         premium_price: None,
@@ -295,6 +305,7 @@ async fn test_retrieve_domain_transfer() {
     assert_eq!("cancelled", transfer.state);
     assert!(!transfer.auto_renew);
     assert!(!transfer.whois_privacy);
+    assert!(!transfer.trustee_service);
     assert_eq!("Canceled by customer", transfer.status_description.unwrap());
     assert_eq!("2020-06-05T18:08:00Z", transfer.created_at);
     assert_eq!("2020-06-05T18:10:01Z", transfer.updated_at);
@@ -329,6 +340,7 @@ async fn test_cancel_domain_transfer() {
     assert_eq!("transferring", transfer.state);
     assert!(!transfer.auto_renew);
     assert!(!transfer.whois_privacy);
+    assert!(!transfer.trustee_service);
     assert_eq!(None, transfer.status_description);
     assert_eq!("2020-06-05T18:08:00Z", transfer.created_at);
     assert_eq!("2020-06-05T18:08:04Z", transfer.updated_at);

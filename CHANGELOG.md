@@ -2,6 +2,30 @@
 
 This project uses [Semantic Versioning 2.0.0](http://semver.org/), the format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 5.3.0 - 2026-04-15
+
+### Added
+
+- Added `new_account_identifier` to `InitiatePushPayload` for initiating domain pushes by account identifier. (#102)
+- Added `name` to `Account`. (#102)
+- Added support for trustee service in domain transfers. (#104)
+
+### Deprecated
+
+- Deprecated `new_account_email` in `InitiatePushPayload`. Use `new_account_identifier` instead. (#102)
+
+## 5.2.0 - 2026-03-23
+
+### Added
+
+- Added support for trustee service. (#100)
+
+## 5.1.0 - 2026-02-26
+
+### Added
+
+- Added `get_domain_research_status` to research a domain for availability and registration status. (#96)
+
 ## Unreleased
 
 ### Changed

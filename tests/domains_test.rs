@@ -86,6 +86,7 @@ async fn test_get_domain() {
     assert_eq!("registered", domain.state);
     assert!(!domain.auto_renew);
     assert!(!domain.private_whois);
+    assert!(!domain.trustee_service);
     assert_eq!("2021-06-05", domain.expires_on.unwrap());
     assert_eq!("2021-06-05T02:15:00Z", domain.expires_at.unwrap());
     assert_eq!("2020-06-04T19:15:14Z", domain.created_at);
