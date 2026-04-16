@@ -1,9 +1,8 @@
-use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use thiserror::Error;
 
 /// Represents the possible errors thrown while interacting with the DNSimple API
-#[derive(Error, Deserialize, Serialize, Debug, PartialEq, Eq)]
+#[derive(Error, Debug)]
 pub enum DNSimpleError {
     #[error("Authentication failed")]
     Unauthorized,
@@ -32,6 +31,8 @@ pub enum DNSimpleError {
     TooManyRequests,
     #[error("Transport Error - {0}({1})")]
     Transport(String, String),
+    #[error("Request error: {0}")]
+    Reqwest(#[from] reqwest::Error),
     #[error("Deserialization Error {0}")]
     Deserialization(String),
 }
@@ -51,10 +52,6 @@ impl DNSimpleError {
             504 => Self::gateway_timeout(body),
             _ => Self::Transport(code.to_string(), "Unknown error".to_string()),
         }
-    }
-
-    pub fn parse_reqwest_error(error: reqwest::Error) -> DNSimpleError {
-        Self::Transport(error.to_string(), "Request error".to_string())
     }
 
     fn bad_request(body: Option<Value>) -> DNSimpleError {
