@@ -412,36 +412,34 @@ impl Client {
         request: reqwest::RequestBuilder,
         data: Value,
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
-        let response = request
-            .json(&data)
-            .send()
+        self.process_response::<E>(request.json(&data).send().await)
             .await
-            .map_err(DNSimpleError::parse_reqwest_error)?;
-        self.process_response::<E>(response).await
     }
 
     async fn call<E: Endpoint>(
         &self,
         request: reqwest::RequestBuilder,
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
-        let response = request
-            .send()
-            .await
-            .map_err(DNSimpleError::parse_reqwest_error)?;
-        self.process_response::<E>(response).await
+        self.process_response::<E>(request.send().await).await
     }
 
     async fn process_response<E: Endpoint>(
         &self,
-        response: reqwest::Response,
+        result: Result<reqwest::Response, reqwest::Error>,
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
-        let status = response.status().as_u16();
+        match result {
+            Ok(response) => {
+                let status = response.status().as_u16();
 
-        if response.status().is_success() {
-            Self::build_dnsimple_response::<E>(response).await
-        } else {
-            let body = response.json::<Value>().await.ok();
-            Err(DNSimpleError::parse_response(status, body))
+                match response.status().is_success() {
+                    true => Self::build_dnsimple_response::<E>(response).await,
+                    false => {
+                        let body = response.json::<Value>().await.ok();
+                        Err(DNSimpleError::parse_response(status, body))
+                    }
+                }
+            }
+            Err(error) => Err(DNSimpleError::parse_reqwest_error(error)),
         }
     }
 
@@ -449,18 +447,19 @@ impl Client {
         &self,
         request: reqwest::RequestBuilder,
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
-        let response = request
-            .send()
-            .await
-            .map_err(DNSimpleError::parse_reqwest_error)?;
+        match request.send().await {
+            Ok(response) => {
+                let status = response.status().as_u16();
 
-        let status = response.status().as_u16();
-
-        if response.status().is_success() {
-            Self::build_empty_dnsimple_response(response).await
-        } else {
-            let body = response.json::<Value>().await.ok();
-            Err(DNSimpleError::parse_response(status, body))
+                match response.status().is_success() {
+                    true => Self::build_empty_dnsimple_response(response).await,
+                    false => {
+                        let body = response.json::<Value>().await.ok();
+                        Err(DNSimpleError::parse_response(status, body))
+                    }
+                }
+            }
+            Err(error) => Err(DNSimpleError::parse_reqwest_error(error)),
         }
     }
 
