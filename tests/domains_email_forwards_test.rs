@@ -32,7 +32,6 @@ fn test_list_email_forwards() {
     assert!(email_forwards.active);
 }
 
-#[allow(deprecated)]
 #[test]
 fn test_create_email_forward() {
     let setup = setup_mock_for(
@@ -64,7 +63,6 @@ fn test_create_email_forward() {
     assert!(record.active);
 }
 
-#[allow(deprecated)]
 #[test]
 fn test_get_email_forward() {
     let setup = setup_mock_for(
