@@ -4,6 +4,10 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/), the format is
 
 ## main
 
+### Added
+
+- Added `Client::set_user_agent` to set a custom token that is prepended to the default `User-Agent` header. The README already documented this method, but the implementation was missing.
+
 ### Removed
 
 - **BREAKING**: Removed the deprecated `contact_id` field from the `Certificate` struct. The field was deprecated on 2022-05-17 and is no longer required for certificate operations. Closes #105.

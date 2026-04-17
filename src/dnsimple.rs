@@ -294,6 +294,29 @@ impl Client {
         self.base_url = String::from(url);
     }
 
+    /// Sets a custom token to be prepended to the default `User-Agent` header
+    /// sent on every request to the DNSimple API.
+    ///
+    /// The custom token is prepended (not replaced) so the default
+    /// `dnsimple-rust/<version>` identification is preserved. For example,
+    /// calling `set_user_agent("my-app/1.0")` results in a `User-Agent` header
+    /// of `my-app/1.0 dnsimple-rust/<version>`.
+    ///
+    /// Note that if you want to do this you will have to declare your client mutable.
+    ///
+    /// ```no_run
+    /// use dnsimple::dnsimple::{Client, new_client};
+    /// let mut client = new_client(true, String::from("ACCESS_TOKEN"));
+    /// client.set_user_agent("my-app/1.0");
+    /// ```
+    ///
+    /// # Arguments
+    ///
+    /// `custom_user_agent`: The custom token to prepend to the default `User-Agent`.
+    pub fn set_user_agent(&mut self, custom_user_agent: &str) {
+        self.user_agent = format!("{} {}{}", custom_user_agent, DEFAULT_USER_AGENT, VERSION);
+    }
+
     /// Returns the current url (including the `API_VERSION` as part of the path).
     pub fn versioned_url(&self) -> String {
         let mut url = String::from(&self.base_url);
@@ -611,5 +634,23 @@ mod tests {
         client.set_base_url("https://example.com");
 
         assert_eq!(client.versioned_url(), "https://example.com/v2");
+    }
+
+    #[test]
+    fn can_set_a_custom_user_agent() {
+        let mut client = new_client(true, String::from("token"));
+        client.set_user_agent("my-app/1.0");
+
+        assert_eq!(
+            client.user_agent,
+            format!("my-app/1.0 {}{}", DEFAULT_USER_AGENT, VERSION)
+        );
+    }
+
+    #[test]
+    fn default_user_agent_is_unchanged_when_not_customized() {
+        let client = new_client(true, String::from("token"));
+
+        assert_eq!(client.user_agent, DEFAULT_USER_AGENT.to_owned() + VERSION);
     }
 }
