@@ -15,7 +15,7 @@ use crate::errors::DNSimpleError;
 use serde;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
+use serde_json::Value;
 use std::collections::HashMap;
 
 pub mod accounts;
@@ -489,12 +489,19 @@ impl Client {
             .json::<Value>()
             .await
             .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
-        let data = serde_json::from_value(json!(json.get("data")))
+        let data = json
+            .get("data")
+            .cloned()
+            .map(serde_json::from_value)
+            .transpose()
             .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
-        let pagination = serde_json::from_value(json!(json.get("pagination")))
+        let pagination = json
+            .get("pagination")
+            .cloned()
+            .map(serde_json::from_value)
+            .transpose()
             .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
-        let body = serde_json::from_value(json)
-            .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
+        let body = Some(json);
 
         Ok(DNSimpleResponse {
             rate_limit,
