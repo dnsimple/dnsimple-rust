@@ -439,7 +439,7 @@ impl Client {
                     }
                 }
             }
-            Err(error) => Err(error.into()),
+            Err(error) => Err(DNSimpleError::from_reqwest(error)),
         }
     }
 
@@ -459,7 +459,7 @@ impl Client {
                     }
                 }
             }
-            Err(error) => Err(error.into()),
+            Err(error) => Err(DNSimpleError::from_reqwest(error)),
         }
     }
 

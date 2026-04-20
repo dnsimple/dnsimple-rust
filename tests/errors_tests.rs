@@ -53,12 +53,13 @@ async fn bad_gateway() {
     assert_eq!("Bad Gateway", error.to_string());
 }
 #[tokio::test]
-async fn transport() {
+async fn unexpected_status() {
     let setup = setup_mock_for("/other", "badgateway", "GET").await;
     let client = setup.0;
 
     let response = client.identity().whoami().await;
     let error = response.unwrap_err();
 
-    assert_eq!("Transport Error - 501(Unknown error)", error.to_string());
+    assert_eq!("Unexpected HTTP status: 501", error.to_string());
+    assert_matches!(error, DNSimpleError::UnexpectedStatus(501));
 }

@@ -29,15 +29,23 @@ pub enum DNSimpleError {
         "You exceeded the allowed number of requests per hour and your request has temporarily been throttled."
     )]
     TooManyRequests,
-    #[error("Transport Error - {0}({1})")]
-    Transport(String, String),
-    #[error("Request error: {0}")]
-    Reqwest(#[from] reqwest::Error),
+    #[error("Unexpected HTTP status: {0}")]
+    UnexpectedStatus(u16),
+    #[error("Network error: {0}")]
+    Network(String),
     #[error("Deserialization Error {0}")]
     Deserialization(String),
 }
 
 impl DNSimpleError {
+    pub(crate) fn from_reqwest(error: reqwest::Error) -> DNSimpleError {
+        if error.is_decode() {
+            Self::Deserialization(error.to_string())
+        } else {
+            Self::Network(error.to_string())
+        }
+    }
+
     pub fn parse_response(code: u16, body: Option<Value>) -> DNSimpleError {
         match code {
             400 => Self::bad_request(body),
@@ -50,7 +58,7 @@ impl DNSimpleError {
             502 => Self::BadGateway,
             503 => Self::ServiceUnavailable,
             504 => Self::gateway_timeout(body),
-            _ => Self::Transport(code.to_string(), "Unknown error".to_string()),
+            _ => Self::UnexpectedStatus(code),
         }
     }
 
