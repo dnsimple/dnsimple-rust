@@ -60,7 +60,7 @@ impl OAuth<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let payload = OAuthTokenPayload {
     ///         client_id: "id".to_string(),
     ///         client_secret: "secret".to_string(),

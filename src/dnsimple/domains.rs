@@ -70,7 +70,7 @@ impl Domains<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let domains = client.domains().list_domains(1234, None).await.unwrap().data.unwrap();
     /// }
     /// ```
@@ -100,7 +100,7 @@ impl Domains<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let domain_name = String::from("example-beta.com");
     ///     let domains_response = client.domains().create_domain(1234, domain_name).await;
     /// }
@@ -138,7 +138,7 @@ impl Domains<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let domains_response = client.domains().get_domain(1234, 42).await;
     /// }
     /// ```
@@ -167,7 +167,7 @@ impl Domains<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let domains_response = client.domains().delete_domain(1234, 42).await;
     /// }
     /// ```

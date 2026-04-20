@@ -25,7 +25,7 @@ impl Accounts<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let response = client.accounts().list_accounts().await.unwrap();
     ///     let accounts = response.data.unwrap();
     ///     let first_account = accounts.first().unwrap();

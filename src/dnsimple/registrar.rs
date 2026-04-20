@@ -200,7 +200,7 @@ impl Registrar<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let domain_check = client.registrar().check_domain(1234, "example.com").await.unwrap().data.unwrap();
     /// }
     /// ```
@@ -228,7 +228,7 @@ impl Registrar<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let domain_check = client.registrar().get_domain_prices(1234, "example.com").await.unwrap().data.unwrap();
     /// }
     /// ```
@@ -256,7 +256,7 @@ impl Registrar<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let domain_check = client.registrar().get_domain_registration(1234, "example.com", 1556).await.unwrap().data.unwrap();
     /// }
     /// ```
@@ -291,7 +291,7 @@ impl Registrar<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let domain_check = client.registrar().get_domain_renewal(1234, "example.com", 1556).await.unwrap().data.unwrap();
     /// }
     /// ```
@@ -325,7 +325,7 @@ impl Registrar<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let payload = DomainRegistrationPayload {
     ///         registrant_id: 42,
     ///         whois_privacy: None,
@@ -373,7 +373,7 @@ impl Registrar<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let payload = DomainTransferPayload {
     ///         registrant_id: 42,
     ///         auth_code: "Some code".to_string(),

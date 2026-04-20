@@ -35,7 +35,7 @@ pub async fn setup_mock_for(path: &str, fixture: &str, method: &str) -> (Client,
         .create_async()
         .await;
 
-    let mut client = new_client(true, String::from("some-token"));
+    let mut client = new_client(true, String::from("some-token")).unwrap();
     client.set_base_url(&server.url());
     (client, server)
 }

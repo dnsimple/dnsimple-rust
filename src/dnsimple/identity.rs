@@ -65,7 +65,7 @@ impl Identity<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let response = client.identity().whoami().await.unwrap().data.unwrap();
     ///     let account = response.account.unwrap();
     /// }

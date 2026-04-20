@@ -178,7 +178,7 @@ impl Certificates<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let certificates = client.certificates().list_certificates(1010, "example.com", None).await.unwrap().data.unwrap();
     /// }
     /// ```
@@ -211,7 +211,7 @@ impl Certificates<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let certificate = client.certificates().get_certificate(1010, "example.com", 42).await.unwrap().data.unwrap();
     /// }
     /// ```
@@ -244,7 +244,7 @@ impl Certificates<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let certificate = client.certificates().download_certificate(1010, "example.com", 42).await.unwrap().data.unwrap();
     /// }
     /// ```
@@ -279,7 +279,7 @@ impl Certificates<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let private_key = client.certificates().get_certificate_private_key(1010, "example.com", 42).await.unwrap().data.unwrap();
     /// }
     /// ```
@@ -315,7 +315,7 @@ impl Certificates<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let payload = LetsEncryptPurchasePayload {
     ///         auto_renew: true,
     ///         name: String::from("secret"),
@@ -363,7 +363,7 @@ impl Certificates<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let issued = client.certificates().issue_letsencrypt_certificate(1010, "example.com", 42).await.unwrap().data.unwrap();
     /// }
     /// ```
@@ -399,7 +399,7 @@ impl Certificates<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let payload = LetsEncryptPurchaseRenewalPayload {
     ///         auto_renew: false,
     ///         signature_algorithm: None,
@@ -445,7 +445,7 @@ impl Certificates<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let issued = client.certificates().issue_letsencrypt_certificate_renewal(1010, "example.com", 41, 42).await.unwrap().data.unwrap();
     /// }
     /// ```

@@ -63,7 +63,7 @@ const DEFAULT_SANDBOX_URL: &str = "https://api.sandbox.dnsimple.com";
 ///
 /// #[tokio::main(flavor = "current_thread")]
 /// async fn main() {
-///     let client = new_client(true, String::from("AUTH_TOKEN"));
+///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
 ///     let identity = client.identity().whoami().await.unwrap().data.unwrap();
 ///
 ///     let account = identity.account.unwrap();
@@ -191,25 +191,29 @@ pub struct Paginate {
 /// ```no_run
 /// use dnsimple::dnsimple::{Client, new_client};
 ///
-/// let client = new_client(true, String::from("AUTH_TOKEN"));
+/// let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
 /// ```
 ///
 /// # Arguments
 ///
 /// `sandbox`: `true` if you want to run in the sandbox environment, otherwise `false`
 /// `token`: the bearer authentication token
-pub fn new_client(sandbox: bool, token: String) -> Client {
+pub fn new_client(sandbox: bool, token: String) -> Result<Client, DNSimpleError> {
     let mut url = DEFAULT_BASE_URL;
     if sandbox {
         url = DEFAULT_SANDBOX_URL;
     }
 
-    Client {
+    let client = reqwest::Client::builder()
+        .build()
+        .map_err(DNSimpleError::from_reqwest)?;
+
+    Ok(Client {
         base_url: String::from(url),
         user_agent: DEFAULT_USER_AGENT.to_owned() + VERSION,
         auth_token: token,
-        client: reqwest::Client::new(),
-    }
+        client,
+    })
 }
 
 impl Client {
@@ -285,7 +289,7 @@ impl Client {
     ///
     /// ```no_run
     /// use dnsimple::dnsimple::{Client, new_client};
-    /// let mut client = new_client(true, String::from("ACCESS_TOKEN"));
+    /// let mut client = new_client(true, String::from("ACCESS_TOKEN")).unwrap();
     /// client.set_base_url("https://example.com");
     /// ```
     ///
@@ -651,22 +655,25 @@ impl Client {
 #[cfg(test)]
 mod tests {
     use crate::dnsimple::{DEFAULT_SANDBOX_URL, DEFAULT_USER_AGENT, VERSION, new_client};
+    use crate::errors::DNSimpleError;
 
     #[test]
-    fn creates_a_client() {
+    fn creates_a_client() -> Result<(), DNSimpleError> {
         let token = "some-auth-token";
-        let client = new_client(true, String::from(token));
+        let client = new_client(true, String::from(token))?;
 
         assert_eq!(client.base_url, DEFAULT_SANDBOX_URL);
         assert_eq!(client.user_agent, DEFAULT_USER_AGENT.to_owned() + VERSION);
         assert_eq!(client.auth_token, token);
+        Ok(())
     }
 
     #[test]
-    fn can_change_the_base_url() {
-        let mut client = new_client(true, String::from("token"));
+    fn can_change_the_base_url() -> Result<(), DNSimpleError> {
+        let mut client = new_client(true, String::from("token"))?;
         client.set_base_url("https://example.com");
 
         assert_eq!(client.versioned_url(), "https://example.com/v2");
+        Ok(())
     }
 }

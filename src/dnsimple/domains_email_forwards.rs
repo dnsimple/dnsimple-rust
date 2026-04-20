@@ -75,7 +75,7 @@ impl Domains<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let email_forwards_list = client.domains().list_email_forwards(1234, "example.com", None).await.unwrap().data.unwrap();
     /// }
     /// ```
@@ -110,7 +110,7 @@ impl Domains<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let payload = EmailForwardPayload {
     ///         alias_name: "My forward".to_string(),
     ///         destination_email: "some@example.com".to_string(),
@@ -149,7 +149,7 @@ impl Domains<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let email_forwards = client.domains().get_email_forward(1234, "example.com", 42).await.unwrap().data.unwrap();
     /// }
     /// ```
@@ -182,7 +182,7 @@ impl Domains<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let response = client.domains().delete_email_forward(1234, "example.com", 42).await;
     /// }
     /// ```

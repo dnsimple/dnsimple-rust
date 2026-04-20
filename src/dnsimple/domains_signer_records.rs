@@ -66,7 +66,7 @@ impl Domains<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let signer_records = client.domains().list_delegation_signer_records(1234, "example.com", None).await.unwrap().data.unwrap();
     /// }
     /// ```
@@ -105,7 +105,7 @@ impl Domains<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let payload = DelegationSignerRecordPayload {
     ///         algorithm: String::from("13"),
     ///         digest: String::from("684a1f049d7d082b7f98691657da5a65764913df7f065f6f8c36edf62d66ca03"),
@@ -147,7 +147,7 @@ impl Domains<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let signer_records = client.domains().get_delegation_signer_record(1234, "example.com").await.unwrap().data.unwrap();
     /// }
     /// ```
@@ -175,7 +175,7 @@ impl Domains<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let response = client.domains().delete_delegation_signer_record(1234, "example.com", 42).await;
     /// }
     /// ```

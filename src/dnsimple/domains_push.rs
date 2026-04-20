@@ -59,7 +59,7 @@ impl Domains<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let payload = InitiatePushPayload {
     ///         new_account_email: None,
     ///         new_account_identifier: Some(String::from("abc123")),
@@ -98,7 +98,7 @@ impl Domains<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let pushes = client.domains().list_pushes(1234, None).await.unwrap().data.unwrap();
     /// }
     /// ```
@@ -129,7 +129,7 @@ impl Domains<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let response = client.domains().accept_push(1234, 42).await;
     /// }
     /// ```
@@ -157,7 +157,7 @@ impl Domains<'_> {
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
-    ///     let client = new_client(true, String::from("AUTH_TOKEN"));
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     ///     let response = client.domains().reject_push(1234, 42).await;
     /// }
     /// ```

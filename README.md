@@ -28,7 +28,7 @@ use dnsimple::dnsimple::{Client, new_client};
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
-    let client = new_client(false, String::from("AUTH_TOKEN"));
+    let client = new_client(false, String::from("AUTH_TOKEN")).unwrap();
     let identity_response = client.identity().whoami().await.unwrap().data.unwrap();
 }
 ```
@@ -49,7 +49,7 @@ use dnsimple::dnsimple::{Client, new_client};
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
-    let client = new_client(true, String::from("AUTH_TOKEN"));
+    let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
     let identity_response = client.identity().whoami().await.unwrap().data.unwrap();
 }
 ```
@@ -64,7 +64,7 @@ You can customize the `User-Agent` header for the calls made to the DNSimple API
 ```rust
 use dnsimple::dnsimple::{Client, new_client};
 
-let mut client = new_client(false, String::from("AUTH_TOKEN"));
+let mut client = new_client(false, String::from("AUTH_TOKEN")).unwrap();
 client.set_user_agent("my-app/1.0");
 ```
 
