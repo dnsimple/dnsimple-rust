@@ -314,7 +314,14 @@ impl Client {
     ///
     /// `custom_user_agent`: The custom token to prepend to the default `User-Agent`.
     pub fn set_user_agent(&mut self, custom_user_agent: &str) {
-        self.user_agent = format!("{} {}{}", custom_user_agent, DEFAULT_USER_AGENT, VERSION);
+        let custom_user_agent = custom_user_agent.trim();
+        let default_user_agent = DEFAULT_USER_AGENT.to_owned() + VERSION;
+
+        self.user_agent = if custom_user_agent.is_empty() {
+            default_user_agent
+        } else {
+            format!("{} {}", custom_user_agent, default_user_agent)
+        };
     }
 
     /// Returns the current url (including the `API_VERSION` as part of the path).
@@ -650,6 +657,14 @@ mod tests {
     #[test]
     fn default_user_agent_is_unchanged_when_not_customized() {
         let client = new_client(true, String::from("token"));
+
+        assert_eq!(client.user_agent, DEFAULT_USER_AGENT.to_owned() + VERSION);
+    }
+
+    #[test]
+    fn empty_custom_user_agent_uses_the_default_user_agent() {
+        let mut client = new_client(true, String::from("token"));
+        client.set_user_agent("  ");
 
         assert_eq!(client.user_agent, DEFAULT_USER_AGENT.to_owned() + VERSION);
     }
