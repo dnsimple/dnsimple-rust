@@ -4,6 +4,10 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/), the format is
 
 ## main
 
+### Added
+
+- Added `Client::set_user_agent` to set a custom token that is prepended to the default `User-Agent` header. The README already documented this method, but the implementation was missing.
+
 ### Changed
 
 - Updated the `listCharges` test fixture to include a certificate purchase entry demonstrating that `product_reference` is a string even when it represents a numeric ID. (#109)
