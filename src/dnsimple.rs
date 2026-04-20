@@ -447,6 +447,29 @@ impl Client {
         }
     }
 
+    pub(crate) async fn process_direct_response<T: DeserializeOwned>(
+        &self,
+        result: Result<reqwest::Response, reqwest::Error>,
+    ) -> Result<T, DNSimpleError> {
+        match result {
+            Ok(response) => {
+                let status = response.status().as_u16();
+
+                match response.status().is_success() {
+                    true => response
+                        .json::<T>()
+                        .await
+                        .map_err(DNSimpleError::from_reqwest),
+                    false => {
+                        let body = response.json::<Value>().await.ok();
+                        Err(DNSimpleError::parse_response(status, body))
+                    }
+                }
+            }
+            Err(error) => Err(DNSimpleError::from_reqwest(error)),
+        }
+    }
+
     async fn call_empty(
         &self,
         request: reqwest::RequestBuilder,

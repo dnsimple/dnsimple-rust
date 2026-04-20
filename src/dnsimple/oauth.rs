@@ -95,16 +95,13 @@ impl OAuth<'_> {
 
         let response = self
             .client
-            .client
-            .post(self.client.url(path))
+            .build_post_request(path)
             .json(&value)
             .send()
-            .await
-            .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
+            .await;
 
-        response
-            .json::<AccessToken>()
+        self.client
+            .process_direct_response::<AccessToken>(response)
             .await
-            .map_err(|e| DNSimpleError::Deserialization(e.to_string()))
     }
 }
