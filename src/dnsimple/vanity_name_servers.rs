@@ -22,7 +22,7 @@ impl VanityNameServers<'_> {
     /// # Arguments
     /// `account_id`: The account id
     /// `domain`: The domain name or id
-    pub fn enable_vanity_name_servers(
+    pub async fn enable_vanity_name_servers(
         &self,
         account_id: u64,
         domain: String,
@@ -31,6 +31,7 @@ impl VanityNameServers<'_> {
 
         self.client
             .put::<VanityNameServersEndpoint>(&path, Value::Null)
+            .await
     }
 
     /// Enable vanity name servers
@@ -38,13 +39,13 @@ impl VanityNameServers<'_> {
     /// # Arguments
     /// `account_id`: The account id
     /// `domain`: The domain name or id
-    pub fn disable_vanity_name_servers(
+    pub async fn disable_vanity_name_servers(
         &self,
         account_id: u64,
         domain: String,
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/vanity/{}", account_id, domain);
 
-        self.client.delete(&path)
+        self.client.delete(&path).await
     }
 }

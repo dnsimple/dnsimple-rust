@@ -68,8 +68,11 @@ impl Domains<'_> {
     /// use std::collections::HashMap;
     /// use dnsimple::dnsimple::{Client, new_client};
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let domains = client.domains().list_domains(1234, None).unwrap().data.unwrap();
+    /// #[tokio::main(flavor = "current_thread")]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
+    ///     let domains = client.domains().list_domains(1234, None).await.unwrap().data.unwrap();
+    /// }
     /// ```
     ///
     /// # Arguments
@@ -78,13 +81,13 @@ impl Domains<'_> {
     /// `options`: The `RequestOptions`
     ///             - Filters: `name_like`, `registrant_id`
     ///             - Sorting: `id`, `name`, `expiration`
-    pub fn list_domains(
+    pub async fn list_domains(
         &self,
         account_id: u64,
         options: Option<RequestOptions>,
     ) -> Result<DNSimpleResponse<Vec<Domain>>, DNSimpleError> {
         let path = format!("/{}/domains", account_id);
-        self.client.get::<DomainsEndpoint>(&path, options)
+        self.client.get::<DomainsEndpoint>(&path, options).await
     }
 
     /// Adds a domain to the account.
@@ -95,10 +98,12 @@ impl Domains<'_> {
     /// use dnsimple::dnsimple::{Client, new_client};
     /// use dnsimple::dnsimple::domains::DomainCreationPayload;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let domain_name = String::from("example-beta.com");
-    ///
-    /// let domains_response = client.domains().create_domain(1234, domain_name);
+    /// #[tokio::main(flavor = "current_thread")]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
+    ///     let domain_name = String::from("example-beta.com");
+    ///     let domains_response = client.domains().create_domain(1234, domain_name).await;
+    /// }
     /// ```
     ///
     /// # Arguments
@@ -106,7 +111,7 @@ impl Domains<'_> {
     /// `account_id`: The account ID
     /// `name`: The name of the domain we want to create
     // pub fn create_domain(&self, account_id: u64, name: String) -> DNSimpleResponse<DomainData> {
-    pub fn create_domain(
+    pub async fn create_domain(
         &self,
         account_id: u64,
         name: String,
@@ -116,7 +121,7 @@ impl Domains<'_> {
         let payload = DomainCreationPayload { name };
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<DomainEndpoint>(&path, json),
+            Ok(json) => self.client.post::<DomainEndpoint>(&path, json).await,
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
@@ -131,8 +136,11 @@ impl Domains<'_> {
     /// use dnsimple::dnsimple::{Client, new_client};
     /// use dnsimple::dnsimple::domains::DomainCreationPayload;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let domains_response = client.domains().get_domain(1234, 42);
+    /// #[tokio::main(flavor = "current_thread")]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
+    ///     let domains_response = client.domains().get_domain(1234, 42).await;
+    /// }
     /// ```
     ///
     /// # Arguments
@@ -140,13 +148,13 @@ impl Domains<'_> {
     /// `account_id`: The account ID
     /// `domain_id`: The ID of the domain we want to retrieve
     // pub fn get_domain(&self, account_id: u64, domain_id: u64) -> DNSimpleResponse<DomainData> {
-    pub fn get_domain(
+    pub async fn get_domain(
         &self,
         account_id: u64,
         domain_id: u64,
     ) -> Result<DNSimpleResponse<Domain>, DNSimpleError> {
         let path = format!("/{}/domains/{}", account_id, domain_id);
-        self.client.get::<DomainEndpoint>(&path, None)
+        self.client.get::<DomainEndpoint>(&path, None).await
     }
 
     /// Permanently deletes a domain from the account. It cannot be undone.
@@ -157,21 +165,24 @@ impl Domains<'_> {
     /// use dnsimple::dnsimple::{Client, new_client};
     /// use dnsimple::dnsimple::domains::DomainCreationPayload;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let domains_response = client.domains().delete_domain(1234, 42);
+    /// #[tokio::main(flavor = "current_thread")]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
+    ///     let domains_response = client.domains().delete_domain(1234, 42).await;
+    /// }
     /// ```
     ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
     /// `domain_id`: The ID of the domain we want to permanently delete
-    pub fn delete_domain(
+    pub async fn delete_domain(
         &self,
         account_id: u64,
         domain_id: u64,
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!("/{}/domains/{}", account_id, domain_id);
 
-        self.client.delete(&path)
+        self.client.delete(&path).await
     }
 }

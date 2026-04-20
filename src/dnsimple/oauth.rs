@@ -58,22 +58,25 @@ impl OAuth<'_> {
     /// use dnsimple::dnsimple::new_client;
     /// use dnsimple::dnsimple::oauth::OAuthTokenPayload;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let payload = OAuthTokenPayload {
-    ///     client_id: "id".to_string(),
-    ///     client_secret: "secret".to_string(),
-    ///     code: "code".to_string(),
-    ///     redirect_uri: "/redirect_uri".to_string(),
-    ///     state: "state".to_string()
-    /// };
+    /// #[tokio::main(flavor = "current_thread")]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
+    ///     let payload = OAuthTokenPayload {
+    ///         client_id: "id".to_string(),
+    ///         client_secret: "secret".to_string(),
+    ///         code: "code".to_string(),
+    ///         redirect_uri: "/redirect_uri".to_string(),
+    ///         state: "state".to_string()
+    ///     };
     ///
-    /// let access_token = client.oauth().exchange_authorization_for_token(payload);
+    ///     let access_token = client.oauth().exchange_authorization_for_token(payload).await;
+    /// }
     /// ```
     ///
     /// # Attributes
     ///
     /// `payload`: The `OAuthTokenPayload` with the necessary information to get the access token.
-    pub fn exchange_authorization_for_token(
+    pub async fn exchange_authorization_for_token(
         &self,
         payload: OAuthTokenPayload,
     ) -> Result<AccessToken, DNSimpleError> {
@@ -92,13 +95,13 @@ impl OAuth<'_> {
 
         let response = self
             .client
-            ._agent
-            .post(&self.client.url(path))
-            .send_json(value)
-            .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
+            .build_post_request(path)
+            .json(&value)
+            .send()
+            .await;
 
-        response
-            .into_json::<AccessToken>()
-            .map_err(|e| DNSimpleError::Deserialization(e.to_string()))
+        self.client
+            .process_direct_response::<AccessToken>(response)
+            .await
     }
 }

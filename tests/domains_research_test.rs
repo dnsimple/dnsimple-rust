@@ -1,19 +1,21 @@
 use crate::common::setup_mock_for;
 mod common;
 
-#[test]
-fn get_domain_research_status_test() {
+#[tokio::test]
+async fn get_domain_research_status_test() {
     let setup = setup_mock_for(
         "/1385/domains/research/status?domain=taken.com",
         "getDomainsResearchStatus/success-unavailable",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1385_u64;
 
     let response = client
         .domains()
         .get_domain_research_status(account_id, String::from("taken.com"))
+        .await
         .unwrap();
 
     let data = response.data.unwrap();

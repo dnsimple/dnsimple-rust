@@ -1,4 +1,4 @@
-use dnsimple::dnsimple::{new_client, Client};
+use dnsimple::dnsimple::{Client, new_client};
 use mockito::{Server, ServerGuard};
 use std::fs;
 
@@ -13,7 +13,7 @@ use std::fs;
 /// `path`: the path in the server (i.e. `/whoami`)
 /// `method`: the HTTP method we are going to use (GET, POST, DELETE, ...)
 ///
-pub fn setup_mock_for(path: &str, fixture: &str, method: &str) -> (Client, ServerGuard) {
+pub async fn setup_mock_for(path: &str, fixture: &str, method: &str) -> (Client, ServerGuard) {
     let path = format!("/v2{}", path);
     let fixture = format!("./tests/fixtures/v2/api/{}.http", fixture);
 
@@ -24,7 +24,7 @@ pub fn setup_mock_for(path: &str, fixture: &str, method: &str) -> (Client, Serve
     let status = &content[9..12];
     let body = lines.last();
 
-    let mut server = Server::new();
+    let mut server = Server::new_async().await;
     server
         .mock(method, path.as_str())
         .with_header("X-RateLimit-Limit", "2")
@@ -32,9 +32,10 @@ pub fn setup_mock_for(path: &str, fixture: &str, method: &str) -> (Client, Serve
         .with_header("X-RateLimit-Reset", "never")
         .with_status(status.parse().unwrap())
         .with_body(body.unwrap())
-        .create();
+        .create_async()
+        .await;
 
-    let mut client = new_client(true, String::from("some-token"));
+    let mut client = new_client(true, String::from("some-token")).unwrap();
     client.set_base_url(&server.url());
     (client, server)
 }

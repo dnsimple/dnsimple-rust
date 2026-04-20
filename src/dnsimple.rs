@@ -15,9 +15,8 @@ use crate::errors::DNSimpleError;
 use serde;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
+use serde_json::Value;
 use std::collections::HashMap;
-use ureq::{Error, Request, Response};
 
 pub mod accounts;
 pub mod certificates;
@@ -62,17 +61,20 @@ const DEFAULT_SANDBOX_URL: &str = "https://api.sandbox.dnsimple.com";
 /// ```no_run
 /// use dnsimple::dnsimple::{Client, new_client};
 ///
-/// let client = new_client(true, String::from("AUTH_TOKEN"));
-/// let identity = client.identity().whoami().unwrap().data.unwrap();
+/// #[tokio::main(flavor = "current_thread")]
+/// async fn main() {
+///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
+///     let identity = client.identity().whoami().await.unwrap().data.unwrap();
 ///
-/// let account = identity.account.unwrap();
+///     let account = identity.account.unwrap();
+/// }
 /// ```
 ///
 pub struct Client {
     base_url: String,
     user_agent: String,
     auth_token: String,
-    pub _agent: ureq::Agent,
+    client: reqwest::Client,
 }
 
 /// Defines the Endpoint trait for the different API endpoints
@@ -117,7 +119,7 @@ pub struct Pagination {
 
 /// When you can send some options into the request (i.e. for pagination).
 pub struct RequestOptions {
-    /// Filtering makes it possible to ask only for the exact subset of data that you you’re looking for.
+    /// Filtering makes it possible to ask only for the exact subset of data that you you're looking for.
     pub filters: Option<Filters>,
     /// API v2 results are implicitly sorted according to policies that vary from endpoint to endpoint.
     pub sort: Option<Sort>,
@@ -138,9 +140,9 @@ pub struct DNSimpleEmptyResponse {
     pub status: u16,
 }
 
-/// Filtering makes it possible to ask only for the exact subset of data that you you’re looking for.
+/// Filtering makes it possible to ask only for the exact subset of data that you you're looking for.
 //
-// With potential hundreds of result entries, it’s convenient to apply a filter and receive only the
+// With potential hundreds of result entries, it's convenient to apply a filter and receive only the
 // interesting data.
 #[derive(Debug)]
 pub struct Filters {
@@ -189,25 +191,29 @@ pub struct Paginate {
 /// ```no_run
 /// use dnsimple::dnsimple::{Client, new_client};
 ///
-/// let client = new_client(true, String::from("AUTH_TOKEN"));
+/// let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
 /// ```
 ///
 /// # Arguments
 ///
 /// `sandbox`: `true` if you want to run in the sandbox environment, otherwise `false`
 /// `token`: the bearer authentication token
-pub fn new_client(sandbox: bool, token: String) -> Client {
+pub fn new_client(sandbox: bool, token: String) -> Result<Client, DNSimpleError> {
     let mut url = DEFAULT_BASE_URL;
     if sandbox {
         url = DEFAULT_SANDBOX_URL;
     }
 
-    Client {
+    let client = reqwest::Client::builder()
+        .build()
+        .map_err(DNSimpleError::from_reqwest)?;
+
+    Ok(Client {
         base_url: String::from(url),
         user_agent: DEFAULT_USER_AGENT.to_owned() + VERSION,
         auth_token: token,
-        _agent: ureq::Agent::new(),
-    }
+        client,
+    })
 }
 
 impl Client {
@@ -283,7 +289,7 @@ impl Client {
     ///
     /// ```no_run
     /// use dnsimple::dnsimple::{Client, new_client};
-    /// let mut client = new_client(true, String::from("ACCESS_TOKEN"));
+    /// let mut client = new_client(true, String::from("ACCESS_TOKEN")).unwrap();
     /// client.set_base_url("https://example.com");
     /// ```
     ///
@@ -306,7 +312,7 @@ impl Client {
     ///
     /// ```no_run
     /// use dnsimple::dnsimple::{Client, new_client};
-    /// let mut client = new_client(true, String::from("ACCESS_TOKEN"));
+    /// let mut client = new_client(true, String::from("ACCESS_TOKEN")).unwrap();
     /// client.set_user_agent("my-app/1.0");
     /// ```
     ///
@@ -338,12 +344,13 @@ impl Client {
     ///
     /// `path`: the path to the endpoint
     /// `options`: optionally a `RequestOptions` with things like pagination, filtering and sorting
-    pub fn get<E: Endpoint>(
+    pub async fn get<E: Endpoint>(
         &self,
         path: &str,
         options: Option<RequestOptions>,
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
-        self.call::<E>(self.build_get_request(&path, options))
+        let request = self.build_get_request(path, options);
+        self.call::<E>(request).await
     }
 
     /// Sends a POST request to the DNSimple API
@@ -352,12 +359,13 @@ impl Client {
     ///
     /// `path`: the path to the endpoint
     /// `data`: the json payload to be sent to the server
-    pub fn post<E: Endpoint>(
+    pub async fn post<E: Endpoint>(
         &self,
         path: &str,
         data: Value,
     ) -> Result<DNSimpleResponse<<E as Endpoint>::Output>, DNSimpleError> {
-        self.call_with_payload::<E>(self.build_post_request(&path), data)
+        let request = self.build_post_request(path);
+        self.call_with_payload::<E>(request, data).await
     }
 
     /// Sends a POST request to the DNSimple API without any payload
@@ -365,8 +373,9 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub fn empty_post(&self, path: &str) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
-        self.call_empty(self.build_post_request(&path))
+    pub async fn empty_post(&self, path: &str) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
+        let request = self.build_post_request(path);
+        self.call_empty(request).await
     }
 
     /// Sends a PUT request to the DNSimple API
@@ -375,12 +384,13 @@ impl Client {
     ///
     /// `path`: the path to the endpoint
     /// `data`: the json payload to be sent to the server
-    pub fn put<E: Endpoint>(
+    pub async fn put<E: Endpoint>(
         &self,
         path: &str,
         data: Value,
     ) -> Result<DNSimpleResponse<<E as Endpoint>::Output>, DNSimpleError> {
-        self.call_with_payload::<E>(self.build_put_request(&path), data)
+        let request = self.build_put_request(path);
+        self.call_with_payload::<E>(request, data).await
     }
 
     /// Sends a PUT request to the DNSimple API without any payload
@@ -388,8 +398,9 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub fn empty_put(&self, path: &str) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
-        self.call_empty(self.build_put_request(&path))
+    pub async fn empty_put(&self, path: &str) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
+        let request = self.build_put_request(path);
+        self.call_empty(request).await
     }
 
     /// Sends a PATCH request to the DNSimple API
@@ -398,12 +409,13 @@ impl Client {
     ///
     /// `path`: the path to the endpoint
     /// `data`: the json payload to be sent to the server
-    pub fn patch<E: Endpoint>(
+    pub async fn patch<E: Endpoint>(
         &self,
         path: &str,
         data: Value,
     ) -> Result<DNSimpleResponse<<E as Endpoint>::Output>, DNSimpleError> {
-        self.call_with_payload::<E>(self.build_patch_request(&path), data)
+        let request = self.build_patch_request(path);
+        self.call_with_payload::<E>(request, data).await
     }
 
     /// Sends a DELETE request to the DNSimple API
@@ -411,8 +423,9 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub fn delete(&self, path: &str) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
-        self.call_empty(self.build_delete_request(&path))
+    pub async fn delete(&self, path: &str) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
+        let request = self.build_delete_request(path);
+        self.call_empty(request).await
     }
 
     /// Sends a DELETE request to the DNSimple API returning a response containing a `DNSimpleResponse`
@@ -420,62 +433,104 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub fn delete_with_response<E: Endpoint>(
+    pub async fn delete_with_response<E: Endpoint>(
         &self,
         path: &str,
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
-        self.call::<E>(self.build_delete_request(&path))
+        let request = self.build_delete_request(path);
+        self.call::<E>(request).await
     }
 
-    fn call_with_payload<E: Endpoint>(
+    async fn call_with_payload<E: Endpoint>(
         &self,
-        request: Request,
+        request: reqwest::RequestBuilder,
         data: Value,
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
-        self.process_response::<E>(request.send_json(data))
+        self.process_response::<E>(request.json(&data).send().await)
+            .await
     }
 
-    fn call<E: Endpoint>(
+    async fn call<E: Endpoint>(
         &self,
-        request: Request,
+        request: reqwest::RequestBuilder,
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
-        self.process_response::<E>(request.call())
+        self.process_response::<E>(request.send().await).await
     }
 
-    fn process_response<E: Endpoint>(
+    async fn process_response<E: Endpoint>(
         &self,
-        result: Result<Response, Error>,
+        result: Result<reqwest::Response, reqwest::Error>,
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
         match result {
-            Ok(response) => Self::build_dnsimple_response::<E>(response),
-            Err(Error::Status(code, response)) => {
-                Err(DNSimpleError::parse_response(code, response))
+            Ok(response) => {
+                let status = response.status().as_u16();
+
+                match response.status().is_success() {
+                    true => Self::build_dnsimple_response::<E>(response).await,
+                    false => {
+                        let body = response.json::<Value>().await.ok();
+                        Err(DNSimpleError::parse_response(status, body))
+                    }
+                }
             }
-            Err(Error::Transport(transport)) => Err(DNSimpleError::parse_transport(transport)),
+            Err(error) => Err(DNSimpleError::from_reqwest(error)),
         }
     }
 
-    fn call_empty(&self, request: Request) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
-        match request.call() {
-            Ok(response) => Self::build_empty_dnsimple_response(response),
-            Err(Error::Status(code, response)) => {
-                Err(DNSimpleError::parse_response(code, response))
+    pub(crate) async fn process_direct_response<T: DeserializeOwned>(
+        &self,
+        result: Result<reqwest::Response, reqwest::Error>,
+    ) -> Result<T, DNSimpleError> {
+        match result {
+            Ok(response) => {
+                let status = response.status().as_u16();
+
+                match response.status().is_success() {
+                    true => response
+                        .json::<T>()
+                        .await
+                        .map_err(DNSimpleError::from_reqwest),
+                    false => {
+                        let body = response.json::<Value>().await.ok();
+                        Err(DNSimpleError::parse_response(status, body))
+                    }
+                }
             }
-            Err(Error::Transport(transport)) => Err(DNSimpleError::parse_transport(transport)),
+            Err(error) => Err(DNSimpleError::from_reqwest(error)),
         }
     }
 
-    fn build_dnsimple_response<E: Endpoint>(
-        resp: Response,
+    async fn call_empty(
+        &self,
+        request: reqwest::RequestBuilder,
+    ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
+        match request.send().await {
+            Ok(response) => {
+                let status = response.status().as_u16();
+
+                match response.status().is_success() {
+                    true => Self::build_empty_dnsimple_response(response).await,
+                    false => {
+                        let body = response.json::<Value>().await.ok();
+                        Err(DNSimpleError::parse_response(status, body))
+                    }
+                }
+            }
+            Err(error) => Err(DNSimpleError::from_reqwest(error)),
+        }
+    }
+
+    async fn build_dnsimple_response<E: Endpoint>(
+        resp: reqwest::Response,
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
         let rate_limit = Self::extract_rate_limit_limit_header(&resp)?;
         let rate_limit_remaining = Self::extract_rate_limit_remaining_header(&resp)?;
         let rate_limit_reset = Self::extract_rate_limit_reset_header(&resp)?;
 
-        let status = resp.status();
+        let status = resp.status().as_u16();
 
         // if the response is empty, we return empty data
-        if resp.status() == 204 {
+        if status == 204 {
             return Ok(DNSimpleResponse {
                 rate_limit,
                 rate_limit_remaining,
@@ -488,14 +543,22 @@ impl Client {
         }
 
         let json = resp
-            .into_json::<Value>()
+            .json::<Value>()
+            .await
             .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
-        let data = serde_json::from_value(json!(json.get("data")))
+        let data = json
+            .get("data")
+            .cloned()
+            .map(serde_json::from_value)
+            .transpose()
             .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
-        let pagination = serde_json::from_value(json!(json.get("pagination")))
+        let pagination = json
+            .get("pagination")
+            .cloned()
+            .map(serde_json::from_value)
+            .transpose()
             .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
-        let body = serde_json::from_value(json)
-            .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
+        let body = Some(json);
 
         Ok(DNSimpleResponse {
             rate_limit,
@@ -508,113 +571,134 @@ impl Client {
         })
     }
 
-    fn extract_rate_limit_reset_header(resp: &Response) -> Result<String, DNSimpleError> {
-        match resp.header("X-RateLimit-Reset") {
-            Some(header) => Ok(header.to_string()),
+    fn extract_rate_limit_reset_header(resp: &reqwest::Response) -> Result<String, DNSimpleError> {
+        match resp.headers().get("X-RateLimit-Reset") {
+            Some(header) => header.to_str().map(|s| s.to_string()).map_err(|_| {
+                DNSimpleError::Deserialization(String::from(
+                    "Cannot parse the X-RateLimit-Reset header",
+                ))
+            }),
             None => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot parse the X-RateLimit-Reset header",
             ))),
         }
     }
 
-    fn extract_rate_limit_remaining_header(resp: &Response) -> Result<String, DNSimpleError> {
-        match resp.header("X-RateLimit-Remaining") {
-            Some(header) => Ok(header.to_string()),
+    fn extract_rate_limit_remaining_header(
+        resp: &reqwest::Response,
+    ) -> Result<String, DNSimpleError> {
+        match resp.headers().get("X-RateLimit-Remaining") {
+            Some(header) => header.to_str().map(|s| s.to_string()).map_err(|_| {
+                DNSimpleError::Deserialization(String::from(
+                    "Cannot parse the X-RateLimit-Remaining header",
+                ))
+            }),
             None => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot parse the X-RateLimit-Remaining header",
             ))),
         }
     }
 
-    fn extract_rate_limit_limit_header(resp: &Response) -> Result<String, DNSimpleError> {
-        match resp.header("X-RateLimit-Limit") {
-            Some(header) => Ok(header.to_string()),
+    fn extract_rate_limit_limit_header(resp: &reqwest::Response) -> Result<String, DNSimpleError> {
+        match resp.headers().get("X-RateLimit-Limit") {
+            Some(header) => header.to_str().map(|s| s.to_string()).map_err(|_| {
+                DNSimpleError::Deserialization(String::from(
+                    "Cannot parse the X-RateLimit-Limit header",
+                ))
+            }),
             None => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot parse the X-RateLimit-Limit header",
             ))),
         }
     }
 
-    fn build_empty_dnsimple_response(
-        response: Response,
+    async fn build_empty_dnsimple_response(
+        response: reqwest::Response,
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         Ok(DNSimpleEmptyResponse {
             rate_limit: Self::extract_rate_limit_limit_header(&response)?,
             rate_limit_remaining: Self::extract_rate_limit_remaining_header(&response)?,
             rate_limit_reset: Self::extract_rate_limit_reset_header(&response)?,
-            status: response.status(),
+            status: response.status().as_u16(),
         })
     }
 
-    fn build_get_request(&self, path: &&str, options: Option<RequestOptions>) -> Request {
-        let mut request = self
-            ._agent
-            .get(&self.url(path))
-            .set("User-Agent", &self.user_agent)
-            .set("Accept", "application/json");
+    fn build_get_request(
+        &self,
+        path: &str,
+        options: Option<RequestOptions>,
+    ) -> reqwest::RequestBuilder {
+        let mut query_params: Vec<(String, String)> = Vec::new();
 
         if let Some(options) = options {
             if let Some(pagination) = options.paginate {
-                request = request.query("page", &pagination.page.to_string());
-                request = request.query("per_page", &pagination.per_page.to_string())
+                query_params.push(("page".to_string(), pagination.page.to_string()));
+                query_params.push(("per_page".to_string(), pagination.per_page.to_string()));
             }
 
             if let Some(filters) = options.filters {
                 for (key, value) in filters.filters {
-                    request = request.query(&key, &value);
+                    query_params.push((key, value));
                 }
             }
 
             if let Some(sort) = options.sort {
-                request = request.query("sort", &sort.sort_by);
+                query_params.push(("sort".to_string(), sort.sort_by));
             }
         }
 
-        self.add_headers_to_request(request)
-    }
-
-    pub fn build_post_request(&self, path: &&str) -> Request {
         let request = self
-            ._agent
-            .post(&self.url(path))
-            .set("User-Agent", &self.user_agent)
-            .set("Accept", "application/json");
+            .client
+            .get(self.url(path))
+            .header("User-Agent", &self.user_agent)
+            .header("Accept", "application/json")
+            .query(&query_params);
+
         self.add_headers_to_request(request)
     }
 
-    pub fn build_put_request(&self, path: &&str) -> Request {
+    pub fn build_post_request(&self, path: &str) -> reqwest::RequestBuilder {
         let request = self
-            ._agent
-            .put(&self.url(path))
-            .set("User-Agent", &self.user_agent)
-            .set("Accept", "application/json");
+            .client
+            .post(self.url(path))
+            .header("User-Agent", &self.user_agent)
+            .header("Accept", "application/json");
         self.add_headers_to_request(request)
     }
 
-    pub fn build_patch_request(&self, path: &&str) -> Request {
+    pub fn build_put_request(&self, path: &str) -> reqwest::RequestBuilder {
         let request = self
-            ._agent
-            .request("PATCH", &self.url(path))
-            .set("User-Agent", &self.user_agent)
-            .set("Accept", "application/json");
+            .client
+            .put(self.url(path))
+            .header("User-Agent", &self.user_agent)
+            .header("Accept", "application/json");
         self.add_headers_to_request(request)
     }
 
-    fn build_delete_request(&self, path: &&str) -> Request {
+    pub fn build_patch_request(&self, path: &str) -> reqwest::RequestBuilder {
         let request = self
-            ._agent
-            .delete(&self.url(path))
-            .set("User-Agent", &self.user_agent)
-            .set("Accept", "application/json");
+            .client
+            .patch(self.url(path))
+            .header("User-Agent", &self.user_agent)
+            .header("Accept", "application/json");
         self.add_headers_to_request(request)
     }
 
-    fn add_headers_to_request(&self, request: Request) -> Request {
-        let auth_token = &format!("Bearer {}", self.auth_token);
-        request.set("Authorization", auth_token.as_str())
+    fn build_delete_request(&self, path: &str) -> reqwest::RequestBuilder {
+        let request = self
+            .client
+            .delete(self.url(path))
+            .header("User-Agent", &self.user_agent)
+            .header("Accept", "application/json");
+        self.add_headers_to_request(request)
     }
 
-    fn url(&self, path: &str) -> String {
+    fn add_headers_to_request(&self, request: reqwest::RequestBuilder) -> reqwest::RequestBuilder {
+        let auth_token = format!("Bearer {}", self.auth_token);
+        request.header("Authorization", auth_token.as_str())
+    }
+
+    pub fn url(&self, path: &str) -> String {
         let mut url = self.versioned_url();
         url.push_str(path);
         url
@@ -623,49 +707,55 @@ impl Client {
 
 #[cfg(test)]
 mod tests {
-    use crate::dnsimple::{new_client, DEFAULT_SANDBOX_URL, DEFAULT_USER_AGENT, VERSION};
+    use crate::dnsimple::{DEFAULT_SANDBOX_URL, DEFAULT_USER_AGENT, VERSION, new_client};
+    use crate::errors::DNSimpleError;
 
     #[test]
-    fn creates_a_client() {
+    fn creates_a_client() -> Result<(), DNSimpleError> {
         let token = "some-auth-token";
-        let client = new_client(true, String::from(token));
+        let client = new_client(true, String::from(token))?;
 
         assert_eq!(client.base_url, DEFAULT_SANDBOX_URL);
         assert_eq!(client.user_agent, DEFAULT_USER_AGENT.to_owned() + VERSION);
         assert_eq!(client.auth_token, token);
+        Ok(())
     }
 
     #[test]
-    fn can_change_the_base_url() {
-        let mut client = new_client(true, String::from("token"));
+    fn can_change_the_base_url() -> Result<(), DNSimpleError> {
+        let mut client = new_client(true, String::from("token"))?;
         client.set_base_url("https://example.com");
 
         assert_eq!(client.versioned_url(), "https://example.com/v2");
+        Ok(())
     }
 
     #[test]
-    fn can_set_a_custom_user_agent() {
-        let mut client = new_client(true, String::from("token"));
+    fn can_set_a_custom_user_agent() -> Result<(), DNSimpleError> {
+        let mut client = new_client(true, String::from("token"))?;
         client.set_user_agent("my-app/1.0");
 
         assert_eq!(
             client.user_agent,
             format!("my-app/1.0 {}{}", DEFAULT_USER_AGENT, VERSION)
         );
+        Ok(())
     }
 
     #[test]
-    fn default_user_agent_is_unchanged_when_not_customized() {
-        let client = new_client(true, String::from("token"));
+    fn default_user_agent_is_unchanged_when_not_customized() -> Result<(), DNSimpleError> {
+        let client = new_client(true, String::from("token"))?;
 
         assert_eq!(client.user_agent, DEFAULT_USER_AGENT.to_owned() + VERSION);
+        Ok(())
     }
 
     #[test]
-    fn empty_custom_user_agent_uses_the_default_user_agent() {
-        let mut client = new_client(true, String::from("token"));
+    fn empty_custom_user_agent_uses_the_default_user_agent() -> Result<(), DNSimpleError> {
+        let mut client = new_client(true, String::from("token"))?;
         client.set_user_agent("  ");
 
         assert_eq!(client.user_agent, DEFAULT_USER_AGENT.to_owned() + VERSION);
+        Ok(())
     }
 }

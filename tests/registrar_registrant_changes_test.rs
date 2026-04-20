@@ -5,13 +5,14 @@ use dnsimple::dnsimple::registrar_registrant_changes::{
 mod common;
 use std::collections::HashMap;
 
-#[test]
-fn get_registrant_change_test() {
+#[tokio::test]
+async fn get_registrant_change_test() {
     let setup = setup_mock_for(
         "/101/registrar/registrant_changes/101",
         "getRegistrantChange/success",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 101;
     let registrant_change_id = 101;
@@ -19,6 +20,7 @@ fn get_registrant_change_test() {
     let response = client
         .registrar()
         .get_registrant_change(account_id, registrant_change_id)
+        .await
         .unwrap();
     let registrant_change = response.data.unwrap();
 
@@ -38,13 +40,14 @@ fn get_registrant_change_test() {
     assert_eq!("2017-02-03T17:43:22Z", registrant_change.updated_at);
 }
 
-#[test]
-fn check_registrant_change_test() {
+#[tokio::test]
+async fn check_registrant_change_test() {
     let setup = setup_mock_for(
         "/101/registrar/registrant_changes/check",
         "checkRegistrantChange/success",
         "POST",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 101;
     let domain_id = 101;
@@ -57,6 +60,7 @@ fn check_registrant_change_test() {
     let response = client
         .registrar()
         .check_registrant_change(account_id, payload)
+        .await
         .unwrap();
     let registrant_change = response.data.unwrap();
 
@@ -66,13 +70,14 @@ fn check_registrant_change_test() {
     assert!(registrant_change.registry_owner_change);
 }
 
-#[test]
-fn create_registrant_change_test() {
+#[tokio::test]
+async fn create_registrant_change_test() {
     let setup = setup_mock_for(
         "/101/registrar/registrant_changes",
         "createRegistrantChange/success",
         "POST",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 101;
     let domain_id = 101;
@@ -89,6 +94,7 @@ fn create_registrant_change_test() {
     let response = client
         .registrar()
         .create_registrant_change(account_id, payload)
+        .await
         .unwrap();
     let registrant_change = response.data.unwrap();
 
@@ -108,19 +114,21 @@ fn create_registrant_change_test() {
     assert_eq!("2017-02-03T17:43:22Z", registrant_change.updated_at);
 }
 
-#[test]
-fn list_registrant_changes_test() {
+#[tokio::test]
+async fn list_registrant_changes_test() {
     let setup = setup_mock_for(
         "/101/registrar/registrant_changes",
         "listRegistrantChanges/success",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 101;
 
     let response = client
         .registrar()
         .list_registrant_changes(account_id, None)
+        .await
         .unwrap();
     let registrant_changes = response.data.unwrap();
     let pagination = response.pagination.unwrap();
@@ -146,32 +154,14 @@ fn list_registrant_changes_test() {
     assert_eq!("2017-02-03T17:43:22Z", registrant_change.updated_at);
 }
 
-#[test]
-fn delete_registrant_change_test() {
+#[tokio::test]
+async fn delete_registrant_change_test() {
     let setup = setup_mock_for(
         "/101/registrar/registrant_changes/101",
         "deleteRegistrantChange/success",
         "DELETE",
-    );
-    let client = setup.0;
-    let account_id = 101;
-    let registrant_change_id = 101;
-
-    let response = client
-        .registrar()
-        .delete_registrant_change(account_id, registrant_change_id);
-
-    // assert!(response.is_ok());
-    assert_eq!(204, response.unwrap().status);
-}
-
-#[test]
-fn delete_registrant_change_async_response_test() {
-    let setup = setup_mock_for(
-        "/101/registrar/registrant_changes/101",
-        "deleteRegistrantChange/success_async",
-        "DELETE",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 101;
     let registrant_change_id = 101;
@@ -179,6 +169,28 @@ fn delete_registrant_change_async_response_test() {
     let response = client
         .registrar()
         .delete_registrant_change(account_id, registrant_change_id)
+        .await;
+
+    // assert!(response.is_ok());
+    assert_eq!(204, response.unwrap().status);
+}
+
+#[tokio::test]
+async fn delete_registrant_change_async_response_test() {
+    let setup = setup_mock_for(
+        "/101/registrar/registrant_changes/101",
+        "deleteRegistrantChange/success_async",
+        "DELETE",
+    )
+    .await;
+    let client = setup.0;
+    let account_id = 101;
+    let registrant_change_id = 101;
+
+    let response = client
+        .registrar()
+        .delete_registrant_change(account_id, registrant_change_id)
+        .await
         .unwrap();
     let registrant_change = response.data.unwrap().unwrap();
 

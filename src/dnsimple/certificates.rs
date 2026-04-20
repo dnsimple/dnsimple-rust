@@ -173,8 +173,11 @@ impl Certificates<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::{Client, new_client};
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let certificates = client.certificates().list_certificates(1010, "example.com", None).unwrap().data.unwrap();
+    /// #[tokio::main(flavor = "current_thread")]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
+    ///     let certificates = client.certificates().list_certificates(1010, "example.com", None).await.unwrap().data.unwrap();
+    /// }
     /// ```
     ///
     /// # Arguments
@@ -183,7 +186,7 @@ impl Certificates<'_> {
     /// `domain`: The domain name or id
     /// `options`: The `RequestOptions`.
     ///            - Sorting: `id`, `common_name`, `expiration`
-    pub fn list_certificates(
+    pub async fn list_certificates(
         &self,
         account_id: u64,
         domain: &str,
@@ -191,7 +194,9 @@ impl Certificates<'_> {
     ) -> Result<DNSimpleResponse<Vec<Certificate>>, DNSimpleError> {
         let path = format!("/{}/domains/{}/certificates", account_id, domain);
 
-        self.client.get::<ListCertificatesEndpoint>(&path, options)
+        self.client
+            .get::<ListCertificatesEndpoint>(&path, options)
+            .await
     }
 
     /// Get the details of a certificate
@@ -201,8 +206,11 @@ impl Certificates<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::{Client, new_client};
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let certificate = client.certificates().get_certificate(1010, "example.com", 42).unwrap().data.unwrap();
+    /// #[tokio::main(flavor = "current_thread")]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
+    ///     let certificate = client.certificates().get_certificate(1010, "example.com", 42).await.unwrap().data.unwrap();
+    /// }
     /// ```
     ///
     /// # Arguments
@@ -210,7 +218,7 @@ impl Certificates<'_> {
     /// `account_id`: The id of the account
     /// `domain`: The domain name or id
     /// `certificate_id`: The certificate id
-    pub fn get_certificate(
+    pub async fn get_certificate(
         &self,
         account_id: u64,
         domain: &str,
@@ -221,7 +229,7 @@ impl Certificates<'_> {
             account_id, domain, certificate_id
         );
 
-        self.client.get::<CertificateEndpoint>(&path, None)
+        self.client.get::<CertificateEndpoint>(&path, None).await
     }
 
     /// Download a certificate
@@ -231,8 +239,11 @@ impl Certificates<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::{Client, new_client};
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let certificate = client.certificates().download_certificate(1010, "example.com", 42).unwrap().data.unwrap();
+    /// #[tokio::main(flavor = "current_thread")]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
+    ///     let certificate = client.certificates().download_certificate(1010, "example.com", 42).await.unwrap().data.unwrap();
+    /// }
     /// ```
     ///
     /// # Arguments
@@ -240,7 +251,7 @@ impl Certificates<'_> {
     /// `account_id`: The id of the account
     /// `domain`: The domain name or id
     /// `certificate_id`: The certificate id
-    pub fn download_certificate(
+    pub async fn download_certificate(
         &self,
         account_id: u64,
         domain: &str,
@@ -251,7 +262,9 @@ impl Certificates<'_> {
             account_id, domain, certificate_id
         );
 
-        self.client.get::<CertificateDownloadEndpoint>(&path, None)
+        self.client
+            .get::<CertificateDownloadEndpoint>(&path, None)
+            .await
     }
 
     /// Get the PEM-encoded certificate private key
@@ -261,8 +274,11 @@ impl Certificates<'_> {
     /// ```no_run
     /// use dnsimple::dnsimple::{Client, new_client};
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let private_key = client.certificates().get_certificate_private_key(1010, "example.com", 42).unwrap().data.unwrap();
+    /// #[tokio::main(flavor = "current_thread")]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
+    ///     let private_key = client.certificates().get_certificate_private_key(1010, "example.com", 42).await.unwrap().data.unwrap();
+    /// }
     /// ```
     ///
     /// # Arguments
@@ -270,7 +286,7 @@ impl Certificates<'_> {
     /// `account_id`: The id of the account
     /// `domain`: The domain name or id
     /// `certificate_id`: The certificate id
-    pub fn get_certificate_private_key(
+    pub async fn get_certificate_private_key(
         &self,
         account_id: u64,
         domain: &str,
@@ -283,9 +299,10 @@ impl Certificates<'_> {
 
         self.client
             .get::<CertificatePrivateKeyEndpoint>(&path, None)
+            .await
     }
 
-    /// Purchase a Let’s Encrypt certificate with DNSimple.
+    /// Purchase a Let's Encrypt certificate with DNSimple.
     ///
     /// # Examples
     ///
@@ -293,14 +310,17 @@ impl Certificates<'_> {
     /// use dnsimple::dnsimple::{Client, new_client};
     /// use dnsimple::dnsimple::certificates::LetsEncryptPurchasePayload;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let payload = LetsEncryptPurchasePayload {
-    ///     auto_renew: true,
-    ///     name: String::from("secret"),
-    ///     alternate_names: vec![],
-    ///     signature_algorithm: None,
-    /// };
-    /// let purchase = client.certificates().purchase_letsencrypt_certificate(1010, "example.com", payload).unwrap().data.unwrap();
+    /// #[tokio::main(flavor = "current_thread")]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
+    ///     let payload = LetsEncryptPurchasePayload {
+    ///         auto_renew: true,
+    ///         name: String::from("secret"),
+    ///         alternate_names: vec![],
+    ///         signature_algorithm: None,
+    ///     };
+    ///     let purchase = client.certificates().purchase_letsencrypt_certificate(1010, "example.com", payload).await.unwrap().data.unwrap();
+    /// }
     /// ```
     ///
     /// # Arguments
@@ -308,7 +328,7 @@ impl Certificates<'_> {
     /// `account_id`: The id of the account
     /// `domain`: The domain name or id
     /// `payload`: The `LetsEncryptPurchasePayload` containing the information to purchase the certificate
-    pub fn purchase_letsencrypt_certificate(
+    pub async fn purchase_letsencrypt_certificate(
         &self,
         account_id: u64,
         domain: &str,
@@ -320,22 +340,29 @@ impl Certificates<'_> {
         );
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<LetsEncryptPurchaseEndpoint>(&path, json),
+            Ok(json) => {
+                self.client
+                    .post::<LetsEncryptPurchaseEndpoint>(&path, json)
+                    .await
+            }
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
         }
     }
 
-    /// Issue a Let’s Encrypt certificate for a domain in the account
+    /// Issue a Let's Encrypt certificate for a domain in the account
     ///
     /// # Examples
     ///
     /// ```no_run
     /// use dnsimple::dnsimple::{Client, new_client};
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let issued = client.certificates().issue_letsencrypt_certificate(1010, "example.com", 42).unwrap().data.unwrap();
+    /// #[tokio::main(flavor = "current_thread")]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
+    ///     let issued = client.certificates().issue_letsencrypt_certificate(1010, "example.com", 42).await.unwrap().data.unwrap();
+    /// }
     /// ```
     ///
     /// # Arguments
@@ -343,7 +370,7 @@ impl Certificates<'_> {
     /// `account_id`: The id of the account
     /// `domain`: The domain name or id
     /// `certificate_id`: The id of the certificate to be issued
-    pub fn issue_letsencrypt_certificate(
+    pub async fn issue_letsencrypt_certificate(
         &self,
         account_id: u64,
         domain: &str,
@@ -354,10 +381,12 @@ impl Certificates<'_> {
             account_id, domain, certificate_id
         );
 
-        self.client.post::<CertificateEndpoint>(&path, Value::Null)
+        self.client
+            .post::<CertificateEndpoint>(&path, Value::Null)
+            .await
     }
 
-    /// Purchase a Let’s Encrypt certificate renewal
+    /// Purchase a Let's Encrypt certificate renewal
     ///
     /// # Examples
     ///
@@ -365,19 +394,22 @@ impl Certificates<'_> {
     /// use dnsimple::dnsimple::{Client, new_client};
     /// use dnsimple::dnsimple::certificates::LetsEncryptPurchaseRenewalPayload;
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let payload = LetsEncryptPurchaseRenewalPayload {
-    ///     auto_renew: false,
-    ///     signature_algorithm: None,
-    /// };
-    /// let issued = client.certificates().purchase_letsencrypt_certificate_renewal(1010, "example.com", 42, payload).unwrap().data.unwrap();
+    /// #[tokio::main(flavor = "current_thread")]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
+    ///     let payload = LetsEncryptPurchaseRenewalPayload {
+    ///         auto_renew: false,
+    ///         signature_algorithm: None,
+    ///     };
+    ///     let issued = client.certificates().purchase_letsencrypt_certificate_renewal(1010, "example.com", 42, payload).await.unwrap().data.unwrap();
+    /// }
     /// ```
     ///
     /// # Arguments
     /// `account_id`: The id of the account
     /// `domain`: The domain name or id
     /// `payload`: The `LetsEncryptPurchaseRenewalPayload` containing the information to purchase the certificate
-    pub fn purchase_letsencrypt_certificate_renewal(
+    pub async fn purchase_letsencrypt_certificate_renewal(
         &self,
         account_id: u64,
         domain: &str,
@@ -390,24 +422,29 @@ impl Certificates<'_> {
         );
 
         match serde_json::to_value(payload) {
-            Ok(json) => self
-                .client
-                .post::<LetsEncryptPurchaseRenewalEndpoint>(&path, json),
+            Ok(json) => {
+                self.client
+                    .post::<LetsEncryptPurchaseRenewalEndpoint>(&path, json)
+                    .await
+            }
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
         }
     }
 
-    /// Issue a Let’s Encrypt certificate for a domain in the account
+    /// Issue a Let's Encrypt certificate for a domain in the account
     ///
     /// # Examples
     ///
     /// ```no_run
     /// use dnsimple::dnsimple::{Client, new_client};
     ///
-    /// let client = new_client(true, String::from("AUTH_TOKEN"));
-    /// let issued = client.certificates().issue_letsencrypt_certificate_renewal(1010, "example.com", 41, 42).unwrap().data.unwrap();
+    /// #[tokio::main(flavor = "current_thread")]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
+    ///     let issued = client.certificates().issue_letsencrypt_certificate_renewal(1010, "example.com", 41, 42).await.unwrap().data.unwrap();
+    /// }
     /// ```
     ///
     /// # Arguments
@@ -415,7 +452,7 @@ impl Certificates<'_> {
     /// `domain`: The domain name or id
     /// `certificate_id`: The id of the certificate to be issued
     /// `certificate_renewal_id`: The certificate renewal id
-    pub fn issue_letsencrypt_certificate_renewal(
+    pub async fn issue_letsencrypt_certificate_renewal(
         &self,
         account_id: u64,
         domain: &str,
@@ -427,6 +464,8 @@ impl Certificates<'_> {
             account_id, domain, certificate_id, certificate_renewal_id
         );
 
-        self.client.post::<CertificateEndpoint>(&path, Value::Null)
+        self.client
+            .post::<CertificateEndpoint>(&path, Value::Null)
+            .await
     }
 }

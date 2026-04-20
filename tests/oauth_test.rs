@@ -1,11 +1,13 @@
 use crate::common::setup_mock_for;
+use assert_matches::assert_matches;
 use dnsimple::dnsimple::oauth::OAuthTokenPayload;
+use dnsimple::errors::DNSimpleError;
 
 mod common;
 
-#[test]
-fn exchange_authorization_for_token_test() {
-    let setup = setup_mock_for("/oauth/access_token", "oauthAccessToken/success", "POST");
+#[tokio::test]
+async fn exchange_authorization_for_token_test() {
+    let setup = setup_mock_for("/oauth/access_token", "oauthAccessToken/success", "POST").await;
     let client = setup.0;
 
     let payload = OAuthTokenPayload {
@@ -16,7 +18,11 @@ fn exchange_authorization_for_token_test() {
         state: "state".to_string(),
     };
 
-    let access_token = match client.oauth().exchange_authorization_for_token(payload) {
+    let access_token = match client
+        .oauth()
+        .exchange_authorization_for_token(payload)
+        .await
+    {
         Ok(token) => token,
         Err(_) => {
             panic!("The token wasn't where we expected it to be")
@@ -30,4 +36,31 @@ fn exchange_authorization_for_token_test() {
     assert_eq!("Bearer", access_token.token_type);
     assert_eq!(None, access_token.scope);
     assert_eq!(1, access_token.account_id);
+}
+
+#[tokio::test]
+async fn exchange_authorization_for_token_error_status_test() {
+    let setup = setup_mock_for(
+        "/oauth/access_token",
+        "oauthAccessToken/error-invalid-request",
+        "POST",
+    )
+    .await;
+    let client = setup.0;
+
+    let payload = OAuthTokenPayload {
+        client_id: "id".to_string(),
+        client_secret: "secret".to_string(),
+        code: "code".to_string(),
+        redirect_uri: "/redirect_uri".to_string(),
+        state: "state".to_string(),
+    };
+
+    let error = client
+        .oauth()
+        .exchange_authorization_for_token(payload)
+        .await
+        .unwrap_err();
+
+    assert_matches!(error, DNSimpleError::BadRequest { .. });
 }

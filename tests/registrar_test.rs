@@ -4,18 +4,23 @@ use dnsimple::dnsimple::registrar::{
 };
 mod common;
 
-#[test]
-fn test_check_domain() {
+#[tokio::test]
+async fn test_check_domain() {
     let setup = setup_mock_for(
         "/1010/registrar/domains/ruby.codes/check",
         "checkDomain/success",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let domain = "ruby.codes";
 
-    let response = client.registrar().check_domain(account_id, domain).unwrap();
+    let response = client
+        .registrar()
+        .check_domain(account_id, domain)
+        .await
+        .unwrap();
     let domain_check = response.data.unwrap();
 
     assert_eq!("ruby.codes", domain_check.domain);
@@ -23,13 +28,14 @@ fn test_check_domain() {
     assert!(domain_check.premium);
 }
 
-#[test]
-fn test_get_domain_prices() {
+#[tokio::test]
+async fn test_get_domain_prices() {
     let setup = setup_mock_for(
         "/1010/registrar/domains/bingo.pizza/prices",
         "getDomainPrices/success",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let domain = "bingo.pizza";
@@ -37,6 +43,7 @@ fn test_get_domain_prices() {
     let response = client
         .registrar()
         .get_domain_prices(account_id, domain)
+        .await
         .unwrap();
     let domain_prices = response.data.unwrap();
 
@@ -50,30 +57,35 @@ fn test_get_domain_prices() {
     }
 }
 
-#[test]
-fn test_get_domain_prices_failure() {
+#[tokio::test]
+async fn test_get_domain_prices_failure() {
     let setup = setup_mock_for(
         "/1010/registrar/domains/bingo.pineapple/prices",
         "getDomainPrices/failure",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let domain = "bingo.pineapple";
 
-    let response = client.registrar().get_domain_prices(account_id, domain);
+    let response = client
+        .registrar()
+        .get_domain_prices(account_id, domain)
+        .await;
     let error = response.unwrap_err();
 
     assert_eq!("TLD .PINEAPPLE is not supported", error.to_string());
 }
 
-#[test]
-fn test_get_domain_registration() {
+#[tokio::test]
+async fn test_get_domain_registration() {
     let setup = setup_mock_for(
         "/1010/registrar/domains/bingo.pizza/registrations/361",
         "getDomainRegistration/success",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let domain = "bingo.pizza";
@@ -82,6 +94,7 @@ fn test_get_domain_registration() {
     let response = client
         .registrar()
         .get_domain_registration(account_id, domain, domain_registration_id)
+        .await
         .unwrap();
     let domain_registration = response.data.unwrap();
 
@@ -97,13 +110,14 @@ fn test_get_domain_registration() {
     assert_eq!(domain_registration.updated_at, "2023-01-27T17:44:40Z");
 }
 
-#[test]
-fn test_get_domain_renewal() {
+#[tokio::test]
+async fn test_get_domain_renewal() {
     let setup = setup_mock_for(
         "/1010/registrar/domains/bingo.pizza/renewals/1",
         "getDomainRenewal/success",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let domain = "bingo.pizza";
@@ -112,6 +126,7 @@ fn test_get_domain_renewal() {
     let response = client
         .registrar()
         .get_domain_renewal(account_id, domain, domain_renewal_id)
+        .await
         .unwrap();
     let domain_renewal = response.data.unwrap();
 
@@ -123,13 +138,14 @@ fn test_get_domain_renewal() {
     assert_eq!(domain_renewal.updated_at, "2016-12-12T19:46:45Z");
 }
 
-#[test]
-fn test_register_domain() {
+#[tokio::test]
+async fn test_register_domain() {
     let setup = setup_mock_for(
         "/1010/registrar/domains/example.com/registrations",
         "registerDomain/success",
         "POST",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let domain = "example.com";
@@ -145,6 +161,7 @@ fn test_register_domain() {
     let response = client
         .registrar()
         .register_domain(account_id, domain, payload)
+        .await
         .unwrap();
     let domain_registration = response.data.unwrap();
 
@@ -160,13 +177,14 @@ fn test_register_domain() {
     assert_eq!("2016-12-09T19:35:31Z", domain_registration.updated_at);
 }
 
-#[test]
-fn test_transfer_domain() {
+#[tokio::test]
+async fn test_transfer_domain() {
     let setup = setup_mock_for(
         "/1010/registrar/domains/example.com/transfers",
         "transferDomain/success",
         "POST",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let domain = "example.com";
@@ -183,6 +201,7 @@ fn test_transfer_domain() {
     let response = client
         .registrar()
         .transfer_domain(account_id, domain, payload)
+        .await
         .unwrap();
     let domain_transfer = response.data.unwrap();
 
@@ -197,13 +216,14 @@ fn test_transfer_domain() {
     assert_eq!("2016-12-09T19:43:43Z", domain_transfer.updated_at);
 }
 
-#[test]
-fn test_transfer_domain_error_in_dnsimple() {
+#[tokio::test]
+async fn test_transfer_domain_error_in_dnsimple() {
     let setup = setup_mock_for(
         "/1010/registrar/domains/google.com/transfers",
         "transferDomain/error-indnsimple",
         "POST",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let domain = "google.com";
@@ -219,7 +239,8 @@ fn test_transfer_domain_error_in_dnsimple() {
 
     let response = client
         .registrar()
-        .transfer_domain(account_id, domain, payload);
+        .transfer_domain(account_id, domain, payload)
+        .await;
     let error = response.unwrap_err();
 
     assert_eq!(
@@ -228,13 +249,14 @@ fn test_transfer_domain_error_in_dnsimple() {
     );
 }
 
-#[test]
-fn test_transfer_domain_error_missing_auth_code() {
+#[tokio::test]
+async fn test_transfer_domain_error_missing_auth_code() {
     let setup = setup_mock_for(
         "/1010/registrar/domains/google.com/transfers",
         "transferDomain/error-missing-authcode",
         "POST",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let domain = "google.com";
@@ -250,19 +272,21 @@ fn test_transfer_domain_error_missing_auth_code() {
 
     let response = client
         .registrar()
-        .transfer_domain(account_id, domain, payload);
+        .transfer_domain(account_id, domain, payload)
+        .await;
     let errors = response.unwrap_err();
 
     assert_eq!("Validation failed", errors.to_string());
 }
 
-#[test]
-fn test_retrieve_domain_transfer() {
+#[tokio::test]
+async fn test_retrieve_domain_transfer() {
     let setup = setup_mock_for(
         "/1010/registrar/domains/google.com/transfers/361",
         "getDomainTransfer/success",
         "GET",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let domain = String::from("google.com");
@@ -271,6 +295,7 @@ fn test_retrieve_domain_transfer() {
     let response = client
         .registrar()
         .get_domain_transfer(account_id, domain, domain_transfer)
+        .await
         .unwrap();
     let transfer = response.data.unwrap();
 
@@ -286,13 +311,14 @@ fn test_retrieve_domain_transfer() {
     assert_eq!("2020-06-05T18:10:01Z", transfer.updated_at);
 }
 
-#[test]
-fn test_cancel_domain_transfer() {
+#[tokio::test]
+async fn test_cancel_domain_transfer() {
     let setup = setup_mock_for(
         "/1010/registrar/domains/google.com/transfers/361",
         "cancelDomainTransfer/success",
         "DELETE",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let domain = String::from("google.com");
@@ -301,6 +327,7 @@ fn test_cancel_domain_transfer() {
     let response = client
         .registrar()
         .cancel_domain_transfer(account_id, domain, domain_transfer)
+        .await
         .unwrap();
 
     assert_eq!(202, response.status);
@@ -319,13 +346,14 @@ fn test_cancel_domain_transfer() {
     assert_eq!("2020-06-05T18:08:04Z", transfer.updated_at);
 }
 
-#[test]
-fn test_renew_a_domain() {
+#[tokio::test]
+async fn test_renew_a_domain() {
     let setup = setup_mock_for(
         "/1010/registrar/domains/example.com/renewals",
         "renewDomain/success",
         "POST",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let domain = String::from("example.com");
@@ -337,6 +365,7 @@ fn test_renew_a_domain() {
     let response = client
         .registrar()
         .renew_domain(account_id, domain, payload)
+        .await
         .unwrap();
     let domain_renewal = response.data.unwrap();
 
@@ -348,13 +377,14 @@ fn test_renew_a_domain() {
     assert_eq!("2016-12-09T19:46:45Z", domain_renewal.updated_at);
 }
 
-#[test]
-fn test_renew_a_domain_to_early() {
+#[tokio::test]
+async fn test_renew_a_domain_to_early() {
     let setup = setup_mock_for(
         "/1010/registrar/domains/example.com/renewals",
         "renewDomain/error-tooearly",
         "POST",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let domain = String::from("example.com");
@@ -363,7 +393,10 @@ fn test_renew_a_domain_to_early() {
         premium_price: None,
     };
 
-    let response = client.registrar().renew_domain(account_id, domain, payload);
+    let response = client
+        .registrar()
+        .renew_domain(account_id, domain, payload)
+        .await;
 
     let errors = response.unwrap_err();
 
@@ -373,18 +406,22 @@ fn test_renew_a_domain_to_early() {
     );
 }
 
-#[test]
-fn test_authorize_domain_transfer_out() {
+#[tokio::test]
+async fn test_authorize_domain_transfer_out() {
     let setup = setup_mock_for(
         "/1010/registrar/domains/example.com/authorize_transfer_out",
         "authorizeDomainTransferOut/success",
         "POST",
-    );
+    )
+    .await;
     let client = setup.0;
     let account_id = 1010;
     let domain = String::from("example.com");
 
-    let response = client.registrar().transfer_domain_out(account_id, domain);
+    let response = client
+        .registrar()
+        .transfer_domain_out(account_id, domain)
+        .await;
 
     assert!(response.is_ok());
     assert_eq!(204, response.unwrap().status);
