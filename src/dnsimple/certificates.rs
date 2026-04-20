@@ -10,9 +10,6 @@ pub struct Certificate {
     pub id: u64,
     /// The associated domain ID.
     pub domain_id: u64,
-    /// The associated contact ID.
-    #[deprecated]
-    pub contact_id: u64,
     /// The certificate name.
     pub name: String,
     /// The certificate common name.

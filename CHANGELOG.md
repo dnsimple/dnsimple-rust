@@ -2,6 +2,20 @@
 
 This project uses [Semantic Versioning 2.0.0](http://semver.org/), the format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## main
+
+### Added
+
+- Added `Client::set_user_agent` to set a custom token that is prepended to the default `User-Agent` header. The README already documented this method, but the implementation was missing.
+
+### Changed
+
+- Updated the `listCharges` test fixture to include a certificate purchase entry demonstrating that `product_reference` is a string even when it represents a numeric ID. (#109)
+
+### Removed
+
+- **BREAKING**: Removed the deprecated `contact_id` field from the `Certificate` struct. The field was deprecated on 2022-05-17 and is no longer required for certificate operations. Closes #105.
+
 ## 5.3.0 - 2026-04-15
 
 ### Added
