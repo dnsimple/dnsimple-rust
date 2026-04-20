@@ -16,7 +16,7 @@ Add this to your `Cargo.toml`:
 ```toml
 [dependencies]
 dnsimple = "5.0"
-tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+tokio = { version = "1", features = ["rt", "macros"] }
 ```
 
 ## Usage
