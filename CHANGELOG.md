@@ -10,6 +10,7 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/), the format is
 
 ### Changed
 
+- Migrated from `ureq` to `reqwest` with async support. All API methods are now async and require `.await` (#42, #76)
 - Updated the `listCharges` test fixture to include a certificate purchase entry demonstrating that `product_reference` is a string even when it represents a numeric ID. (#109)
 
 ### Removed
@@ -40,15 +41,9 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/), the format is
 
 - Added `get_domain_research_status` to research a domain for availability and registration status. (#96)
 
-## Unreleased
-
-### Changed
-
-- Migrated from `ureq` to `reqwest` with async support. All API methods are now async and require `.await` (#42, #76)
-
 ### Fixed
 
-- Fixed `deactivate_dns` using incorrect endpoint type
+- Fixed `deactivate_dns` using incorrect endpoint type (#91)
 
 ## 5.0.0 - 2026-01-23
 
