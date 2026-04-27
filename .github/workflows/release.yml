@@ -28,10 +28,5 @@ jobs:
     needs: wait-for-ci
     steps:
       - uses: actions/checkout@v6
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-      - uses: katyo/publish-crates@v2
-        with:
-          registry-token: ${{ secrets.CRATES_REGISTRY_TOKEN }}
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo publish --token ${{ secrets.CRATES_REGISTRY_TOKEN }}
