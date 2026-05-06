@@ -2,6 +2,13 @@
 
 This project uses [Semantic Versioning 2.0.0](http://semver.org/), the format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 6.1.0 - 2026-05-06
+
+### Changed
+
+- Renamed `trustee_service` to `trustee` in `Domain`, `DomainRegistration`, and `DomainTransfer` structs. (#112)
+- Renamed `trustee_service_price` to `trustee_price` in `DomainPrice`. (#112)
+
 ## 6.0.0 - 2026-04-27
 
 ### Added
