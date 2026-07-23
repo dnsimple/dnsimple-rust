@@ -27,6 +27,6 @@ jobs:
     name: Publish Client
     needs: wait-for-ci
     steps:
-      - uses: actions/checkout@v7.0.0
+      - uses: actions/checkout@v7.0.1
       - uses: dtolnay/rust-toolchain@stable
       - run: cargo publish --token ${{ secrets.CRATES_REGISTRY_TOKEN }}
