@@ -57,3 +57,16 @@ async fn test_list_charges_bad_filter() {
         error.to_string()
     );
 }
+
+#[tokio::test]
+async fn test_list_charges_forbidden() {
+    let setup = setup_mock_for("/1010/billing/charges", "listCharges/fail-403", "GET").await;
+    let client = setup.0;
+
+    let error = client.billing().list_charges(1010, None).await.unwrap_err();
+
+    assert_eq!(
+        "Permission Denied. Required Scope: billing:*:read",
+        error.to_string()
+    );
+}
