@@ -2,6 +2,13 @@
 
 This project uses [Semantic Versioning 2.0.0](http://semver.org/), the format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## Unreleased
+
+### Changed
+
+- Drop support for Rust < 1.87 (requires major version)
+- Add support for Rust 1.87
+
 ## 6.1.0 - 2026-05-06
 
 ### Changed

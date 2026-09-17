@@ -16,7 +16,7 @@ concurrency:
 
 env:
   CARGO_TERM_COLOR: always
-  MSRV: '1.86'
+  MSRV: '1.87'
 
 jobs:
   check:
@@ -52,7 +52,7 @@ jobs:
       matrix:
         rust:
           - stable
-          - '1.86'
+          - '1.87'
     steps:
     - uses: actions/checkout@v7.0.1
     - uses: taiki-e/install-action@protoc
