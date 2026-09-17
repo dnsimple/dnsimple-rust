@@ -32,6 +32,23 @@ async fn not_found() {
 }
 
 #[tokio::test]
+async fn forbidden() {
+    let setup = setup_mock_for("/whoami", "listCharges/fail-403", "GET").await;
+    let client = setup.0;
+
+    let response = client.identity().whoami().await;
+    let error = response.unwrap_err();
+
+    assert_eq!(
+        "Permission Denied. Required Scope: billing:*:read",
+        error.to_string()
+    );
+    assert_matches!(error, DNSimpleError::Forbidden(message) => {
+      assert_eq!("Permission Denied. Required Scope: billing:*:read", message);
+    })
+}
+
+#[tokio::test]
 async fn method_not_allowed() {
     let setup = setup_mock_for("/whoami", "method-not-allowed", "GET").await;
     let client = setup.0;
