@@ -6,7 +6,7 @@ A Rust client for the [DNSimple API v2](https://developer.dnsimple.com/v2/).
 
 ## Requirements
 
-- Rust: 1.86+
+- Rust: 1.87+
 - An activated DNSimple account
 
 ## Installation
