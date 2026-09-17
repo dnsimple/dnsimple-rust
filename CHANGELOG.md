@@ -9,6 +9,10 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/), the format is
 - Drop support for Rust < 1.87 (requires major version)
 - Add support for Rust 1.87
 
+### Deprecated
+
+- Deprecated `parent_id` in `ZoneRecord`. The value is always `None`, and the field will be removed in the next major version. (#121)
+
 ## 6.1.0 - 2026-05-06
 
 ### Changed

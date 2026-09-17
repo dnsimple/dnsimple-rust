@@ -2,6 +2,7 @@ use crate::common::setup_mock_for;
 use dnsimple::dnsimple::zones_records::{ZoneRecordPayload, ZoneRecordUpdatePayload};
 mod common;
 
+#[allow(deprecated)]
 #[tokio::test]
 async fn list_zone_records_test() {
     let setup = setup_mock_for(
@@ -47,6 +48,7 @@ async fn list_zone_records_test() {
     assert_eq!("2016-10-05T09:26:38Z", zone_record.updated_at);
 }
 
+#[allow(deprecated)]
 #[tokio::test]
 async fn create_zone_record_test() {
     let setup = setup_mock_for(
@@ -90,6 +92,7 @@ async fn create_zone_record_test() {
     assert_eq!("2016-01-07T17:45:13Z", zone_record.created_at);
     assert_eq!("2016-01-07T17:45:13Z", zone_record.updated_at);
 }
+#[allow(deprecated)]
 #[tokio::test]
 async fn create_apex_zone_record_test() {
     let setup = setup_mock_for(
@@ -134,6 +137,7 @@ async fn create_apex_zone_record_test() {
     assert_eq!("2016-01-07T17:45:13Z", zone_record.updated_at);
 }
 
+#[allow(deprecated)]
 #[tokio::test]
 async fn get_zone_record_test() {
     let setup = setup_mock_for(
@@ -172,6 +176,7 @@ async fn get_zone_record_test() {
     assert_eq!("2016-10-05T09:51:35Z", zone_record.updated_at);
 }
 
+#[allow(deprecated)]
 #[tokio::test]
 async fn update_zone_record_test() {
     let setup = setup_mock_for(
