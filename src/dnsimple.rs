@@ -1,4 +1,5 @@
 use crate::dnsimple::accounts::Accounts;
+use crate::dnsimple::billing::Billing;
 use crate::dnsimple::certificates::Certificates;
 use crate::dnsimple::contacts::Contacts;
 use crate::dnsimple::domains::Domains;
@@ -19,6 +20,7 @@ use serde_json::Value;
 use std::collections::HashMap;
 
 pub mod accounts;
+pub mod billing;
 pub mod certificates;
 pub mod contacts;
 pub mod domains;
@@ -220,6 +222,11 @@ impl Client {
     ///Returns the `accounts` service attached to this client
     pub fn accounts(&self) -> Accounts<'_> {
         Accounts { client: self }
+    }
+
+    /// Returns the `billing` service attached to this client
+    pub fn billing(&self) -> Billing<'_> {
+        Billing { client: self }
     }
 
     /// Returns the `contacts` service attached to this client
