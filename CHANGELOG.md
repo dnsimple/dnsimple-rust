@@ -6,7 +6,7 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/), the format is
 
 ### Changed
 
-- Drop support for Rust < 1.87
+- Drop support for Rust < 1.87 (requires major version)
 - Add support for Rust 1.87
 
 ## 6.1.0 - 2026-05-06
