@@ -14,6 +14,8 @@ pub enum DNSimpleError {
         attribute_errors: Option<Value>,
     },
     #[error("{0}")]
+    Forbidden(String),
+    #[error("{0}")]
     GatewayTimeout(String),
     #[error("Method not Allowed")]
     MethodNotAllowed,
@@ -51,6 +53,7 @@ impl DNSimpleError {
             400 => Self::bad_request(body),
             401 => Self::Unauthorized,
             402 => Self::PaymentRequired,
+            403 => Self::forbidden(body),
             404 => Self::not_found(body),
             405 => Self::MethodNotAllowed,
             428 => Self::precondition_required(body),
@@ -72,6 +75,13 @@ impl DNSimpleError {
                 message: String::from("Bad Request"),
                 attribute_errors: None,
             },
+        }
+    }
+
+    fn forbidden(body: Option<Value>) -> DNSimpleError {
+        match body {
+            Some(json) => Self::Forbidden(Self::message_in(&json)),
+            None => Self::Forbidden(String::from("Forbidden")),
         }
     }
 

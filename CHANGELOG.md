@@ -2,6 +2,12 @@
 
 This project uses [Semantic Versioning 2.0.0](http://semver.org/), the format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## Unreleased
+
+### Added
+
+- Added `DNSimpleError::Forbidden` for HTTP 403 responses. The variant carries the API error message. Before, a 403 response returned `DNSimpleError::UnexpectedStatus(403)`. (requires major version)
+
 ## 7.0.0 - 2026-09-17
 
 ### Changed
