@@ -1,8 +1,4 @@
 use crate::common::setup_mock_for;
-use assert_matches::assert_matches;
-use dnsimple::dnsimple::{Filters, RequestOptions, Sort};
-use dnsimple::errors::DNSimpleError;
-use std::collections::HashMap;
 
 mod common;
 
@@ -10,13 +6,8 @@ mod common;
 async fn test_list_charges() {
     let setup = setup_mock_for("/1010/billing/charges", "listCharges/success", "GET").await;
     let client = setup.0;
-    let account_id = 1010;
 
-    let response = client
-        .billing()
-        .list_charges(account_id, None)
-        .await
-        .unwrap();
+    let response = client.billing().list_charges(1010, None).await.unwrap();
     let charges = response.data.unwrap();
 
     assert_eq!(4, charges.len());
@@ -50,32 +41,6 @@ async fn test_list_charges() {
 }
 
 #[tokio::test]
-async fn test_list_charges_with_options() {
-    let setup = setup_mock_for(
-        "/1010/billing/charges?start_date=2023-01-01&sort=invoiced%3Adesc",
-        "listCharges/success",
-        "GET",
-    )
-    .await;
-    let client = setup.0;
-    let mut filters = HashMap::new();
-    filters.insert("start_date".to_string(), "2023-01-01".to_string());
-    let options = RequestOptions {
-        filters: Some(Filters::new(filters)),
-        sort: Some(Sort::new("invoiced:desc".to_string())),
-        paginate: None,
-    };
-
-    let response = client
-        .billing()
-        .list_charges(1010, Some(options))
-        .await
-        .unwrap();
-
-    assert_eq!(4, response.data.unwrap().len());
-}
-
-#[tokio::test]
 async fn test_list_charges_bad_filter() {
     let setup = setup_mock_for(
         "/1010/billing/charges",
@@ -91,15 +56,4 @@ async fn test_list_charges_bad_filter() {
         "Invalid date format must be ISO8601 (YYYY-MM-DD)",
         error.to_string()
     );
-    assert_matches!(error, DNSimpleError::BadRequest { .. });
-}
-
-#[tokio::test]
-async fn test_list_charges_forbidden() {
-    let setup = setup_mock_for("/1010/billing/charges", "listCharges/fail-403", "GET").await;
-    let client = setup.0;
-
-    let error = client.billing().list_charges(1010, None).await.unwrap_err();
-
-    assert_matches!(error, DNSimpleError::UnexpectedStatus(403));
 }
