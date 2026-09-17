@@ -3,6 +3,7 @@ use thiserror::Error;
 
 /// Represents the possible errors thrown while interacting with the DNSimple API
 #[derive(Error, Debug)]
+#[non_exhaustive]
 pub enum DNSimpleError {
     #[error("Authentication failed")]
     Unauthorized,

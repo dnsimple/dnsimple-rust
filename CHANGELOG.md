@@ -8,6 +8,10 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/), the format is
 
 - Added `DNSimpleError::Forbidden` for HTTP 403 responses. The variant carries the API error message. Before, a 403 response returned `DNSimpleError::UnexpectedStatus(403)`. (requires major version)
 
+### Changed
+
+- Marked `DNSimpleError` as `#[non_exhaustive]`. A `match` on `DNSimpleError` must now have a wildcard arm. Future error variants do not require a major version. (requires major version)
+
 ## 7.0.0 - 2026-09-17
 
 ### Changed
