@@ -12,6 +12,9 @@ pub struct ZoneRecord {
     /// The associated zone ID.
     pub zone_id: String,
     /// The ID of the parent record, if this record is dependent on another record.
+    #[deprecated(
+        note = "the value is always None, and the field will be removed in the next major version"
+    )]
     pub parent_id: Option<String>,
     /// The record name (without the domain name).
     pub name: String,
