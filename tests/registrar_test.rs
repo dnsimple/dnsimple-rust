@@ -1,6 +1,6 @@
 use crate::common::setup_mock_for;
 use dnsimple::dnsimple::registrar::{
-    DomainRegistrationPayload, DomainRenewalPayload, DomainTransferPayload,
+    DomainRegistrationPayload, DomainRenewalPayload, DomainRestorePayload, DomainTransferPayload,
 };
 mod common;
 
@@ -136,6 +136,33 @@ async fn test_get_domain_renewal() {
     assert_eq!(domain_renewal.state, "renewed");
     assert_eq!(domain_renewal.created_at, "2016-12-09T19:46:45Z");
     assert_eq!(domain_renewal.updated_at, "2016-12-12T19:46:45Z");
+}
+
+#[tokio::test]
+async fn test_get_domain_restore() {
+    let setup = setup_mock_for(
+        "/1010/registrar/domains/bingo.pizza/restores/1",
+        "getDomainRestore/success",
+        "GET",
+    )
+    .await;
+    let client = setup.0;
+    let account_id = 1010;
+    let domain = "bingo.pizza";
+    let domain_restore_id = 1;
+
+    let response = client
+        .registrar()
+        .get_domain_restore(account_id, domain, domain_restore_id)
+        .await
+        .unwrap();
+    let domain_restore = response.data.unwrap();
+
+    assert_eq!(domain_restore.id, 43);
+    assert_eq!(domain_restore.domain_id, 214);
+    assert_eq!(domain_restore.state, "new");
+    assert_eq!(domain_restore.created_at, "2024-02-14T14:40:42Z");
+    assert_eq!(domain_restore.updated_at, "2024-02-14T14:40:42Z");
 }
 
 #[tokio::test]
@@ -404,6 +431,35 @@ async fn test_renew_a_domain_to_early() {
         "example.com may not be renewed at this time",
         errors.to_string()
     );
+}
+
+#[tokio::test]
+async fn test_restore_a_domain() {
+    let setup = setup_mock_for(
+        "/1010/registrar/domains/example.com/restores",
+        "restoreDomain/success",
+        "POST",
+    )
+    .await;
+    let client = setup.0;
+    let account_id = 1010;
+    let domain = String::from("example.com");
+    let payload = DomainRestorePayload {
+        premium_price: None,
+    };
+
+    let response = client
+        .registrar()
+        .restore_domain(account_id, domain, payload)
+        .await
+        .unwrap();
+    let domain_restore = response.data.unwrap();
+
+    assert_eq!(43, domain_restore.id);
+    assert_eq!(214, domain_restore.domain_id);
+    assert_eq!("new", domain_restore.state);
+    assert_eq!("2024-02-14T14:40:42Z", domain_restore.created_at);
+    assert_eq!("2024-02-14T14:40:42Z", domain_restore.updated_at);
 }
 
 #[tokio::test]
