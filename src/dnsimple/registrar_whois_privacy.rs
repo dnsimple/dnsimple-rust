@@ -30,6 +30,8 @@ impl Endpoint for WhoisPrivacyEndpoint {
 impl Registrar<'_> {
     /// Enable WHOIS privacy
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/whois-privacy/#enableWhoisPrivacy)
+    ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
@@ -47,6 +49,8 @@ impl Registrar<'_> {
     }
 
     /// Enable WHOIS privacy
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/whois-privacy/#disableWhoisPrivacy)
     ///
     /// # Arguments
     ///

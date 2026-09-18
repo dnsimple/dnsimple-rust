@@ -65,6 +65,8 @@ pub struct Services<'a> {
 
 impl Services<'_> {
     /// List services
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/services/#listServices)
     pub async fn list_services(
         &self,
         options: Option<RequestOptions>,
@@ -75,6 +77,8 @@ impl Services<'_> {
     }
 
     /// Retrieve a service
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/services/#getService)
     ///
     /// # Arguments
     /// `service`: The service name or id
@@ -88,6 +92,8 @@ impl Services<'_> {
     }
 
     /// List services applied to a domain.
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/services/domains/#listDomainAppliedServices)
     ///
     /// # Arguments
     /// `account_id`: The account id
@@ -105,6 +111,8 @@ impl Services<'_> {
 
     /// Applies a service to a domain.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/services/domains/#applyServiceToDomain)
+    ///
     /// # Arguments
     /// `account_id`: The account id
     /// `domain`: The domain name or id
@@ -121,6 +129,8 @@ impl Services<'_> {
     }
 
     /// Unapplies a service to a domain.
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/services/domains/#unapplyServiceFromDomain)
     ///
     /// # Arguments
     /// `account_id`: The account id

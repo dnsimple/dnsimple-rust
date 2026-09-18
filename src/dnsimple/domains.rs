@@ -62,6 +62,8 @@ pub struct Domains<'a> {
 impl Domains<'_> {
     /// Lists the domains in the account
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/#listDomains)
+    ///
     /// # Examples
     ///
     /// ```no_run
@@ -91,6 +93,8 @@ impl Domains<'_> {
     }
 
     /// Adds a domain to the account.
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/#createDomain)
     ///
     /// # Examples
     ///
@@ -130,6 +134,8 @@ impl Domains<'_> {
 
     /// Retrieves the details of an existing domain.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/#getDomain)
+    ///
     /// # Examples
     ///
     /// ```no_run
@@ -158,6 +164,8 @@ impl Domains<'_> {
     }
 
     /// Permanently deletes a domain from the account. It cannot be undone.
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/#deleteDomain)
     ///
     /// # Examples
     ///

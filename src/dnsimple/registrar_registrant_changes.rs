@@ -91,6 +91,8 @@ impl Endpoint for RegistrantChangeCheckEndpoint {
 impl Registrar<'_> {
     /// Retrieve the domain contact change
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/registrant-changes/#getRegistrantChange)
+    ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
@@ -111,6 +113,8 @@ impl Registrar<'_> {
     }
 
     /// Retrieves the requirements of a registrant change
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/registrant-changes/#checkRegistrantChange)
     ///
     /// # Arguments
     ///
@@ -138,6 +142,8 @@ impl Registrar<'_> {
 
     /// Start registrant change.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/registrant-changes/#createRegistrantChange)
+    ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
@@ -163,6 +169,8 @@ impl Registrar<'_> {
 
     /// List registrant changes in the account.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/registrant-changes/#listRegistrantChanges)
+    ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
@@ -182,6 +190,8 @@ impl Registrar<'_> {
     }
 
     /// Cancel a registrant change.
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/registrant-changes/#deleteRegistrantChange)
     ///
     /// # Arguments
     ///

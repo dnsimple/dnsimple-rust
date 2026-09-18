@@ -68,6 +68,8 @@ impl Endpoint for EmailForwardEndpoint {
 impl Domains<'_> {
     /// List email forwards for the domain in the account.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/email-forwards/#listEmailForwards)
+    ///
     /// # Examples
     ///
     /// ```no_run
@@ -101,6 +103,8 @@ impl Domains<'_> {
     }
 
     /// Create an email forward
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/email-forwards/#createEmailForward)
     ///
     /// # Examples
     ///
@@ -142,6 +146,8 @@ impl Domains<'_> {
 
     /// Retrieve an email forward
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/email-forwards/#getEmailForward)
+    ///
     /// # Examples
     ///
     /// ```no_run
@@ -174,6 +180,8 @@ impl Domains<'_> {
     }
 
     /// Delete the email forward from the domain.
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/email-forwards/#deleteEmailForward)
     ///
     /// # Examples
     ///

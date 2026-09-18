@@ -59,6 +59,8 @@ impl Endpoint for SignerRecordEndpoint {
 impl Domains<'_> {
     /// List delegation signer records for the domain in the account.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/dnssec/#listDomainDelegationSignerRecords)
+    ///
     /// # Examples
     ///
     /// ```no_run
@@ -92,6 +94,8 @@ impl Domains<'_> {
     }
 
     /// Creates a delegation signer record
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/dnssec/#createDomainDelegationSignerRecord)
     ///
     /// You only need to create a delegation signer record manually if your domain is registered
     /// with DNSimple but hosted with another DNS provider that is signing your zone.
@@ -140,6 +144,8 @@ impl Domains<'_> {
 
     /// Get the delegation signer record under the domain for the account
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/dnssec/#getDomainDelegationSignerRecord)
+    ///
     /// # Examples
     ///
     /// ```no_run
@@ -167,6 +173,8 @@ impl Domains<'_> {
     }
 
     /// Delete a Delegation Signer record
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/dnssec/#deleteDomainDelegationSignerRecord)
     ///
     /// # Examples
     ///

@@ -168,6 +168,8 @@ pub struct Certificates<'a> {
 impl Certificates<'_> {
     /// List the certificates for a domain in the account.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/certificates/#listCertificates)
+    ///
     /// # Examples
     ///
     /// ```no_run
@@ -201,6 +203,8 @@ impl Certificates<'_> {
 
     /// Get the details of a certificate
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/certificates/#getCertificate)
+    ///
     /// # Examples
     ///
     /// ```no_run
@@ -233,6 +237,8 @@ impl Certificates<'_> {
     }
 
     /// Download a certificate
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/certificates/#downloadCertificate)
     ///
     /// # Examples
     ///
@@ -269,6 +275,8 @@ impl Certificates<'_> {
 
     /// Get the PEM-encoded certificate private key
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/certificates/#getCertificatePrivateKey)
+    ///
     /// # Examples
     ///
     /// ```no_run
@@ -303,6 +311,8 @@ impl Certificates<'_> {
     }
 
     /// Purchase a Let's Encrypt certificate with DNSimple.
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/certificates/#purchaseLetsencryptCertificate)
     ///
     /// # Examples
     ///
@@ -353,6 +363,8 @@ impl Certificates<'_> {
 
     /// Issue a Let's Encrypt certificate for a domain in the account
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/certificates/#issueLetsencryptCertificate)
+    ///
     /// # Examples
     ///
     /// ```no_run
@@ -387,6 +399,8 @@ impl Certificates<'_> {
     }
 
     /// Purchase a Let's Encrypt certificate renewal
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/certificates/#purchaseRenewalLetsencryptCertificate)
     ///
     /// # Examples
     ///
@@ -434,6 +448,8 @@ impl Certificates<'_> {
     }
 
     /// Issue a Let's Encrypt certificate for a domain in the account
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/certificates/#issueRenewalLetsencryptCertificate)
     ///
     /// # Examples
     ///

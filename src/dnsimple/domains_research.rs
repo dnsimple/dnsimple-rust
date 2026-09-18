@@ -28,6 +28,8 @@ impl Endpoint for DomainResearchStatusEndpoint {
 impl Domains<'_> {
     /// Research a domain name for availability and registration status information.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/research/#getDomainsResearchStatus)
+    ///
     /// This endpoint provides information about a domain's availability status.
     ///
     /// # Examples

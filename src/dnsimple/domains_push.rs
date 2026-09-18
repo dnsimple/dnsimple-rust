@@ -51,6 +51,8 @@ pub struct InitiatePushPayload {
 impl Domains<'_> {
     /// Initiate a push
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/pushes/#initiateDomainPush)
+    ///
     /// # Examples
     ///
     /// ```no_run
@@ -91,6 +93,8 @@ impl Domains<'_> {
 
     /// List pending pushes for the target account.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/pushes/#listPushes)
+    ///
     /// # Examples
     ///
     /// ```no_run
@@ -122,6 +126,8 @@ impl Domains<'_> {
 
     /// Accept a push
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/pushes/#acceptPush)
+    ///
     /// # Examples
     ///
     /// ```no_run
@@ -149,6 +155,8 @@ impl Domains<'_> {
     }
 
     /// Reject a push
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/pushes/#rejectPush)
     ///
     /// # Examples
     ///

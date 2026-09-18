@@ -40,6 +40,8 @@ pub struct Webhooks<'a> {
 impl Webhooks<'_> {
     /// List webhooks in the account.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/webhooks/webhooks/#listWebhooks)
+    ///
     /// # Arguments
     ///
     /// `account_id`: The account id
@@ -54,6 +56,8 @@ impl Webhooks<'_> {
     }
 
     /// Create a webhook in the account
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/webhooks/webhooks/#createWebhook)
     ///
     /// # Arguments
     ///
@@ -77,6 +81,8 @@ impl Webhooks<'_> {
 
     /// Retrieve a webhook
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/webhooks/webhooks/#getWebhook)
+    ///
     /// # Arguments
     /// `account_id`: The account id
     /// `webhook`: The webhook id
@@ -91,6 +97,8 @@ impl Webhooks<'_> {
     }
 
     /// Deletes a webhook
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/webhooks/webhooks/#deleteWebhook)
     ///
     /// # Arguments
     /// `account_id`: The account id

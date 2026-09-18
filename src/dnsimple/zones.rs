@@ -87,6 +87,8 @@ pub struct Zones<'a> {
 impl Zones<'_> {
     /// Activates DNS resolution for the zone in the account.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/zones/#activateZoneService)
+    ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
@@ -104,6 +106,8 @@ impl Zones<'_> {
     }
 
     /// Deactivates DNS resolution for the zone in the account.
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/zones/#deactivateZoneService)
     ///
     /// # Arguments
     ///
@@ -123,6 +127,8 @@ impl Zones<'_> {
 
     /// Lists the zones in the account.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/zones/#listZones)
+    ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
@@ -137,6 +143,8 @@ impl Zones<'_> {
     }
 
     /// Retrieve a zone
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/zones/#getZone)
     ///
     /// # Arguments
     ///
@@ -154,6 +162,8 @@ impl Zones<'_> {
 
     /// Download a zone file
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/zones/#getZoneFile)
+    ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
@@ -169,6 +179,8 @@ impl Zones<'_> {
     }
 
     /// Check zone distribution
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/zones/#checkZoneDistribution)
     ///
     /// # Arguments
     ///
