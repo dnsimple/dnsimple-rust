@@ -1,7 +1,6 @@
 use crate::dnsimple::registrar_name_servers::VanityNameServer;
 use crate::dnsimple::{Client, DNSimpleEmptyResponse, DNSimpleResponse, Endpoint};
 use crate::errors::DNSimpleError;
-use serde_json::Value;
 
 struct VanityNameServersEndpoint;
 
@@ -32,7 +31,7 @@ impl VanityNameServers<'_> {
         let path = format!("/{}/vanity/{}", account_id, domain);
 
         self.client
-            .put::<VanityNameServersEndpoint>(&path, Value::Null)
+            .put_without_payload::<VanityNameServersEndpoint>(&path)
             .await
     }
 

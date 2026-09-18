@@ -2,7 +2,6 @@ use crate::dnsimple::domains::Domains;
 use crate::dnsimple::{DNSimpleEmptyResponse, DNSimpleResponse, Endpoint};
 use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
 
 /// Represents DNSSEC
 #[derive(Debug, Deserialize, Serialize)]
@@ -54,7 +53,7 @@ impl Domains<'_> {
         let path = format!("/{}/domains/{}/dnssec", account_id, domain);
 
         self.client
-            .post::<DnssecStatusEndpoint>(&path, Value::Null)
+            .post_without_payload::<DnssecStatusEndpoint>(&path)
             .await
     }
 

@@ -385,6 +385,19 @@ impl Client {
         self.call_empty(request).await
     }
 
+    /// Sends a POST request to the DNSimple API without any payload, returning a `DNSimpleResponse`
+    ///
+    /// # Arguments
+    ///
+    /// `path`: the path to the endpoint
+    pub async fn post_without_payload<E: Endpoint>(
+        &self,
+        path: &str,
+    ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
+        let request = self.build_post_request(path);
+        self.call::<E>(request).await
+    }
+
     /// Sends a PUT request to the DNSimple API
     ///
     /// # Arguments
@@ -408,6 +421,19 @@ impl Client {
     pub async fn empty_put(&self, path: &str) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let request = self.build_put_request(path);
         self.call_empty(request).await
+    }
+
+    /// Sends a PUT request to the DNSimple API without any payload, returning a `DNSimpleResponse`
+    ///
+    /// # Arguments
+    ///
+    /// `path`: the path to the endpoint
+    pub async fn put_without_payload<E: Endpoint>(
+        &self,
+        path: &str,
+    ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
+        let request = self.build_put_request(path);
+        self.call::<E>(request).await
     }
 
     /// Sends a PATCH request to the DNSimple API

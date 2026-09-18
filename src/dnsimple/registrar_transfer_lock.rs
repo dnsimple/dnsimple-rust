@@ -2,7 +2,6 @@ use crate::dnsimple::registrar::Registrar;
 use crate::dnsimple::{DNSimpleResponse, Endpoint};
 use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
 
 /// Represents Transfer Lock status for a domain
 #[derive(Debug, Deserialize, Serialize)]
@@ -34,7 +33,7 @@ impl Registrar<'_> {
         let path = format!("/{}/registrar/domains/{}/transfer_lock", account_id, domain);
 
         self.client
-            .post::<DomainTransferLockEndpoint>(&path, Value::Null)
+            .post_without_payload::<DomainTransferLockEndpoint>(&path)
             .await
     }
 

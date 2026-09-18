@@ -1,7 +1,6 @@
 use crate::dnsimple::{Client, DNSimpleResponse, Endpoint, RequestOptions};
 use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
 
 /// Represents a certificate
 #[derive(Debug, Deserialize, Serialize)]
@@ -394,7 +393,7 @@ impl Certificates<'_> {
         );
 
         self.client
-            .post::<CertificateEndpoint>(&path, Value::Null)
+            .post_without_payload::<CertificateEndpoint>(&path)
             .await
     }
 
@@ -481,7 +480,7 @@ impl Certificates<'_> {
         );
 
         self.client
-            .post::<CertificateEndpoint>(&path, Value::Null)
+            .post_without_payload::<CertificateEndpoint>(&path)
             .await
     }
 }

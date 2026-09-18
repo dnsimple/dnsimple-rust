@@ -9,6 +9,7 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/), the format is
 - **BREAKING**: Added `DNSimpleError::Forbidden` for HTTP 403 responses. The variant carries the API error message. Before, a 403 response returned `DNSimpleError::UnexpectedStatus(403)`.
 - Added `Billing.list_charges` to list the billing charges for the account. (#123)
 - Added `Registrar.restore_domain` and `Registrar.get_domain_restore` to restore a domain and retrieve a domain restore. (#125)
+- Added `Client.post_without_payload` and `Client.put_without_payload` to send a POST or PUT request without a body and return a `DNSimpleResponse`.
 
 ### Changed
 

@@ -1,7 +1,6 @@
 use crate::dnsimple::{Client, DNSimpleResponse, Endpoint, RequestOptions};
 use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
 
 /// Represents a zone in DNSimple
 #[derive(Debug, Deserialize, Serialize)]
@@ -101,7 +100,7 @@ impl Zones<'_> {
         let path = format!("/{}/zones/{}/activation", account_id, zone_name);
 
         self.client
-            .put::<ActivateDnsEndpoint>(&path, Value::Null)
+            .put_without_payload::<ActivateDnsEndpoint>(&path)
             .await
     }
 
