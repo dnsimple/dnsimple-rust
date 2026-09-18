@@ -117,7 +117,7 @@ async fn test_create_delegation_signer_record_validation_error() {
 #[tokio::test]
 async fn test_get_delegation_signer_record() {
     let setup = setup_mock_for(
-        "/1385/domains/example.com/ds_records",
+        "/1385/domains/example.com/ds_records/24",
         "getDelegationSignerRecord/success",
         "GET",
     )
@@ -125,10 +125,11 @@ async fn test_get_delegation_signer_record() {
     let client = setup.0;
     let account_id = 1385;
     let domain = "example.com";
+    let delegation_signer_record_id = 24;
 
     let record = client
         .domains()
-        .get_delegation_signer_record(account_id, domain)
+        .get_delegation_signer_record(account_id, domain, delegation_signer_record_id)
         .await
         .unwrap()
         .data

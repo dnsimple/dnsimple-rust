@@ -58,6 +58,8 @@ pub struct Identity<'a> {
 impl Identity<'_> {
     /// Retrieves the details about the current authenticated entity used to access the API.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/identity/#whoami)
+    ///
     /// # Examples
     ///
     /// ```no_run

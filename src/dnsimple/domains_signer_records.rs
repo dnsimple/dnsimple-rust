@@ -59,6 +59,8 @@ impl Endpoint for SignerRecordEndpoint {
 impl Domains<'_> {
     /// List delegation signer records for the domain in the account.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/dnssec/#listDomainDelegationSignerRecords)
+    ///
     /// # Examples
     ///
     /// ```no_run
@@ -92,6 +94,8 @@ impl Domains<'_> {
     }
 
     /// Creates a delegation signer record
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/dnssec/#createDomainDelegationSignerRecord)
     ///
     /// You only need to create a delegation signer record manually if your domain is registered
     /// with DNSimple but hosted with another DNS provider that is signing your zone.
@@ -140,6 +144,8 @@ impl Domains<'_> {
 
     /// Get the delegation signer record under the domain for the account
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/dnssec/#getDomainDelegationSignerRecord)
+    ///
     /// # Examples
     ///
     /// ```no_run
@@ -148,25 +154,32 @@ impl Domains<'_> {
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
-    ///     let signer_records = client.domains().get_delegation_signer_record(1234, "example.com").await.unwrap().data.unwrap();
+    ///     let signer_record = client.domains().get_delegation_signer_record(1234, "example.com", 42).await.unwrap().data.unwrap();
     /// }
     /// ```
     ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
-    /// `domain`: The ID or name of the domain we want list the signer records from
+    /// `domain`: The ID or name of the domain
+    /// `delegation_signer_record_id`: The delegation signer record id
     pub async fn get_delegation_signer_record(
         &self,
         account_id: u64,
         domain: &str,
+        delegation_signer_record_id: u64,
     ) -> Result<DNSimpleResponse<DelegationSignerRecord>, DNSimpleError> {
-        let path = format!("/{}/domains/{}/ds_records", account_id, domain);
+        let path = format!(
+            "/{}/domains/{}/ds_records/{}",
+            account_id, domain, delegation_signer_record_id
+        );
 
         self.client.get::<SignerRecordEndpoint>(&path, None).await
     }
 
     /// Delete a Delegation Signer record
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/dnssec/#deleteDomainDelegationSignerRecord)
     ///
     /// # Examples
     ///
@@ -189,7 +202,7 @@ impl Domains<'_> {
         &self,
         account_id: u64,
         domain: &str,
-        delegation_signer_record_id: i32,
+        delegation_signer_record_id: u64,
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!(
             "/{}/domains/{}/ds_records/{}",

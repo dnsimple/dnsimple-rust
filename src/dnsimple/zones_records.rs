@@ -87,6 +87,8 @@ impl Endpoint for ZoneRecordEndpoint {
 impl Zones<'_> {
     /// List zone records
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/zones/records/#listZoneRecords)
+    ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
@@ -103,6 +105,8 @@ impl Zones<'_> {
     }
 
     /// Create a zone record
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/zones/records/#createZoneRecord)
     ///
     /// # Arguments
     ///
@@ -127,6 +131,8 @@ impl Zones<'_> {
 
     /// Retrieve a zone record
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/zones/records/#getZoneRecord)
+    ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
@@ -144,6 +150,8 @@ impl Zones<'_> {
     }
 
     /// Update a zone record
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/zones/records/#updateZoneRecord)
     ///
     /// # Arguments
     ///
@@ -170,6 +178,8 @@ impl Zones<'_> {
 
     /// Delete a zone record
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/zones/records/#deleteZoneRecord)
+    ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
@@ -187,6 +197,8 @@ impl Zones<'_> {
     }
 
     /// Check zone record distribution
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/zones/records/#checkZoneRecordDistribution)
     ///
     /// # Arguments
     ///

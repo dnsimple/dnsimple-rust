@@ -51,6 +51,8 @@ pub struct InitiatePushPayload {
 impl Domains<'_> {
     /// Initiate a push
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/pushes/#initiateDomainPush)
+    ///
     /// # Examples
     ///
     /// ```no_run
@@ -91,6 +93,8 @@ impl Domains<'_> {
 
     /// List pending pushes for the target account.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/pushes/#listPushes)
+    ///
     /// # Examples
     ///
     /// ```no_run
@@ -113,7 +117,7 @@ impl Domains<'_> {
         account_id: u64,
         options: Option<RequestOptions>,
     ) -> Result<DNSimpleResponse<Vec<DomainPush>>, DNSimpleError> {
-        let path = format!("/{}/domains/pushes", account_id);
+        let path = format!("/{}/pushes", account_id);
 
         self.client
             .get::<DomainPushesListEndpoint>(&path, options)
@@ -121,6 +125,8 @@ impl Domains<'_> {
     }
 
     /// Accept a push
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/pushes/#acceptPush)
     ///
     /// # Examples
     ///
@@ -143,12 +149,14 @@ impl Domains<'_> {
         account_id: u64,
         push_id: u64,
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
-        let path = format!("/{}/domains/pushes/{}", account_id, push_id);
+        let path = format!("/{}/pushes/{}", account_id, push_id);
 
         self.client.empty_post(&path).await
     }
 
     /// Reject a push
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/pushes/#rejectPush)
     ///
     /// # Examples
     ///
@@ -171,7 +179,7 @@ impl Domains<'_> {
         account_id: u64,
         push_id: u64,
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
-        let path = format!("/{}/domains/pushes/{}", account_id, push_id);
+        let path = format!("/{}/pushes/{}", account_id, push_id);
 
         self.client.delete(&path).await
     }

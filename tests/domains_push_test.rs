@@ -65,7 +65,7 @@ async fn test_initiate_push_with_account_identifier() {
 
 #[tokio::test]
 async fn test_list_pushes() {
-    let setup = setup_mock_for("/1385/domains/pushes", "listPushes/success", "GET").await;
+    let setup = setup_mock_for("/1385/pushes", "listPushes/success", "GET").await;
     let client = setup.0;
     let account_id = 1385_u64;
 
@@ -81,7 +81,7 @@ async fn test_list_pushes() {
 
 #[tokio::test]
 async fn test_accept_push() {
-    let setup = setup_mock_for("/1385/domains/pushes/42", "acceptPush/success", "POST").await;
+    let setup = setup_mock_for("/1385/pushes/42", "acceptPush/success", "POST").await;
     let client = setup.0;
     let account_id = 1385_u64;
     let push_id = 42;
@@ -93,7 +93,7 @@ async fn test_accept_push() {
 }
 #[tokio::test]
 async fn test_reject_push() {
-    let setup = setup_mock_for("/1385/domains/pushes/42", "rejectPush/success", "DELETE").await;
+    let setup = setup_mock_for("/1385/pushes/42", "rejectPush/success", "DELETE").await;
     let client = setup.0;
     let account_id = 1385_u64;
     let push_id = 42;

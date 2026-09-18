@@ -106,6 +106,8 @@ pub struct Templates<'a> {
 impl Templates<'_> {
     /// List templates in the account.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/templates/#listTemplates)
+    ///
     /// # Arguments
     ///
     /// `account_id`: The account id
@@ -121,6 +123,8 @@ impl Templates<'_> {
     }
 
     /// Create a template in the account
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/templates/#createTemplate)
     ///
     /// # Arguments
     ///
@@ -143,6 +147,8 @@ impl Templates<'_> {
 
     /// Retrieve a template in the account
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/templates/#getTemplate)
+    ///
     /// # Arguments
     ///
     /// `account_id`: The account id
@@ -158,6 +164,8 @@ impl Templates<'_> {
     }
 
     /// Update a template in the account
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/templates/#updateTemplate)
     ///
     /// # Arguments
     ///
@@ -182,6 +190,8 @@ impl Templates<'_> {
 
     /// Deletes a template from the account
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/templates/#deleteTemplate)
+    ///
     /// # Arguments
     /// `account_id`: The account id
     /// `template`: The template name or id
@@ -196,6 +206,8 @@ impl Templates<'_> {
     }
 
     /// List template records
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/templates/records/#listTemplateRecords)
     ///
     /// # Arguments
     /// `account_id`: The account id
@@ -214,6 +226,8 @@ impl Templates<'_> {
     }
 
     /// Create a template record
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/templates/records/#createTemplateRecord)
     ///
     /// # Arguments
     /// `account_id`: The account id
@@ -241,6 +255,8 @@ impl Templates<'_> {
 
     /// Retrieve a template record
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/templates/records/#getTemplateRecord)
+    ///
     /// # Arguments
     /// `account_id`: The account id
     /// `template`: The template name or id
@@ -258,6 +274,8 @@ impl Templates<'_> {
 
     /// Delete a template record
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/templates/records/#deleteTemplateRecord)
+    ///
     /// # Arguments
     /// `account_id`: The account id
     /// `template`: The template name or id
@@ -274,6 +292,8 @@ impl Templates<'_> {
     }
 
     /// Applies a template to a domain.
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/templates/domains/#applyTemplateToDomain)
     ///
     /// # Arguments
     /// `account_id`: The account id

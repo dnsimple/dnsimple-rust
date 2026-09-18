@@ -222,6 +222,8 @@ pub struct Registrar<'a> {
 impl Registrar<'_> {
     /// Checks a domain name for availability.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/#checkDomain)
+    ///
     /// # Examples
     ///
     /// ```no_run
@@ -250,6 +252,8 @@ impl Registrar<'_> {
 
     /// Get a domain's price for registration, renewal, and transfer.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/#getDomainPrices)
+    ///
     /// # Examples
     ///
     /// ```no_run
@@ -277,6 +281,8 @@ impl Registrar<'_> {
     }
 
     /// Get the details of an existing domain registration.
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/#getDomainRegistration)
     ///
     /// # Examples
     ///
@@ -312,6 +318,8 @@ impl Registrar<'_> {
     }
 
     /// Get the details of an existing domain transfer.
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/#getDomainRenewal)
     ///
     /// # Examples
     ///
@@ -381,6 +389,8 @@ impl Registrar<'_> {
 
     /// Get a domain's price for registration, renewal, and transfer.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/#registerDomain)
+    ///
     /// # Examples
     ///
     /// ```no_run
@@ -428,6 +438,8 @@ impl Registrar<'_> {
     }
 
     /// Transfer a domain name from another domain registrar into DNSimple.
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/#transferDomain)
     ///
     /// # Examples
     ///
@@ -478,6 +490,8 @@ impl Registrar<'_> {
 
     /// Retrieves the details of an existing domain transfer.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/#getDomainTransfer)
+    ///
     /// # Attributes
     ///
     /// `account_id`: The account id
@@ -498,6 +512,8 @@ impl Registrar<'_> {
     }
 
     /// Cancels an in progress domain transfer.
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/#cancelDomainTransfer)
     ///
     /// # Attributes
     ///
@@ -521,6 +537,8 @@ impl Registrar<'_> {
     }
 
     /// Get a domain's price for registration, renewal, and transfer.
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/#renewDomain)
     ///
     /// # Attributes
     ///
@@ -569,6 +587,8 @@ impl Registrar<'_> {
     }
 
     /// Authorize a domain transfer out
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/#authorizeDomainTransferOut)
     ///
     /// # Attributes
     ///

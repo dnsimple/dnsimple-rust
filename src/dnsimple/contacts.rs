@@ -96,6 +96,8 @@ pub struct Contacts<'a> {
 impl Contacts<'_> {
     /// Lists the contacts in the account.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/contacts/#listContacts)
+    ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
@@ -112,6 +114,8 @@ impl Contacts<'_> {
     }
 
     /// Create a contact in the account.
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/contacts/#createContact)
     ///
     /// # Arguments
     ///
@@ -134,6 +138,8 @@ impl Contacts<'_> {
 
     /// Retrieve a contact
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/contacts/#getContact)
+    ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
@@ -149,6 +155,8 @@ impl Contacts<'_> {
     }
 
     /// Update a contact
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/contacts/#updateContact)
     ///
     /// # Arguments
     ///
@@ -172,6 +180,8 @@ impl Contacts<'_> {
     }
 
     /// Delete a contact
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/contacts/#deleteContact)
     ///
     /// # Arguments
     ///

@@ -20,6 +20,8 @@ impl Endpoint for DomainTransferLockEndpoint {
 impl Registrar<'_> {
     /// Enable domain transfer lock
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/transfer-lock/#enableDomainTransferLock)
+    ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
@@ -38,6 +40,8 @@ impl Registrar<'_> {
 
     /// Disable domain transfer lock
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/transfer-lock/#disableDomainTransferLock)
+    ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
@@ -55,6 +59,8 @@ impl Registrar<'_> {
     }
 
     /// Get domain transfer lock status
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/transfer-lock/#getDomainTransferLock)
     ///
     /// # Arguments
     ///

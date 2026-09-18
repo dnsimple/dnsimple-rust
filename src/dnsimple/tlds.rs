@@ -82,6 +82,8 @@ pub struct Tlds<'a> {
 
 impl Tlds<'_> {
     /// Returns the list of TLDs supported for registration or transfer.
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/tlds/#listTlds)
     pub async fn list_tlds(
         &self,
         options: Option<RequestOptions>,
@@ -93,6 +95,8 @@ impl Tlds<'_> {
 
     /// Retrieves the details of a supported TLD.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/tlds/#getTld)
+    ///
     /// # Attributes
     ///
     /// `tld`: The TLD name
@@ -103,6 +107,8 @@ impl Tlds<'_> {
     }
 
     /// Lists the TLD Extended Attributes
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/tlds/#getTldExtendedAttributes)
     ///
     /// # Attributes
     ///

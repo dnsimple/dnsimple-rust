@@ -42,13 +42,15 @@ impl Endpoint for ListChargesEndpoint {
 
 /// The Billing Service handles the billing endpoints of the DNSimple API.
 ///
-/// See [API Documentation: billing](https://developer.dnsimple.com/v2/billing/)
+/// See [API Documentation: billing](https://developer.dnsimple.com/v2/billing-charges/)
 pub struct Billing<'a> {
     pub client: &'a Client,
 }
 
 impl Billing<'_> {
     /// Lists the billing charges for the account.
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/billing-charges/#listCharges)
     ///
     /// # Examples
     ///
