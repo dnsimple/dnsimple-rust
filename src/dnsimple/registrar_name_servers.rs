@@ -36,6 +36,8 @@ impl Endpoint for DomainDelegationVanityEndpoint {
 impl Registrar<'_> {
     /// List name servers for the domain in the account.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/delegation/#getDomainDelegation)
+    ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
@@ -53,6 +55,8 @@ impl Registrar<'_> {
     }
 
     /// Change domain name servers
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/delegation/#changeDomainDelegation)
     ///
     /// # Arguments
     ///
@@ -73,6 +77,8 @@ impl Registrar<'_> {
     }
 
     /// Delegate to vanity name servers
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/delegation/#changeDomainDelegationToVanity)
     ///
     /// # Arguments
     ///
@@ -96,6 +102,8 @@ impl Registrar<'_> {
     }
 
     /// De-delegate from vanity name servers
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/delegation/#changeDomainDelegationFromVanity)
     ///
     /// # Arguments
     ///

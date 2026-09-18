@@ -5,6 +5,8 @@ use crate::errors::DNSimpleError;
 impl Registrar<'_> {
     /// Enable domain auto-renewal
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/auto-renewal/#enableDomainAutoRenewal)
+    ///
     /// # Arguments
     ///
     /// `account_id`: The account ID
@@ -20,6 +22,8 @@ impl Registrar<'_> {
     }
 
     /// Disable domain auto-renewal
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/auto-renewal/#disableDomainAutoRenewal)
     ///
     /// # Arguments
     ///

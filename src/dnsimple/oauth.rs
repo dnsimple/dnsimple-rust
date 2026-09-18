@@ -52,6 +52,8 @@ impl OAuth<'_> {
     /// Exchange the short-lived authorization code for an access token
     /// you can use to authenticate your API calls.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/oauth/)
+    ///
     /// # Examples
     ///
     /// ```no_run

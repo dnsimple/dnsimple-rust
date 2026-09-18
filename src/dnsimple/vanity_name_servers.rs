@@ -19,6 +19,8 @@ pub struct VanityNameServers<'a> {
 impl VanityNameServers<'_> {
     /// Enable vanity name servers
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/vanity/#enableVanityNameServers)
+    ///
     /// # Arguments
     /// `account_id`: The account id
     /// `domain`: The domain name or id
@@ -35,6 +37,8 @@ impl VanityNameServers<'_> {
     }
 
     /// Enable vanity name servers
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/vanity/#disableVanityNameServers)
     ///
     /// # Arguments
     /// `account_id`: The account id

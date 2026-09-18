@@ -28,6 +28,8 @@ impl Domains<'_> {
     /// Enable DNSSEC for the domain in the account. This will sign the zone. If the domain is
     /// registered it will also add the DS record to the corresponding registry.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/dnssec/#enableDomainDnssec)
+    ///
     /// # Examples
     ///
     /// ```no_run
@@ -58,6 +60,8 @@ impl Domains<'_> {
 
     /// Disable DNSSEC for the domain in the account.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/dnssec/#disableDomainDnssec)
+    ///
     /// # Examples
     ///
     /// ```no_run
@@ -85,6 +89,8 @@ impl Domains<'_> {
     }
 
     /// Get the status of DNSSEC, indicating whether it is currently enabled or disabled.
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/domains/dnssec/#getDomainDnssec)
     ///
     /// # Examples
     ///

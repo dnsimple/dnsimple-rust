@@ -18,6 +18,8 @@ pub struct Accounts<'a> {
 impl Accounts<'_> {
     /// Lists the accounts the current authenticated entity has access to.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/accounts/#listAccounts)
+    ///
     /// # Examples
     ///
     /// ```no_run
