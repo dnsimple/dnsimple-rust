@@ -2,7 +2,6 @@ use crate::dnsimple::registrar::Registrar;
 use crate::dnsimple::{DNSimpleResponse, Endpoint};
 use crate::errors::DNSimpleError;
 use serde::Deserialize;
-use serde_json::Value;
 
 /// Represents the whois privacy data
 #[derive(Debug, Deserialize)]
@@ -44,7 +43,7 @@ impl Registrar<'_> {
         let path = format!("/{}/registrar/domains/{}/whois_privacy", account_id, domain);
 
         self.client
-            .put::<WhoisPrivacyEndpoint>(&path, Value::Null)
+            .empty_put_with_response::<WhoisPrivacyEndpoint>(&path)
             .await
     }
 
