@@ -1,5 +1,11 @@
 use crate::common::setup_mock_for;
-use dnsimple::dnsimple::zones_records::{ZoneRecordPayload, ZoneRecordUpdatePayload};
+use assert_matches::assert_matches;
+use dnsimple::dnsimple::zones_records::{
+    ZoneRecordBatchCreate, ZoneRecordBatchDelete, ZoneRecordBatchUpdate, ZoneRecordPayload,
+    ZoneRecordUpdatePayload, ZoneRecordsBatchChangePayload,
+};
+use dnsimple::errors::DNSimpleError;
+use serde_json::json;
 mod common;
 
 #[allow(deprecated)]
@@ -241,6 +247,160 @@ async fn delete_zone_record_test() {
 
     assert!(response.is_ok());
     assert_eq!(204, response.unwrap().status);
+}
+
+#[tokio::test]
+async fn batch_change_zone_records_test() {
+    let setup = setup_mock_for(
+        "/1010/zones/example.com/batch",
+        "batchChangeZoneRecords/success",
+        "POST",
+    )
+    .await;
+    let client = setup.0;
+    let account_id = 1010;
+    let zone = "example.com";
+    let payload = ZoneRecordsBatchChangePayload {
+        creates: Some(vec![ZoneRecordBatchCreate {
+            name: "ab".to_string(),
+            record_type: "A".to_string(),
+            content: "3.2.3.4".to_string(),
+            ttl: None,
+            priority: None,
+            regions: None,
+        }]),
+        updates: Some(vec![ZoneRecordBatchUpdate {
+            id: 67622534,
+            name: None,
+            content: Some("3.2.3.40".to_string()),
+            ttl: None,
+            priority: None,
+            regions: None,
+        }]),
+        deletes: Some(vec![ZoneRecordBatchDelete { id: 67622509 }]),
+    };
+
+    assert_eq!(
+        json!({
+            "creates": [{"name": "ab", "type": "A", "content": "3.2.3.4"}],
+            "updates": [{"id": 67622534, "content": "3.2.3.40"}],
+            "deletes": [{"id": 67622509}]
+        }),
+        serde_json::to_value(&payload).unwrap()
+    );
+
+    let batch_change = client
+        .zones()
+        .batch_change_zone_records(account_id, zone, payload)
+        .await
+        .unwrap()
+        .data
+        .unwrap();
+
+    assert_eq!(2, batch_change.creates.len());
+    let created = batch_change.creates.first().unwrap();
+    assert_eq!(67623409, created.id);
+    assert_eq!("example.com", created.zone_id);
+    assert_eq!("ab", created.name);
+    assert_eq!("3.2.3.4", created.content);
+    assert_eq!(3600, created.ttl);
+    assert_eq!(None, created.priority);
+    assert_eq!("A", created.record_type);
+    assert_eq!(vec!["global"], created.regions.clone().unwrap());
+    assert!(!created.system_record);
+    assert_eq!("2025-09-05T05:25:00Z", created.created_at);
+    assert_eq!("2025-09-05T05:25:00Z", created.updated_at);
+    assert_eq!(67623410, batch_change.creates[1].id);
+
+    assert_eq!(2, batch_change.updates.len());
+    let updated = batch_change.updates.first().unwrap();
+    assert_eq!(67622534, updated.id);
+    assert_eq!("update1-1757049890", updated.name);
+    assert_eq!("3.2.3.40", updated.content);
+    assert_eq!("2025-09-05T04:40:15Z", updated.created_at);
+    assert_eq!("2025-09-05T05:25:00Z", updated.updated_at);
+    assert_eq!(67622537, batch_change.updates[1].id);
+
+    assert_eq!(2, batch_change.deletes.len());
+    assert_eq!(67622509, batch_change.deletes[0].id);
+    assert_eq!(67622527, batch_change.deletes[1].id);
+}
+
+#[test]
+fn batch_change_zone_records_empty_payload_test() {
+    let payload = ZoneRecordsBatchChangePayload::default();
+
+    assert_eq!(json!({}), serde_json::to_value(&payload).unwrap());
+}
+
+#[tokio::test]
+async fn batch_change_zone_records_validation_error_test() {
+    let setup = setup_mock_for(
+        "/1010/zones/example.com/batch",
+        "batchChangeZoneRecords/error_400_create_validation_failed",
+        "POST",
+    )
+    .await;
+    let client = setup.0;
+    let account_id = 1010;
+    let zone = "example.com";
+    let payload = ZoneRecordsBatchChangePayload {
+        creates: Some(vec![ZoneRecordBatchCreate {
+            name: "ab".to_string(),
+            record_type: "SPF".to_string(),
+            content: "v=spf1 -all".to_string(),
+            ttl: None,
+            priority: None,
+            regions: None,
+        }]),
+        ..Default::default()
+    };
+
+    let error = client
+        .zones()
+        .batch_change_zone_records(account_id, zone, payload)
+        .await
+        .unwrap_err();
+
+    assert_eq!("Validation failed", error.to_string());
+    assert_matches!(error, DNSimpleError::BadRequest { message, attribute_errors } => {
+        assert_eq!("Validation failed", message);
+        assert_eq!(
+            json!({"creates": [{"index": 0, "message": "Validation failed", "errors": {"record_type": ["unsupported"]}}]}),
+            attribute_errors.unwrap()
+        );
+    });
+}
+
+#[tokio::test]
+async fn batch_change_zone_records_delete_not_found_test() {
+    let setup = setup_mock_for(
+        "/1010/zones/example.com/batch",
+        "batchChangeZoneRecords/error_400_delete_validation_failed",
+        "POST",
+    )
+    .await;
+    let client = setup.0;
+    let account_id = 1010;
+    let zone = "example.com";
+    let payload = ZoneRecordsBatchChangePayload {
+        deletes: Some(vec![ZoneRecordBatchDelete { id: 67622509 }]),
+        ..Default::default()
+    };
+
+    let error = client
+        .zones()
+        .batch_change_zone_records(account_id, zone, payload)
+        .await
+        .unwrap_err();
+
+    assert_matches!(error, DNSimpleError::BadRequest { message, attribute_errors } => {
+        assert_eq!("Validation failed", message);
+        assert_eq!(
+            json!({"deletes": [{"index": 0, "message": "Record not found ID=67622509"}]}),
+            attribute_errors.unwrap()
+        );
+    });
 }
 
 #[tokio::test]

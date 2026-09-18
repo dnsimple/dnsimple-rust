@@ -72,6 +72,84 @@ pub struct ZoneRecordUpdatePayload {
     pub regions: Option<Vec<String>>,
 }
 
+/// Represents a zone record to create in a batch change
+#[derive(Debug, Deserialize, Serialize)]
+pub struct ZoneRecordBatchCreate {
+    /// The record name (without the domain name).
+    pub name: String,
+    /// The type of record, in uppercase.
+    #[serde(rename = "type")]
+    pub record_type: String,
+    /// The plain-text record content.
+    pub content: String,
+    /// The TTL value.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ttl: Option<u64>,
+    /// The priority value, if the type of record accepts a priority.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub priority: Option<u64>,
+    /// The regions where the record is propagated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub regions: Option<Vec<String>>,
+}
+
+/// Represents a zone record to update in a batch change
+#[derive(Debug, Deserialize, Serialize)]
+pub struct ZoneRecordBatchUpdate {
+    /// The record ID in DNSimple.
+    pub id: u64,
+    /// The record name (without the domain name).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The plain-text record content.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub content: Option<String>,
+    /// The TTL value.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ttl: Option<u64>,
+    /// The priority value, if the type of record accepts a priority.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub priority: Option<u64>,
+    /// The regions where the record is propagated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub regions: Option<Vec<String>>,
+}
+
+/// Represents a zone record to delete in a batch change
+#[derive(Debug, Deserialize, Serialize)]
+pub struct ZoneRecordBatchDelete {
+    /// The record ID in DNSimple.
+    pub id: u64,
+}
+
+/// Payload to create, update, and delete zone records in a batch change
+#[derive(Debug, Default, Deserialize, Serialize)]
+pub struct ZoneRecordsBatchChangePayload {
+    /// The zone records to create.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub creates: Option<Vec<ZoneRecordBatchCreate>>,
+    /// The zone records to update.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub updates: Option<Vec<ZoneRecordBatchUpdate>>,
+    /// The zone records to delete.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deletes: Option<Vec<ZoneRecordBatchDelete>>,
+}
+
+/// Represents the result of a zone records batch change
+#[derive(Debug, Deserialize, Serialize)]
+pub struct ZoneRecordsBatchChange {
+    /// The zone records that the batch change created.
+    #[serde(default)]
+    pub creates: Vec<ZoneRecord>,
+    /// The zone records that the batch change updated.
+    #[serde(default)]
+    pub updates: Vec<ZoneRecord>,
+    /// The zone records that the batch change deleted.
+    #[serde(default)]
+    pub deletes: Vec<ZoneRecordBatchDelete>,
+}
+
 struct ZoneRecordsEndpoint;
 
 impl Endpoint for ZoneRecordsEndpoint {
@@ -82,6 +160,12 @@ struct ZoneRecordEndpoint;
 
 impl Endpoint for ZoneRecordEndpoint {
     type Output = ZoneRecord;
+}
+
+struct ZoneRecordsBatchChangeEndpoint;
+
+impl Endpoint for ZoneRecordsBatchChangeEndpoint {
+    type Output = ZoneRecordsBatchChange;
 }
 
 impl Zones<'_> {
@@ -186,6 +270,47 @@ impl Zones<'_> {
         let path = format!("/{}/zones/{}/records/{}", account_id, zone, record);
 
         self.client.delete(&path).await
+    }
+
+    /// Create, update, and delete zone records in a batch change
+    ///
+    /// The API applies all the changes atomically.
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/zones/records/#batchChangeZoneRecords)
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use dnsimple::dnsimple::new_client;
+    /// use dnsimple::dnsimple::zones_records::{ZoneRecordBatchDelete, ZoneRecordsBatchChangePayload};
+    ///
+    /// #[tokio::main(flavor = "current_thread")]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
+    ///     let payload = ZoneRecordsBatchChangePayload {
+    ///         deletes: Some(vec![ZoneRecordBatchDelete { id: 1 }]),
+    ///         ..Default::default()
+    ///     };
+    ///     let batch_change = client.zones().batch_change_zone_records(1234, "example.com", payload).await.unwrap().data.unwrap();
+    /// }
+    /// ```
+    ///
+    /// # Arguments
+    ///
+    /// `account_id`: The account ID
+    /// `zone`: The zone name
+    /// `payload`: The `ZoneRecordsBatchChangePayload` with the zone records to create, update, and delete
+    pub async fn batch_change_zone_records(
+        &self,
+        account_id: u64,
+        zone: &str,
+        payload: ZoneRecordsBatchChangePayload,
+    ) -> Result<DNSimpleResponse<ZoneRecordsBatchChange>, DNSimpleError> {
+        let path = format!("/{}/zones/{}/batch", account_id, zone);
+
+        self.client
+            .post::<ZoneRecordsBatchChangeEndpoint>(&path, payload)
+            .await
     }
 
     /// Check zone record distribution
