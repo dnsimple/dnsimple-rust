@@ -100,7 +100,7 @@ impl Zones<'_> {
         let path = format!("/{}/zones/{}/activation", account_id, zone_name);
 
         self.client
-            .put_without_payload::<ActivateDnsEndpoint>(&path)
+            .empty_put_with_response::<ActivateDnsEndpoint>(&path)
             .await
     }
 

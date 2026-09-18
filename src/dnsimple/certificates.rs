@@ -393,7 +393,7 @@ impl Certificates<'_> {
         );
 
         self.client
-            .post_without_payload::<CertificateEndpoint>(&path)
+            .empty_post_with_response::<CertificateEndpoint>(&path)
             .await
     }
 
@@ -480,7 +480,7 @@ impl Certificates<'_> {
         );
 
         self.client
-            .post_without_payload::<CertificateEndpoint>(&path)
+            .empty_post_with_response::<CertificateEndpoint>(&path)
             .await
     }
 }

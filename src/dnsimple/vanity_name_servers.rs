@@ -31,7 +31,7 @@ impl VanityNameServers<'_> {
         let path = format!("/{}/vanity/{}", account_id, domain);
 
         self.client
-            .put_without_payload::<VanityNameServersEndpoint>(&path)
+            .empty_put_with_response::<VanityNameServersEndpoint>(&path)
             .await
     }
 

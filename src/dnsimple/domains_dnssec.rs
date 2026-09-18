@@ -53,7 +53,7 @@ impl Domains<'_> {
         let path = format!("/{}/domains/{}/dnssec", account_id, domain);
 
         self.client
-            .post_without_payload::<DnssecStatusEndpoint>(&path)
+            .empty_post_with_response::<DnssecStatusEndpoint>(&path)
             .await
     }
 

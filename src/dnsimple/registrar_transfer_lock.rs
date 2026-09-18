@@ -33,7 +33,7 @@ impl Registrar<'_> {
         let path = format!("/{}/registrar/domains/{}/transfer_lock", account_id, domain);
 
         self.client
-            .post_without_payload::<DomainTransferLockEndpoint>(&path)
+            .empty_post_with_response::<DomainTransferLockEndpoint>(&path)
             .await
     }
 

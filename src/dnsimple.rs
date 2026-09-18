@@ -390,7 +390,7 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub async fn post_without_payload<E: Endpoint>(
+    pub async fn empty_post_with_response<E: Endpoint>(
         &self,
         path: &str,
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
@@ -428,7 +428,7 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub async fn put_without_payload<E: Endpoint>(
+    pub async fn empty_put_with_response<E: Endpoint>(
         &self,
         path: &str,
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {

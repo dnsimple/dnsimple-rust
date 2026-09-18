@@ -43,7 +43,7 @@ impl Registrar<'_> {
         let path = format!("/{}/registrar/domains/{}/whois_privacy", account_id, domain);
 
         self.client
-            .put_without_payload::<WhoisPrivacyEndpoint>(&path)
+            .empty_put_with_response::<WhoisPrivacyEndpoint>(&path)
             .await
     }
 
