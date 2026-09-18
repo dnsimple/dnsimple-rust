@@ -371,8 +371,8 @@ impl Client {
         path: &str,
         data: impl Serialize,
     ) -> Result<DNSimpleResponse<<E as Endpoint>::Output>, DNSimpleError> {
-        let request = self.build_post_request(path);
-        self.call_with_payload::<E>(request, data).await
+        let request = self.build_post_request(path).json(&data);
+        self.call::<E>(request).await
     }
 
     /// Sends a POST request to the DNSimple API without any payload
@@ -396,8 +396,8 @@ impl Client {
         path: &str,
         data: impl Serialize,
     ) -> Result<DNSimpleResponse<<E as Endpoint>::Output>, DNSimpleError> {
-        let request = self.build_put_request(path);
-        self.call_with_payload::<E>(request, data).await
+        let request = self.build_put_request(path).json(&data);
+        self.call::<E>(request).await
     }
 
     /// Sends a PUT request to the DNSimple API without any payload
@@ -421,8 +421,8 @@ impl Client {
         path: &str,
         data: impl Serialize,
     ) -> Result<DNSimpleResponse<<E as Endpoint>::Output>, DNSimpleError> {
-        let request = self.build_patch_request(path);
-        self.call_with_payload::<E>(request, data).await
+        let request = self.build_patch_request(path).json(&data);
+        self.call::<E>(request).await
     }
 
     /// Sends a DELETE request to the DNSimple API
@@ -446,15 +446,6 @@ impl Client {
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
         let request = self.build_delete_request(path);
         self.call::<E>(request).await
-    }
-
-    async fn call_with_payload<E: Endpoint>(
-        &self,
-        request: reqwest::RequestBuilder,
-        data: impl Serialize,
-    ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
-        self.process_response::<E>(request.json(&data).send().await)
-            .await
     }
 
     async fn call<E: Endpoint>(
