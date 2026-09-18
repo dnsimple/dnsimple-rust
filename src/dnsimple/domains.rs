@@ -124,12 +124,7 @@ impl Domains<'_> {
 
         let payload = DomainCreationPayload { name };
 
-        match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<DomainEndpoint>(&path, json).await,
-            Err(_) => Err(DNSimpleError::Deserialization(String::from(
-                "Cannot deserialize json payload",
-            ))),
-        }
+        self.client.post::<DomainEndpoint>(&path, payload).await
     }
 
     /// Retrieves the details of an existing domain.

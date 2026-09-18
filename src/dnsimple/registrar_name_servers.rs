@@ -2,7 +2,6 @@ use crate::dnsimple::registrar::Registrar;
 use crate::dnsimple::{DNSimpleEmptyResponse, DNSimpleResponse, Endpoint};
 use crate::errors::DNSimpleError;
 use serde::Deserialize;
-use serde_json::Value;
 
 struct DomainDelegationEndpoint;
 
@@ -72,7 +71,7 @@ impl Registrar<'_> {
         let path = format!("/{}/registrar/domains/{}/delegation", account_id, domain);
 
         self.client
-            .put::<DomainDelegationEndpoint>(&path, Value::from(server_names))
+            .put::<DomainDelegationEndpoint>(&path, server_names)
             .await
     }
 
@@ -97,7 +96,7 @@ impl Registrar<'_> {
         );
 
         self.client
-            .put::<DomainDelegationVanityEndpoint>(&path, Value::from(server_names))
+            .put::<DomainDelegationVanityEndpoint>(&path, server_names)
             .await
     }
 

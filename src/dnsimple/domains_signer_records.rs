@@ -134,12 +134,9 @@ impl Domains<'_> {
     ) -> Result<DNSimpleResponse<DelegationSignerRecord>, DNSimpleError> {
         let path = format!("/{}/domains/{}/ds_records", account_id, domain);
 
-        match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<SignerRecordEndpoint>(&path, json).await,
-            Err(_) => Err(DNSimpleError::Deserialization(String::from(
-                "Cannot deserialize json payload",
-            ))),
-        }
+        self.client
+            .post::<SignerRecordEndpoint>(&path, payload)
+            .await
     }
 
     /// Get the delegation signer record under the domain for the account

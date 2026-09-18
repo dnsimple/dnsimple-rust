@@ -349,16 +349,9 @@ impl Certificates<'_> {
             account_id, domain
         );
 
-        match serde_json::to_value(payload) {
-            Ok(json) => {
-                self.client
-                    .post::<LetsEncryptPurchaseEndpoint>(&path, json)
-                    .await
-            }
-            Err(_) => Err(DNSimpleError::Deserialization(String::from(
-                "Cannot deserialize json payload",
-            ))),
-        }
+        self.client
+            .post::<LetsEncryptPurchaseEndpoint>(&path, payload)
+            .await
     }
 
     /// Issue a Let's Encrypt certificate for a domain in the account
@@ -435,16 +428,9 @@ impl Certificates<'_> {
             account_id, domain, certificate_id
         );
 
-        match serde_json::to_value(payload) {
-            Ok(json) => {
-                self.client
-                    .post::<LetsEncryptPurchaseRenewalEndpoint>(&path, json)
-                    .await
-            }
-            Err(_) => Err(DNSimpleError::Deserialization(String::from(
-                "Cannot deserialize json payload",
-            ))),
-        }
+        self.client
+            .post::<LetsEncryptPurchaseRenewalEndpoint>(&path, payload)
+            .await
     }
 
     /// Issue a Let's Encrypt certificate for a domain in the account

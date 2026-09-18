@@ -121,12 +121,7 @@ impl Zones<'_> {
     ) -> Result<DNSimpleResponse<ZoneRecord>, DNSimpleError> {
         let path = format!("/{}/zones/{}/records", account_id, zone);
 
-        match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<ZoneRecordEndpoint>(&path, json).await,
-            Err(_) => Err(DNSimpleError::Deserialization(String::from(
-                "Cannot deserialize json payload",
-            ))),
-        }
+        self.client.post::<ZoneRecordEndpoint>(&path, payload).await
     }
 
     /// Retrieve a zone record
@@ -168,12 +163,9 @@ impl Zones<'_> {
     ) -> Result<DNSimpleResponse<ZoneRecord>, DNSimpleError> {
         let path = format!("/{}/zones/{}/records/{}", account_id, zone, record);
 
-        match serde_json::to_value(payload) {
-            Ok(json) => self.client.patch::<ZoneRecordEndpoint>(&path, json).await,
-            Err(_) => Err(DNSimpleError::Deserialization(String::from(
-                "Cannot deserialize json payload",
-            ))),
-        }
+        self.client
+            .patch::<ZoneRecordEndpoint>(&path, payload)
+            .await
     }
 
     /// Delete a zone record

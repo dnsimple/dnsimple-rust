@@ -128,16 +128,9 @@ impl Registrar<'_> {
     ) -> Result<DNSimpleResponse<RegistrantChangeCheck>, DNSimpleError> {
         let path = format!("/{}/registrar/registrant_changes/check", account_id);
 
-        match serde_json::to_value(payload) {
-            Ok(json) => {
-                self.client
-                    .post::<RegistrantChangeCheckEndpoint>(&path, json)
-                    .await
-            }
-            Err(_) => Err(DNSimpleError::Deserialization(String::from(
-                "Cannot deserialize json payload",
-            ))),
-        }
+        self.client
+            .post::<RegistrantChangeCheckEndpoint>(&path, payload)
+            .await
     }
 
     /// Start registrant change.
@@ -155,16 +148,9 @@ impl Registrar<'_> {
     ) -> Result<DNSimpleResponse<RegistrantChange>, DNSimpleError> {
         let path = format!("/{}/registrar/registrant_changes", account_id);
 
-        match serde_json::to_value(payload) {
-            Ok(json) => {
-                self.client
-                    .post::<RegistrantChangeEndpoint>(&path, json)
-                    .await
-            }
-            Err(_) => Err(DNSimpleError::Deserialization(String::from(
-                "Cannot deserialize json payload",
-            ))),
-        }
+        self.client
+            .post::<RegistrantChangeEndpoint>(&path, payload)
+            .await
     }
 
     /// List registrant changes in the account.

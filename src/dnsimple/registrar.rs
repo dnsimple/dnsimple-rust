@@ -425,16 +425,9 @@ impl Registrar<'_> {
     ) -> Result<DNSimpleResponse<DomainRegistration>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/registrations", account_id, domain);
 
-        match serde_json::to_value(payload) {
-            Ok(json) => {
-                self.client
-                    .post::<DomainRegistrationEndpoint>(&path, json)
-                    .await
-            }
-            Err(_) => Err(DNSimpleError::Deserialization(String::from(
-                "Cannot deserialize json payload",
-            ))),
-        }
+        self.client
+            .post::<DomainRegistrationEndpoint>(&path, payload)
+            .await
     }
 
     /// Transfer a domain name from another domain registrar into DNSimple.
@@ -476,16 +469,9 @@ impl Registrar<'_> {
     ) -> Result<DNSimpleResponse<DomainTransfer>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/transfers", account_id, domain);
 
-        match serde_json::to_value(payload) {
-            Ok(json) => {
-                self.client
-                    .post::<DomainTransferEndpoint>(&path, json)
-                    .await
-            }
-            Err(_) => Err(DNSimpleError::Deserialization(String::from(
-                "Cannot deserialize json payload",
-            ))),
-        }
+        self.client
+            .post::<DomainTransferEndpoint>(&path, payload)
+            .await
     }
 
     /// Retrieves the details of an existing domain transfer.
@@ -553,12 +539,9 @@ impl Registrar<'_> {
     ) -> Result<DNSimpleResponse<DomainRenewal>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/renewals", account_id, domain);
 
-        match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<DomainRenewalEndpoint>(&path, json).await,
-            Err(_) => Err(DNSimpleError::Deserialization(String::from(
-                "Cannot deserialize json payload",
-            ))),
-        }
+        self.client
+            .post::<DomainRenewalEndpoint>(&path, payload)
+            .await
     }
 
     /// Restore a domain.
@@ -578,12 +561,9 @@ impl Registrar<'_> {
     ) -> Result<DNSimpleResponse<DomainRestore>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/restores", account_id, domain);
 
-        match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<DomainRestoreEndpoint>(&path, json).await,
-            Err(_) => Err(DNSimpleError::Deserialization(String::from(
-                "Cannot deserialize json payload",
-            ))),
-        }
+        self.client
+            .post::<DomainRestoreEndpoint>(&path, payload)
+            .await
     }
 
     /// Authorize a domain transfer out
