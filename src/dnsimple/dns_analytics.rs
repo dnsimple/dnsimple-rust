@@ -1,4 +1,4 @@
-use crate::dnsimple::{Client, Endpoint, Pagination, RequestOptions};
+use crate::dnsimple::{Client, DNSimpleResponse, Endpoint, RequestOptions};
 use crate::errors::DNSimpleError;
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
@@ -38,22 +38,10 @@ pub struct DnsAnalyticsQuery {
 /// Represents the response from the DNS analytics query
 #[derive(Debug)]
 pub struct DnsAnalyticsResponse {
-    /// The maximum number of requests you can perform per hour.
-    pub rate_limit: String,
-    /// The number of requests remaining in the current rate limit window.
-    pub rate_limit_remaining: String,
-    /// The time at which the current rate limit window in [Unix time](https://en.wikipedia.org/wiki/Unix_time) format.
-    pub rate_limit_reset: String,
-    /// The HTTP Status Code
-    pub status: u16,
-    /// The rows of DNS analytics data.
-    pub data: Option<Vec<DnsAnalyticsRow>>,
-    /// The pagination information.
-    pub pagination: Option<Pagination>,
+    /// The response, with one row of DNS analytics data for each entry.
+    pub response: DNSimpleResponse<Vec<DnsAnalyticsRow>>,
     /// The query parameters that produced the data.
     pub query: Option<DnsAnalyticsQuery>,
-    /// The body as a JSON `Value`
-    pub body: Option<Value>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -98,21 +86,12 @@ impl DnsAnalytics<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use dnsimple::dnsimple::{new_client, Filters, RequestOptions, Sort};
-    /// use std::collections::HashMap;
+    /// use dnsimple::dnsimple::new_client;
     ///
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
-    ///     let mut filters = HashMap::new();
-    ///     filters.insert(String::from("groupings"), String::from("zone_name,date"));
-    ///     let options = RequestOptions {
-    ///         filters: Some(Filters::new(filters)),
-    ///         sort: Some(Sort::new(String::from("date:asc"))),
-    ///         paginate: None,
-    ///     };
-    ///     let response = client.dns_analytics().query(1234, Some(options)).await.unwrap();
-    ///     let rows = response.data.unwrap();
+    ///     let rows = client.dns_analytics().query(1234, None).await.unwrap().response.data.unwrap();
     /// }
     /// ```
     ///
@@ -138,20 +117,21 @@ impl DnsAnalytics<'_> {
             .body
             .as_ref()
             .and_then(|body| body.get("query"))
-            .cloned()
-            .map(serde_json::from_value)
+            .map(DnsAnalyticsQuery::deserialize)
             .transpose()
             .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
 
         Ok(DnsAnalyticsResponse {
-            rate_limit: response.rate_limit,
-            rate_limit_remaining: response.rate_limit_remaining,
-            rate_limit_reset: response.rate_limit_reset,
-            status: response.status,
-            data,
-            pagination: response.pagination,
+            response: DNSimpleResponse {
+                rate_limit: response.rate_limit,
+                rate_limit_remaining: response.rate_limit_remaining,
+                rate_limit_reset: response.rate_limit_reset,
+                status: response.status,
+                data,
+                pagination: response.pagination,
+                body: response.body,
+            },
             query,
-            body: response.body,
         })
     }
 }

@@ -9,9 +9,9 @@ async fn query_test() {
     let client = setup.0;
 
     let response = client.dns_analytics().query(1, None).await.unwrap();
-    let rows = response.data.unwrap();
+    let rows = response.response.data.unwrap();
 
-    assert_eq!(200, response.status);
+    assert_eq!(200, response.response.status);
     assert_eq!(12, rows.len());
 
     let first = rows.first().unwrap();
@@ -24,7 +24,7 @@ async fn query_test() {
     assert_eq!(Some(String::from("2024-01-08")), last.date);
     assert_eq!(Some(1200), last.volume);
 
-    let pagination = response.pagination.unwrap();
+    let pagination = response.response.pagination.unwrap();
     assert_eq!(0, pagination.current_page);
     assert_eq!(100, pagination.per_page);
     assert_eq!(93, pagination.total_entries);
@@ -66,5 +66,5 @@ async fn query_with_options_test() {
         .await
         .unwrap();
 
-    assert_eq!(200, response.status);
+    assert_eq!(200, response.response.status);
 }
