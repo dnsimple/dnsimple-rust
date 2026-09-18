@@ -14,15 +14,16 @@ use std::fs;
 /// `method`: the HTTP method we are going to use (GET, POST, DELETE, ...)
 ///
 pub async fn setup_mock_for(path: &str, fixture: &str, method: &str) -> (Client, ServerGuard) {
-    setup_mock_with_body_for(path, fixture, method, Matcher::Any).await
+    setup_mock_with_request_for(path, fixture, method, &[], Matcher::Any).await
 }
 
 /// Creates a mockserver and a client like `setup_mock_for`, but the mock
-/// only matches requests with a body that matches `request_body`.
-pub async fn setup_mock_with_body_for(
+/// only matches requests that match `request_headers` and `request_body`.
+pub async fn setup_mock_with_request_for(
     path: &str,
     fixture: &str,
     method: &str,
+    request_headers: &[(&str, Matcher)],
     request_body: Matcher,
 ) -> (Client, ServerGuard) {
     let path = format!("/v2{}", path);
@@ -36,10 +37,11 @@ pub async fn setup_mock_with_body_for(
     let body = lines.last();
 
     let mut server = Server::new_async().await;
-    server
-        .mock(method, path.as_str())
-        .match_body(request_body)
-        .with_header("X-RateLimit-Limit", "2")
+    let mut mock = server.mock(method, path.as_str()).match_body(request_body);
+    for (name, value) in request_headers {
+        mock = mock.match_header(*name, value.clone());
+    }
+    mock.with_header("X-RateLimit-Limit", "2")
         .with_header("X-RateLimit-Remaining", "2")
         .with_header("X-RateLimit-Reset", "never")
         .with_status(status.parse().unwrap())

@@ -383,7 +383,7 @@ impl Client {
     ///
     /// `path`: the path to the endpoint
     pub async fn empty_post(&self, path: &str) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
-        let request = self.build_post_request(path);
+        let request = Self::without_body(self.build_post_request(path));
         self.call_empty(request).await
     }
 
@@ -396,7 +396,7 @@ impl Client {
         &self,
         path: &str,
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
-        let request = self.build_post_request(path);
+        let request = Self::without_body(self.build_post_request(path));
         self.call::<E>(request).await
     }
 
@@ -423,7 +423,7 @@ impl Client {
     ///
     /// `path`: the path to the endpoint
     pub async fn empty_put(&self, path: &str) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
-        let request = self.build_put_request(path);
+        let request = Self::without_body(self.build_put_request(path));
         self.call_empty(request).await
     }
 
@@ -436,7 +436,7 @@ impl Client {
         &self,
         path: &str,
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
-        let request = self.build_put_request(path);
+        let request = Self::without_body(self.build_put_request(path));
         self.call::<E>(request).await
     }
 
@@ -485,12 +485,21 @@ impl Client {
         request: reqwest::RequestBuilder,
         data: impl Serialize,
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
-        // The API expects no body, not a JSON `null`, when there is no payload.
-        let request = match serde_json::to_value(&data) {
-            Ok(Value::Null) => request,
-            _ => request.json(&data),
+        let request = match serde_json::to_vec(&data) {
+            // The API expects no body, not a JSON `null`, when there is no payload.
+            Ok(body) if body == b"null" => Self::without_body(request),
+            Ok(body) => request
+                .header(reqwest::header::CONTENT_TYPE, "application/json")
+                .body(body),
+            // reqwest returns the serialization error when the request is sent.
+            Err(_) => request.json(&data),
         };
         self.call::<E>(request).await
+    }
+
+    // hyper sends no `Content-Length` header for an HTTP/1.1 request without a body.
+    fn without_body(request: reqwest::RequestBuilder) -> reqwest::RequestBuilder {
+        request.header(reqwest::header::CONTENT_LENGTH, "0")
     }
 
     async fn call<E: Endpoint>(

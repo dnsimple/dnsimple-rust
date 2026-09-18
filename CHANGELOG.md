@@ -20,6 +20,7 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/), the format is
 ### Fixed
 
 - Fixed `Domains.list_pushes`, `Domains.accept_push`, and `Domains.reject_push` to call `/{account}/pushes`. Before, they called `/{account}/domains/pushes`, which the API does not serve.
+- Fixed `Client::empty_post` and `Client::empty_put` to send a `Content-Length: 0` header. Before, an HTTP/1.1 request without a body had no `Content-Length` header.
 - Fixed `Client::post`, `Client::put`, and `Client::patch` to send no body when the payload serializes to JSON `null`, for example `Value::Null`. Before, they sent a literal `null` body.
 - **BREAKING**: Fixed `Domains.get_delegation_signer_record` to retrieve one delegation signer record. The method now takes the record ID as a `u64`. Before, it called the list endpoint.
 
