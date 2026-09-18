@@ -6,24 +6,24 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/), the format is
 
 ### Added
 
-- Added `DNSimpleError::Forbidden` for HTTP 403 responses. The variant carries the API error message. Before, a 403 response returned `DNSimpleError::UnexpectedStatus(403)`. (requires major version)
+- **BREAKING**: Added `DNSimpleError::Forbidden` for HTTP 403 responses. The variant carries the API error message. Before, a 403 response returned `DNSimpleError::UnexpectedStatus(403)`.
 - Added `Billing.list_charges` to list the billing charges for the account. (#123)
 
 ### Changed
 
-- Marked `DNSimpleError` as `#[non_exhaustive]`. A `match` on `DNSimpleError` must now have a wildcard arm. Future error variants do not require a major version. (requires major version)
-- Changed the delegation signer record ID in `Domains.delete_delegation_signer_record` from `i32` to `u64`, to match the other resource IDs. (requires major version)
+- **BREAKING**: Marked `DNSimpleError` as `#[non_exhaustive]`. A `match` on `DNSimpleError` must now have a wildcard arm. Future error variants do not require a major version.
+- **BREAKING**: Changed the delegation signer record ID in `Domains.delete_delegation_signer_record` from `i32` to `u64`, to match the other resource IDs.
 
 ### Fixed
 
 - Fixed `Domains.list_pushes`, `Domains.accept_push`, and `Domains.reject_push` to call `/{account}/pushes`. Before, they called `/{account}/domains/pushes`, which the API does not serve.
-- Fixed `Domains.get_delegation_signer_record` to retrieve one delegation signer record. The method now takes the record ID as a `u64`. Before, it called the list endpoint. (requires major version)
+- **BREAKING**: Fixed `Domains.get_delegation_signer_record` to retrieve one delegation signer record. The method now takes the record ID as a `u64`. Before, it called the list endpoint.
 
 ## 7.0.0 - 2026-09-17
 
 ### Changed
 
-- Drop support for Rust < 1.87 (requires major version)
+- **BREAKING**: Drop support for Rust < 1.87
 - Add support for Rust 1.87
 
 ### Deprecated
