@@ -362,6 +362,8 @@ impl Client {
 
     /// Sends a POST request to the DNSimple API
     ///
+    /// A payload that serializes to JSON `null` sends the request without a body.
+    ///
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
@@ -371,8 +373,8 @@ impl Client {
         path: &str,
         data: impl Serialize,
     ) -> Result<DNSimpleResponse<<E as Endpoint>::Output>, DNSimpleError> {
-        let request = self.build_post_request(path).json(&data);
-        self.call::<E>(request).await
+        self.call_with_payload::<E>(self.build_post_request(path), data)
+            .await
     }
 
     /// Sends a POST request to the DNSimple API without any payload
@@ -381,7 +383,7 @@ impl Client {
     ///
     /// `path`: the path to the endpoint
     pub async fn empty_post(&self, path: &str) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
-        let request = self.build_post_request(path);
+        let request = Self::without_body(self.build_post_request(path));
         self.call_empty(request).await
     }
 
@@ -394,11 +396,13 @@ impl Client {
         &self,
         path: &str,
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
-        let request = self.build_post_request(path);
+        let request = Self::without_body(self.build_post_request(path));
         self.call::<E>(request).await
     }
 
     /// Sends a PUT request to the DNSimple API
+    ///
+    /// A payload that serializes to JSON `null` sends the request without a body.
     ///
     /// # Arguments
     ///
@@ -409,8 +413,8 @@ impl Client {
         path: &str,
         data: impl Serialize,
     ) -> Result<DNSimpleResponse<<E as Endpoint>::Output>, DNSimpleError> {
-        let request = self.build_put_request(path).json(&data);
-        self.call::<E>(request).await
+        self.call_with_payload::<E>(self.build_put_request(path), data)
+            .await
     }
 
     /// Sends a PUT request to the DNSimple API without any payload
@@ -419,7 +423,7 @@ impl Client {
     ///
     /// `path`: the path to the endpoint
     pub async fn empty_put(&self, path: &str) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
-        let request = self.build_put_request(path);
+        let request = Self::without_body(self.build_put_request(path));
         self.call_empty(request).await
     }
 
@@ -432,11 +436,13 @@ impl Client {
         &self,
         path: &str,
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
-        let request = self.build_put_request(path);
+        let request = Self::without_body(self.build_put_request(path));
         self.call::<E>(request).await
     }
 
     /// Sends a PATCH request to the DNSimple API
+    ///
+    /// A payload that serializes to JSON `null` sends the request without a body.
     ///
     /// # Arguments
     ///
@@ -447,8 +453,8 @@ impl Client {
         path: &str,
         data: impl Serialize,
     ) -> Result<DNSimpleResponse<<E as Endpoint>::Output>, DNSimpleError> {
-        let request = self.build_patch_request(path).json(&data);
-        self.call::<E>(request).await
+        self.call_with_payload::<E>(self.build_patch_request(path), data)
+            .await
     }
 
     /// Sends a DELETE request to the DNSimple API
@@ -472,6 +478,28 @@ impl Client {
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
         let request = self.build_delete_request(path);
         self.call::<E>(request).await
+    }
+
+    async fn call_with_payload<E: Endpoint>(
+        &self,
+        request: reqwest::RequestBuilder,
+        data: impl Serialize,
+    ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
+        let request = match serde_json::to_vec(&data) {
+            // The API expects no body, not a JSON `null`, when there is no payload.
+            Ok(body) if body == b"null" => Self::without_body(request),
+            Ok(body) => request
+                .header(reqwest::header::CONTENT_TYPE, "application/json")
+                .body(body),
+            // reqwest returns the serialization error when the request is sent.
+            Err(_) => request.json(&data),
+        };
+        self.call::<E>(request).await
+    }
+
+    // hyper sends no `Content-Length` header for an HTTP/1.1 request without a body.
+    fn without_body(request: reqwest::RequestBuilder) -> reqwest::RequestBuilder {
+        request.header(reqwest::header::CONTENT_LENGTH, "0")
     }
 
     async fn call<E: Endpoint>(
