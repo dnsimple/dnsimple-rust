@@ -14,6 +14,7 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/), the format is
 
 - **BREAKING**: Marked `DNSimpleError` as `#[non_exhaustive]`. A `match` on `DNSimpleError` must now have a wildcard arm. Future error variants do not require a major version.
 - **BREAKING**: Changed the delegation signer record ID in `Domains.delete_delegation_signer_record` from `i32` to `u64`, to match the other resource IDs.
+- Changed `Client::post`, `Client::put`, and `Client::patch` to accept any `Serialize` payload. The services pass the payload structs directly, and no longer return `DNSimpleError::Deserialization` for a payload that fails to convert. (#128)
 
 ### Fixed
 
