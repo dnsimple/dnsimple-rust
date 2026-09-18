@@ -317,7 +317,7 @@ impl Registrar<'_> {
             .await
     }
 
-    /// Get the details of an existing domain transfer.
+    /// Get the details of an existing domain renewal.
     ///
     /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/#getDomainRenewal)
     ///
@@ -387,7 +387,7 @@ impl Registrar<'_> {
         self.client.get::<DomainRestoreEndpoint>(&path, None).await
     }
 
-    /// Get a domain's price for registration, renewal, and transfer.
+    /// Register a domain name with DNSimple.
     ///
     /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/#registerDomain)
     ///
@@ -536,7 +536,7 @@ impl Registrar<'_> {
             .await
     }
 
-    /// Get a domain's price for registration, renewal, and transfer.
+    /// Renew a domain.
     ///
     /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/#renewDomain)
     ///
