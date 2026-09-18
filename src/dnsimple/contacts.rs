@@ -128,12 +128,7 @@ impl Contacts<'_> {
     ) -> Result<DNSimpleResponse<Contact>, DNSimpleError> {
         let path = format!("/{}/contacts", account_id);
 
-        match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<ContactEndpoint>(&path, json).await,
-            Err(_) => Err(DNSimpleError::Deserialization(String::from(
-                "Cannot deserialize json payload",
-            ))),
-        }
+        self.client.post::<ContactEndpoint>(&path, payload).await
     }
 
     /// Retrieve a contact
@@ -171,12 +166,7 @@ impl Contacts<'_> {
     ) -> Result<DNSimpleResponse<Contact>, DNSimpleError> {
         let path = format!("/{}/contacts/{}", account_id, contact);
 
-        match serde_json::to_value(payload) {
-            Ok(json) => self.client.patch::<ContactEndpoint>(&path, json).await,
-            Err(_) => Err(DNSimpleError::Deserialization(String::from(
-                "Cannot deserialize json payload",
-            ))),
-        }
+        self.client.patch::<ContactEndpoint>(&path, payload).await
     }
 
     /// Delete a contact

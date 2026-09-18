@@ -71,12 +71,7 @@ impl Webhooks<'_> {
         let path = format!("/{}/webhooks", account_id);
         let payload = WebhookPayload { url };
 
-        match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<WebhookEndpoint>(&path, json).await,
-            Err(_) => Err(DNSimpleError::Deserialization(String::from(
-                "Cannot deserialize json payload",
-            ))),
-        }
+        self.client.post::<WebhookEndpoint>(&path, payload).await
     }
 
     /// Retrieve a webhook

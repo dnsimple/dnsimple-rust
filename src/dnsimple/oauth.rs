@@ -92,13 +92,10 @@ impl OAuth<'_> {
             state: payload.state,
         };
 
-        let value = serde_json::to_value(params)
-            .map_err(|e| DNSimpleError::Deserialization(e.to_string()))?;
-
         let response = self
             .client
             .build_post_request(path)
-            .json(&value)
+            .json(&params)
             .send()
             .await;
 

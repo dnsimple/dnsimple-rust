@@ -365,11 +365,11 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    /// `data`: the json payload to be sent to the server
+    /// `data`: the payload to be serialized as JSON and sent to the server
     pub async fn post<E: Endpoint>(
         &self,
         path: &str,
-        data: Value,
+        data: impl Serialize,
     ) -> Result<DNSimpleResponse<<E as Endpoint>::Output>, DNSimpleError> {
         let request = self.build_post_request(path);
         self.call_with_payload::<E>(request, data).await
@@ -390,11 +390,11 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    /// `data`: the json payload to be sent to the server
+    /// `data`: the payload to be serialized as JSON and sent to the server
     pub async fn put<E: Endpoint>(
         &self,
         path: &str,
-        data: Value,
+        data: impl Serialize,
     ) -> Result<DNSimpleResponse<<E as Endpoint>::Output>, DNSimpleError> {
         let request = self.build_put_request(path);
         self.call_with_payload::<E>(request, data).await
@@ -415,11 +415,11 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    /// `data`: the json payload to be sent to the server
+    /// `data`: the payload to be serialized as JSON and sent to the server
     pub async fn patch<E: Endpoint>(
         &self,
         path: &str,
-        data: Value,
+        data: impl Serialize,
     ) -> Result<DNSimpleResponse<<E as Endpoint>::Output>, DNSimpleError> {
         let request = self.build_patch_request(path);
         self.call_with_payload::<E>(request, data).await
@@ -451,7 +451,7 @@ impl Client {
     async fn call_with_payload<E: Endpoint>(
         &self,
         request: reqwest::RequestBuilder,
-        data: Value,
+        data: impl Serialize,
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
         self.process_response::<E>(request.json(&data).send().await)
             .await

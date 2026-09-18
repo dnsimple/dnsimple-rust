@@ -136,12 +136,9 @@ impl Domains<'_> {
     ) -> Result<DNSimpleResponse<EmailForward>, DNSimpleError> {
         let path = format!("/{}/domains/{}/email_forwards", account_id, domain);
 
-        match serde_json::to_value(payload) {
-            Ok(json) => self.client.post::<EmailForwardEndpoint>(&path, json).await,
-            Err(_) => Err(DNSimpleError::Deserialization(String::from(
-                "Cannot deserialize json payload",
-            ))),
-        }
+        self.client
+            .post::<EmailForwardEndpoint>(&path, payload)
+            .await
     }
 
     /// Retrieve an email forward
