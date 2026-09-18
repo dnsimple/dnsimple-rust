@@ -362,6 +362,8 @@ impl Client {
 
     /// Sends a POST request to the DNSimple API
     ///
+    /// A payload that serializes to JSON `null` sends the request without a body.
+    ///
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
@@ -371,7 +373,7 @@ impl Client {
         path: &str,
         data: impl Serialize,
     ) -> Result<DNSimpleResponse<<E as Endpoint>::Output>, DNSimpleError> {
-        let request = self.build_post_request(path).json(&data);
+        let request = Self::with_json_body(self.build_post_request(path), &data);
         self.call::<E>(request).await
     }
 
@@ -400,6 +402,8 @@ impl Client {
 
     /// Sends a PUT request to the DNSimple API
     ///
+    /// A payload that serializes to JSON `null` sends the request without a body.
+    ///
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
@@ -409,7 +413,7 @@ impl Client {
         path: &str,
         data: impl Serialize,
     ) -> Result<DNSimpleResponse<<E as Endpoint>::Output>, DNSimpleError> {
-        let request = self.build_put_request(path).json(&data);
+        let request = Self::with_json_body(self.build_put_request(path), &data);
         self.call::<E>(request).await
     }
 
@@ -438,6 +442,8 @@ impl Client {
 
     /// Sends a PATCH request to the DNSimple API
     ///
+    /// A payload that serializes to JSON `null` sends the request without a body.
+    ///
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
@@ -447,7 +453,7 @@ impl Client {
         path: &str,
         data: impl Serialize,
     ) -> Result<DNSimpleResponse<<E as Endpoint>::Output>, DNSimpleError> {
-        let request = self.build_patch_request(path).json(&data);
+        let request = Self::with_json_body(self.build_patch_request(path), &data);
         self.call::<E>(request).await
     }
 
@@ -472,6 +478,21 @@ impl Client {
     ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
         let request = self.build_delete_request(path);
         self.call::<E>(request).await
+    }
+
+    fn with_json_body(
+        request: reqwest::RequestBuilder,
+        data: &impl Serialize,
+    ) -> reqwest::RequestBuilder {
+        match serde_json::to_vec(data) {
+            // The API expects no body, not a JSON `null`, when there is no payload.
+            Ok(body) if body == b"null" => request,
+            Ok(body) => request
+                .header(reqwest::header::CONTENT_TYPE, "application/json")
+                .body(body),
+            // reqwest returns the serialization error when the request is sent.
+            Err(_) => request.json(data),
+        }
     }
 
     async fn call<E: Endpoint>(
