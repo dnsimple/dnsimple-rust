@@ -153,6 +153,29 @@ pub struct DomainRenewal {
     pub updated_at: String,
 }
 
+/// Payload to restore a domain
+#[derive(Debug, Deserialize, Serialize)]
+pub struct DomainRestorePayload {
+    /// The domain premium price
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub premium_price: Option<String>,
+}
+
+/// Represents a domain restore
+#[derive(Debug, Deserialize, Serialize)]
+pub struct DomainRestore {
+    /// The domain restore ID in DNSimple.
+    pub id: u64,
+    /// The associated domain ID.
+    pub domain_id: u64,
+    /// The state of the restore.
+    pub state: String,
+    /// When the domain restore was created in DNSimple.
+    pub created_at: String,
+    /// When the domain restore was last updated in DNSimple.
+    pub updated_at: String,
+}
+
 struct DomainCheckEndpoint;
 
 impl Endpoint for DomainCheckEndpoint {
@@ -181,6 +204,12 @@ struct DomainRenewalEndpoint;
 
 impl Endpoint for DomainRenewalEndpoint {
     type Output = DomainRenewal;
+}
+
+struct DomainRestoreEndpoint;
+
+impl Endpoint for DomainRestoreEndpoint {
+    type Output = DomainRestore;
 }
 
 /// The Registrar Service handles the domains registrations of the DNSimple API.
@@ -288,7 +317,7 @@ impl Registrar<'_> {
             .await
     }
 
-    /// Get the details of an existing domain transfer.
+    /// Get the details of an existing domain renewal.
     ///
     /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/#getDomainRenewal)
     ///
@@ -323,7 +352,42 @@ impl Registrar<'_> {
         self.client.get::<DomainRenewalEndpoint>(&path, None).await
     }
 
-    /// Get a domain's price for registration, renewal, and transfer.
+    /// Get the details of an existing domain restore.
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/#getDomainRestore)
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use dnsimple::dnsimple::new_client;
+    ///
+    /// #[tokio::main(flavor = "current_thread")]
+    /// async fn main() {
+    ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
+    ///     let domain_restore = client.registrar().get_domain_restore(1234, "example.com", 1556).await.unwrap().data.unwrap();
+    /// }
+    /// ```
+    ///
+    /// # Attributes
+    ///
+    /// `account_id`: The account id
+    /// `domain`: The domain name
+    /// `domain_restore_id`: The domain restore id
+    pub async fn get_domain_restore(
+        &self,
+        account_id: u64,
+        domain: &str,
+        domain_restore_id: u64,
+    ) -> Result<DNSimpleResponse<DomainRestore>, DNSimpleError> {
+        let path = format!(
+            "/{}/registrar/domains/{}/restores/{}",
+            account_id, domain, domain_restore_id
+        );
+
+        self.client.get::<DomainRestoreEndpoint>(&path, None).await
+    }
+
+    /// Register a domain name with DNSimple.
     ///
     /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/#registerDomain)
     ///
@@ -472,7 +536,7 @@ impl Registrar<'_> {
             .await
     }
 
-    /// Get a domain's price for registration, renewal, and transfer.
+    /// Renew a domain.
     ///
     /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/#renewDomain)
     ///
@@ -491,6 +555,31 @@ impl Registrar<'_> {
 
         match serde_json::to_value(payload) {
             Ok(json) => self.client.post::<DomainRenewalEndpoint>(&path, json).await,
+            Err(_) => Err(DNSimpleError::Deserialization(String::from(
+                "Cannot deserialize json payload",
+            ))),
+        }
+    }
+
+    /// Restore a domain.
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/#restoreDomain)
+    ///
+    /// # Attributes
+    ///
+    /// `account_id`: The account id
+    /// `domain`: The domain name
+    /// `payload`: The `DomainRestorePayload` with the information needed to restore the domain
+    pub async fn restore_domain(
+        &self,
+        account_id: u64,
+        domain: &str,
+        payload: DomainRestorePayload,
+    ) -> Result<DNSimpleResponse<DomainRestore>, DNSimpleError> {
+        let path = format!("/{}/registrar/domains/{}/restores", account_id, domain);
+
+        match serde_json::to_value(payload) {
+            Ok(json) => self.client.post::<DomainRestoreEndpoint>(&path, json).await,
             Err(_) => Err(DNSimpleError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
