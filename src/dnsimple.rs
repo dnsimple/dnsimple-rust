@@ -2,6 +2,7 @@ use crate::dnsimple::accounts::Accounts;
 use crate::dnsimple::billing::Billing;
 use crate::dnsimple::certificates::Certificates;
 use crate::dnsimple::contacts::Contacts;
+use crate::dnsimple::dns_analytics::DnsAnalytics;
 use crate::dnsimple::domains::Domains;
 use crate::dnsimple::identity::Identity;
 use crate::dnsimple::oauth::OAuth;
@@ -23,6 +24,7 @@ pub mod accounts;
 pub mod billing;
 pub mod certificates;
 pub mod contacts;
+pub mod dns_analytics;
 pub mod domains;
 pub mod domains_dnssec;
 pub mod domains_email_forwards;
@@ -237,6 +239,11 @@ impl Client {
     /// Returns the `certificates` service attached to this client
     pub fn certificates(&self) -> Certificates<'_> {
         Certificates { client: self }
+    }
+
+    /// Returns the `dns_analytics` service attached to this client
+    pub fn dns_analytics(&self) -> DnsAnalytics<'_> {
+        DnsAnalytics { client: self }
     }
 
     /// Returns the `domains` service attached to this client

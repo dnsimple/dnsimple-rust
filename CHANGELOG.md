@@ -11,6 +11,7 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/), the format is
 - Added `Registrar.restore_domain` and `Registrar.get_domain_restore` to restore a domain and retrieve a domain restore. (#125)
 - Added `Client.empty_post_with_response` and `Client.empty_put_with_response` to send a POST or PUT request without a body and return a `DNSimpleResponse`.
 - Added `Zones.batch_change_zone_records` to create, update, and delete zone records in one atomic request. (#131)
+- Added `DnsAnalytics.query` to query the DNS analytics data for the account.
 
 ### Changed
 
