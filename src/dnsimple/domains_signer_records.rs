@@ -161,7 +161,7 @@ impl Domains<'_> {
         &self,
         account_id: u64,
         domain: &str,
-        delegation_signer_record_id: i32,
+        delegation_signer_record_id: u64,
     ) -> Result<DNSimpleResponse<DelegationSignerRecord>, DNSimpleError> {
         let path = format!(
             "/{}/domains/{}/ds_records/{}",
@@ -194,7 +194,7 @@ impl Domains<'_> {
         &self,
         account_id: u64,
         domain: &str,
-        delegation_signer_record_id: i32,
+        delegation_signer_record_id: u64,
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
         let path = format!(
             "/{}/domains/{}/ds_records/{}",
