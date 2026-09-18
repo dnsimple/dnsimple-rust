@@ -28,50 +28,35 @@ async fn post_sends_payload_as_json_body() {
         .unwrap();
 }
 
-#[tokio::test]
-async fn post_with_null_payload_sends_no_body() {
+async fn assert_null_payload_sends_no_body(method: &str) {
     let (client, _server) = setup_mock_with_body_for(
         "/test",
         "createWebhook/created",
-        "POST",
+        method,
         Matcher::Exact(String::new()),
     )
     .await;
 
-    client
-        .post::<ValueEndpoint>("/test", Value::Null)
-        .await
-        .unwrap();
+    match method {
+        "POST" => client.post::<ValueEndpoint>("/test", Value::Null).await,
+        "PUT" => client.put::<ValueEndpoint>("/test", Value::Null).await,
+        "PATCH" => client.patch::<ValueEndpoint>("/test", Value::Null).await,
+        _ => unreachable!("unsupported method: {method}"),
+    }
+    .unwrap();
+}
+
+#[tokio::test]
+async fn post_with_null_payload_sends_no_body() {
+    assert_null_payload_sends_no_body("POST").await;
 }
 
 #[tokio::test]
 async fn put_with_null_payload_sends_no_body() {
-    let (client, _server) = setup_mock_with_body_for(
-        "/test",
-        "createWebhook/created",
-        "PUT",
-        Matcher::Exact(String::new()),
-    )
-    .await;
-
-    client
-        .put::<ValueEndpoint>("/test", Value::Null)
-        .await
-        .unwrap();
+    assert_null_payload_sends_no_body("PUT").await;
 }
 
 #[tokio::test]
 async fn patch_with_null_payload_sends_no_body() {
-    let (client, _server) = setup_mock_with_body_for(
-        "/test",
-        "createWebhook/created",
-        "PATCH",
-        Matcher::Exact(String::new()),
-    )
-    .await;
-
-    client
-        .patch::<ValueEndpoint>("/test", Value::Null)
-        .await
-        .unwrap();
+    assert_null_payload_sends_no_body("PATCH").await;
 }

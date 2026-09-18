@@ -373,8 +373,8 @@ impl Client {
         path: &str,
         data: impl Serialize,
     ) -> Result<DNSimpleResponse<<E as Endpoint>::Output>, DNSimpleError> {
-        let request = Self::with_json_body(self.build_post_request(path), &data);
-        self.call::<E>(request).await
+        self.call_with_payload::<E>(self.build_post_request(path), data)
+            .await
     }
 
     /// Sends a POST request to the DNSimple API without any payload
@@ -413,8 +413,8 @@ impl Client {
         path: &str,
         data: impl Serialize,
     ) -> Result<DNSimpleResponse<<E as Endpoint>::Output>, DNSimpleError> {
-        let request = Self::with_json_body(self.build_put_request(path), &data);
-        self.call::<E>(request).await
+        self.call_with_payload::<E>(self.build_put_request(path), data)
+            .await
     }
 
     /// Sends a PUT request to the DNSimple API without any payload
@@ -453,8 +453,8 @@ impl Client {
         path: &str,
         data: impl Serialize,
     ) -> Result<DNSimpleResponse<<E as Endpoint>::Output>, DNSimpleError> {
-        let request = Self::with_json_body(self.build_patch_request(path), &data);
-        self.call::<E>(request).await
+        self.call_with_payload::<E>(self.build_patch_request(path), data)
+            .await
     }
 
     /// Sends a DELETE request to the DNSimple API
@@ -480,19 +480,17 @@ impl Client {
         self.call::<E>(request).await
     }
 
-    fn with_json_body(
+    async fn call_with_payload<E: Endpoint>(
+        &self,
         request: reqwest::RequestBuilder,
-        data: &impl Serialize,
-    ) -> reqwest::RequestBuilder {
-        match serde_json::to_vec(data) {
-            // The API expects no body, not a JSON `null`, when there is no payload.
-            Ok(body) if body == b"null" => request,
-            Ok(body) => request
-                .header(reqwest::header::CONTENT_TYPE, "application/json")
-                .body(body),
-            // reqwest returns the serialization error when the request is sent.
-            Err(_) => request.json(data),
-        }
+        data: impl Serialize,
+    ) -> Result<DNSimpleResponse<E::Output>, DNSimpleError> {
+        // The API expects no body, not a JSON `null`, when there is no payload.
+        let request = match serde_json::to_value(&data) {
+            Ok(Value::Null) => request,
+            _ => request.json(&data),
+        };
+        self.call::<E>(request).await
     }
 
     async fn call<E: Endpoint>(
