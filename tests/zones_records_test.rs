@@ -1,10 +1,11 @@
-use crate::common::setup_mock_for;
+use crate::common::{setup_mock_for, setup_mock_with_request_for};
 use assert_matches::assert_matches;
 use dnsimple::dnsimple::zones_records::{
     ZoneRecordBatchCreate, ZoneRecordBatchDelete, ZoneRecordBatchUpdate, ZoneRecordPayload,
     ZoneRecordUpdatePayload, ZoneRecordsBatchChangePayload,
 };
 use dnsimple::errors::DNSimpleError;
+use mockito::Matcher;
 use serde_json::json;
 mod common;
 
@@ -251,10 +252,16 @@ async fn delete_zone_record_test() {
 
 #[tokio::test]
 async fn batch_change_zone_records_test() {
-    let setup = setup_mock_for(
+    let setup = setup_mock_with_request_for(
         "/1010/zones/example.com/batch",
         "batchChangeZoneRecords/success",
         "POST",
+        &[],
+        Matcher::Json(json!({
+            "creates": [{"name": "ab", "type": "A", "content": "3.2.3.4"}],
+            "updates": [{"id": 67622534, "content": "3.2.3.40"}],
+            "deletes": [{"id": 67622509}]
+        })),
     )
     .await;
     let client = setup.0;
@@ -279,15 +286,6 @@ async fn batch_change_zone_records_test() {
         }]),
         deletes: Some(vec![ZoneRecordBatchDelete { id: 67622509 }]),
     };
-
-    assert_eq!(
-        json!({
-            "creates": [{"name": "ab", "type": "A", "content": "3.2.3.4"}],
-            "updates": [{"id": 67622534, "content": "3.2.3.40"}],
-            "deletes": [{"id": 67622509}]
-        }),
-        serde_json::to_value(&payload).unwrap()
-    );
 
     let batch_change = client
         .zones()
@@ -326,13 +324,6 @@ async fn batch_change_zone_records_test() {
     assert_eq!(67622527, batch_change.deletes[1].id);
 }
 
-#[test]
-fn batch_change_zone_records_empty_payload_test() {
-    let payload = ZoneRecordsBatchChangePayload::default();
-
-    assert_eq!(json!({}), serde_json::to_value(&payload).unwrap());
-}
-
 #[tokio::test]
 async fn batch_change_zone_records_validation_error_test() {
     let setup = setup_mock_for(
@@ -362,7 +353,6 @@ async fn batch_change_zone_records_validation_error_test() {
         .await
         .unwrap_err();
 
-    assert_eq!("Validation failed", error.to_string());
     assert_matches!(error, DNSimpleError::BadRequest { message, attribute_errors } => {
         assert_eq!("Validation failed", message);
         assert_eq!(

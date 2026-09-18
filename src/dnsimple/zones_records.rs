@@ -140,13 +140,10 @@ pub struct ZoneRecordsBatchChangePayload {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ZoneRecordsBatchChange {
     /// The zone records that the batch change created.
-    #[serde(default)]
     pub creates: Vec<ZoneRecord>,
     /// The zone records that the batch change updated.
-    #[serde(default)]
     pub updates: Vec<ZoneRecord>,
     /// The zone records that the batch change deleted.
-    #[serde(default)]
     pub deletes: Vec<ZoneRecordBatchDelete>,
 }
 
