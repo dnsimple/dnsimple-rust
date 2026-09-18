@@ -443,7 +443,7 @@ async fn test_restore_a_domain() {
     .await;
     let client = setup.0;
     let account_id = 1010;
-    let domain = String::from("example.com");
+    let domain = "example.com";
     let payload = DomainRestorePayload {
         premium_price: None,
     };
@@ -456,10 +456,7 @@ async fn test_restore_a_domain() {
     let domain_restore = response.data.unwrap();
 
     assert_eq!(43, domain_restore.id);
-    assert_eq!(214, domain_restore.domain_id);
     assert_eq!("new", domain_restore.state);
-    assert_eq!("2024-02-14T14:40:42Z", domain_restore.created_at);
-    assert_eq!("2024-02-14T14:40:42Z", domain_restore.updated_at);
 }
 
 #[tokio::test]

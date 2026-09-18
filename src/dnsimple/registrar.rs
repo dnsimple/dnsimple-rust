@@ -157,6 +157,7 @@ pub struct DomainRenewal {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct DomainRestorePayload {
     /// The domain premium price
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub premium_price: Option<String>,
 }
 
@@ -344,6 +345,8 @@ impl Registrar<'_> {
     }
 
     /// Get the details of an existing domain restore.
+    ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/#getDomainRestore)
     ///
     /// # Examples
     ///
@@ -542,6 +545,8 @@ impl Registrar<'_> {
 
     /// Restore a domain.
     ///
+    /// See [API Documentation](https://developer.dnsimple.com/v2/registrar/#restoreDomain)
+    ///
     /// # Attributes
     ///
     /// `account_id`: The account id
@@ -550,7 +555,7 @@ impl Registrar<'_> {
     pub async fn restore_domain(
         &self,
         account_id: u64,
-        domain: String,
+        domain: &str,
         payload: DomainRestorePayload,
     ) -> Result<DNSimpleResponse<DomainRestore>, DNSimpleError> {
         let path = format!("/{}/registrar/domains/{}/restores", account_id, domain);
