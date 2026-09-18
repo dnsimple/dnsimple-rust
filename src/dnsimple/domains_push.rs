@@ -113,7 +113,7 @@ impl Domains<'_> {
         account_id: u64,
         options: Option<RequestOptions>,
     ) -> Result<DNSimpleResponse<Vec<DomainPush>>, DNSimpleError> {
-        let path = format!("/{}/domains/pushes", account_id);
+        let path = format!("/{}/pushes", account_id);
 
         self.client
             .get::<DomainPushesListEndpoint>(&path, options)
@@ -143,7 +143,7 @@ impl Domains<'_> {
         account_id: u64,
         push_id: u64,
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
-        let path = format!("/{}/domains/pushes/{}", account_id, push_id);
+        let path = format!("/{}/pushes/{}", account_id, push_id);
 
         self.client.empty_post(&path).await
     }
@@ -171,7 +171,7 @@ impl Domains<'_> {
         account_id: u64,
         push_id: u64,
     ) -> Result<DNSimpleEmptyResponse, DNSimpleError> {
-        let path = format!("/{}/domains/pushes/{}", account_id, push_id);
+        let path = format!("/{}/pushes/{}", account_id, push_id);
 
         self.client.delete(&path).await
     }

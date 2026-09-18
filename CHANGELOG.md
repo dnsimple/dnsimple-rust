@@ -13,6 +13,11 @@ This project uses [Semantic Versioning 2.0.0](http://semver.org/), the format is
 
 - Marked `DNSimpleError` as `#[non_exhaustive]`. A `match` on `DNSimpleError` must now have a wildcard arm. Future error variants do not require a major version. (requires major version)
 
+### Fixed
+
+- Fixed `Domains.list_pushes`, `Domains.accept_push`, and `Domains.reject_push` to call `/{account}/pushes`. Before, they called `/{account}/domains/pushes`, which the API does not serve.
+- Fixed `Domains.get_delegation_signer_record` to retrieve one delegation signer record. The method now takes the record ID. Before, it called the list endpoint. (requires major version)
+
 ## 7.0.0 - 2026-09-17
 
 ### Changed

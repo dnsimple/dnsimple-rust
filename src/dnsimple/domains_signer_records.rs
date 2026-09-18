@@ -148,7 +148,7 @@ impl Domains<'_> {
     /// #[tokio::main(flavor = "current_thread")]
     /// async fn main() {
     ///     let client = new_client(true, String::from("AUTH_TOKEN")).unwrap();
-    ///     let signer_records = client.domains().get_delegation_signer_record(1234, "example.com").await.unwrap().data.unwrap();
+    ///     let signer_records = client.domains().get_delegation_signer_record(1234, "example.com", 42).await.unwrap().data.unwrap();
     /// }
     /// ```
     ///
@@ -156,12 +156,17 @@ impl Domains<'_> {
     ///
     /// `account_id`: The account ID
     /// `domain`: The ID or name of the domain we want list the signer records from
+    /// `delegation_signer_record_id`: The delegation signer record id
     pub async fn get_delegation_signer_record(
         &self,
         account_id: u64,
         domain: &str,
+        delegation_signer_record_id: i32,
     ) -> Result<DNSimpleResponse<DelegationSignerRecord>, DNSimpleError> {
-        let path = format!("/{}/domains/{}/ds_records", account_id, domain);
+        let path = format!(
+            "/{}/domains/{}/ds_records/{}",
+            account_id, domain, delegation_signer_record_id
+        );
 
         self.client.get::<SignerRecordEndpoint>(&path, None).await
     }
