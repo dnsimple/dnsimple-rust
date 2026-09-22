@@ -15,7 +15,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-dnsimple = "7.0"
+dnsimple = "8.0"
 tokio = { version = "1", features = ["rt", "macros"] }
 ```
 
